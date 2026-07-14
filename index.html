@@ -43,7 +43,11 @@
     .brand-copy{min-width:0;flex:1}
     .brand-copy h1{font-size:19px;margin:0 0 3px;letter-spacing:.1px}
     .brand-copy p{margin:0;font-size:11px;line-height:1.4;opacity:.94}
-    .staff-button,.flow-exit{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.13);color:#fff;border-radius:12px;padding:9px 11px;font-weight:700;white-space:nowrap}
+    .staff-button,.flow-exit,.menu-toggle{border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.13);color:#fff;border-radius:12px;padding:9px 11px;font-weight:700;white-space:nowrap}
+    .header-actions{display:flex;align-items:center;gap:8px}
+    .menu-toggle{width:42px;height:42px;padding:0;display:grid;place-items:center}
+    .menu-toggle svg{width:23px;height:23px}
+    .mobile-menu-btn{display:none}
     .scroll-area{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
     .content{max-width:1180px;margin:auto;padding:20px 18px 34px}
     .public-view,.admin-view{display:none}
@@ -144,6 +148,20 @@
     .nav-inner{width:min(680px,100%);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
     .nav-btn{border:0;background:transparent;color:#6d7971;border-radius:12px;min-height:57px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700}
     .nav-btn svg{width:22px;height:22px}.nav-btn.active{background:var(--primary-soft);color:var(--primary)}
+    .desktop-menu-btn{display:none}
+    .app-switcher-backdrop{position:fixed;inset:0;z-index:150;background:rgba(8,25,15,.52);opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease}
+    .app-switcher-backdrop.show{opacity:1;visibility:visible}
+    .app-switcher-drawer{position:absolute;inset:0 auto 0 0;width:min(340px,88vw);background:#fff;box-shadow:18px 0 46px rgba(0,0,0,.24);transform:translateX(-102%);transition:transform .24s ease;display:flex;flex-direction:column;overflow:hidden}
+    .app-switcher-backdrop.show .app-switcher-drawer{transform:translateX(0)}
+    .switcher-head{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:calc(18px + env(safe-area-inset-top)) 17px 17px;display:flex;align-items:center;gap:12px}
+    .switcher-head-copy{flex:1;min-width:0}.switcher-head-copy b{display:block;font-size:16px}.switcher-head-copy span{display:block;font-size:11px;line-height:1.45;opacity:.9;margin-top:3px}
+    .switcher-close{width:39px;height:39px;border:1px solid rgba(255,255,255,.55);border-radius:50%;background:rgba(255,255,255,.13);color:#fff;font-size:25px;display:grid;place-items:center}
+    .switcher-body{padding:16px;display:grid;gap:10px}
+    .switcher-app-btn{width:100%;border:1px solid var(--line);background:#fff;border-radius:15px;padding:14px;display:flex;align-items:center;gap:12px;text-align:left;color:var(--text)}
+    .switcher-app-btn:hover,.switcher-app-btn.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary-dark)}
+    .switcher-app-icon{width:43px;height:43px;flex:0 0 43px;border-radius:13px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center}
+    .switcher-app-icon svg{width:23px;height:23px}.switcher-app-copy{min-width:0}.switcher-app-copy b{display:block;font-size:14px;margin-bottom:4px}.switcher-app-copy span{display:block;font-size:12px;color:var(--muted);line-height:1.4}
+    .switcher-app-btn.active .switcher-app-copy span{color:#456553}
     .guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
     .guide-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
     .guide-card h3{margin:0 0 12px;color:var(--primary-dark)}
@@ -198,16 +216,28 @@
     .json-detail{max-width:420px;white-space:pre-wrap;word-break:break-word;font-size:11px;color:var(--muted)}
 
     @media(min-width:900px){
-      .bottom-nav{padding-top:7px;padding-bottom:7px}
-      .nav-btn{min-height:54px;flex-direction:row;font-size:13px;gap:7px}
+      .app-shell>.topbar,.app-shell>.admin-top{order:0}
+      .app-shell>.bottom-nav{order:1;border-top:0;border-bottom:1px solid var(--line);padding:6px 18px;box-shadow:0 7px 20px rgba(20,54,35,.08)}
+      .app-shell>.scroll-area{order:2}
+      .bottom-nav .nav-inner{width:min(1180px,100%);grid-template-columns:48px repeat(4,minmax(0,1fr));gap:6px}
+      .admin-nav .nav-inner{width:min(1320px,100%);grid-template-columns:48px repeat(5,minmax(0,1fr))}
+      .desktop-menu-btn{display:flex}
+      .nav-btn{min-height:48px;flex-direction:row;font-size:13px;gap:7px}
       .nav-btn svg{width:20px;height:20px}
+      .desktop-menu-btn span{display:none}
+      #publicTabbar.flow-active .section-nav-btn{display:none}
+      #publicTabbar.flow-active .nav-inner{grid-template-columns:48px;justify-content:start}
       .admin-content{padding-bottom:35px}
     }
     @media(max-width:900px){
       .hero-card{grid-template-columns:1fr}.feature-grid,.guide-grid{grid-template-columns:1fr}.slots{grid-template-columns:repeat(3,minmax(0,1fr))}.admin-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.filter-row .btn{width:100%}
     }
+    @media(max-width:899px){
+      .mobile-menu-btn{display:grid}
+      #publicTabbar.flow-active{display:none}
+    }
     @media(max-width:760px){
-      .topbar{padding-left:11px;padding-right:11px}.brand{gap:9px}.brand-mark{width:43px;height:43px;flex-basis:43px;font-size:14px}.brand-copy h1{font-size:14px}.brand-copy p{font-size:9px}.staff-button,.flow-exit{padding:8px;font-size:10px}
+      .topbar{padding-left:11px;padding-right:11px}.brand{gap:9px}.brand-mark{width:43px;height:43px;flex-basis:43px;font-size:14px}.brand-copy h1{font-size:14px}.brand-copy p{font-size:9px}.staff-button,.flow-exit{padding:8px;font-size:10px}.mobile-menu-btn{display:grid}.menu-toggle{width:38px;height:38px}.header-actions{gap:6px}#publicTabbar.flow-active{display:none}
       .content{padding:12px 11px 24px}.card,.hero-card{padding:16px;border-radius:17px;box-shadow:none}.hero-card h2{font-size:24px}.hero-card p{font-size:14px}.feature-grid{margin-top:11px}
       .wizard-card{margin:0 -11px;border-left:0;border-right:0;border-radius:0;box-shadow:none}.wizard-flow-head{padding:12px 13px}.steps{position:sticky;top:0;z-index:8}.step-tab{padding:10px 2px;font-size:8px}.step-dot{width:28px;height:28px;font-size:11px}.step-tab:not(:last-child)::after{top:23px}.wizard-panel{padding:18px 13px}.panel-title h3{font-size:20px}
       .grid-2,.grid-3{grid-template-columns:1fr}.slots{grid-template-columns:repeat(2,minmax(0,1fr))}.review-row{grid-template-columns:1fr;gap:4px}.actions{position:sticky;bottom:0;background:rgba(255,255,255,.97);padding:11px 0 calc(7px + env(safe-area-inset-bottom));z-index:7}.actions .btn{flex:1}.actions-right{width:100%;margin:0}.actions>button{min-width:110px}
@@ -225,8 +255,12 @@
           <h1 id="brandTitle">HIẾN TIỂU CẦU BẠCH MAI</h1>
           <p id="brandOrg">BỆNH VIỆN BẠCH MAI · VIỆN HUYẾT HỌC VÀ TRUYỀN MÁU BẠCH MAI</p>
         </div>
-        <button id="staffEntryBtn" class="staff-button" type="button" onclick="openAdminLogin()">Nhân viên</button>
-        <button id="flowExitBtn" class="flow-exit hidden" type="button" onclick="exitRegistrationFlow()">Thoát đăng ký</button>
+        <div class="header-actions">
+          <button id="flowExitBtn" class="flow-exit hidden" type="button" onclick="exitRegistrationFlow()">Thoát đăng ký</button>
+          <button class="menu-toggle mobile-menu-btn" type="button" onclick="openAppSwitcher()" aria-label="Mở menu ứng dụng" title="Menu ứng dụng">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -257,7 +291,7 @@
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg><h3>Xác thực an toàn</h3><p>Số điện thoại được xác thực bằng OTP trước khi ghi nhận thông tin.</p></article>
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"/></svg><h3>Tiếp nhận bằng QR</h3><p>Lưu mã QR sau đăng ký để nhân viên tra cứu nhanh khi đến.</p></article>
           </div>
-          <footer class="footer">Phiên bản <span class="versionText">3.2</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">4.2</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
 
         <section id="viewRegister" class="public-view">
@@ -362,24 +396,25 @@
           <div class="section-head"><div><h2>Lịch của tôi</h2><p>Hiển thị lịch đăng ký gần nhất được lưu an toàn trên thiết bị này.</p></div><button class="btn btn-outline btn-sm" type="button" onclick="loadMyAppointment(true)">Tải lại</button></div>
           <div id="myEmpty" class="empty-state"><b>Chưa có lịch đăng ký trên thiết bị này.</b><p>Hãy đăng ký mới hoặc mở lại bằng đúng thiết bị đã sử dụng khi đăng ký.</p><button class="btn btn-primary" type="button" onclick="startRegistrationFlow()">Đăng ký ngay</button></div>
           <div id="myAppointment" class="hidden"></div>
-          <footer class="footer">Phiên bản <span class="versionText">3.2</span> · Dữ liệu tra cứu được xác thực bằng mã quản lý lưu trên thiết bị</footer>
+          <footer class="footer">Phiên bản <span class="versionText">4.2</span> · Dữ liệu tra cứu được xác thực bằng mã quản lý lưu trên thiết bị</footer>
         </section>
 
         <section id="viewGuide" class="public-view">
           <div class="section-head"><div><h2>Hướng dẫn hiến tiểu cầu</h2><p>Các nội dung chuẩn bị trước khi đến và lưu ý trong quá trình tiếp nhận.</p></div></div>
           <div id="guideGrid" class="guide-grid"></div>
           <div class="notice notice-info" style="margin-top:15px"><b>Cần hỗ trợ:</b> <span id="guidePhone">Đang cập nhật</span></div>
-          <footer class="footer">Phiên bản <span class="versionText">3.2</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">4.2</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
       </main>
     </div>
 
     <nav id="publicTabbar" class="bottom-nav" aria-label="Điều hướng chính">
       <div class="nav-inner">
-        <button class="nav-btn active" data-public-nav="home" type="button" onclick="navigatePublic('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg><span>Trang chủ</span></button>
-        <button class="nav-btn" data-public-nav="register" type="button" onclick="navigatePublic('register')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M12 14v4M10 16h4"/></svg><span>Đăng ký</span></button>
-        <button class="nav-btn" data-public-nav="my" type="button" onclick="navigatePublic('my')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 16 2 2 4-4"/></svg><span>Lịch của tôi</span></button>
-        <button class="nav-btn" data-public-nav="guide" type="button" onclick="navigatePublic('guide')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5Z"/><path d="M8 7h8M8 11h6"/></svg><span>Hướng dẫn</span></button>
+        <button class="nav-btn desktop-menu-btn" type="button" onclick="openAppSwitcher()" aria-label="Mở menu ứng dụng" title="Menu ứng dụng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menu</span></button>
+        <button class="nav-btn section-nav-btn active" data-public-nav="home" type="button" onclick="navigatePublic('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg><span>Trang chủ</span></button>
+        <button class="nav-btn section-nav-btn" data-public-nav="register" type="button" onclick="navigatePublic('register')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M12 14v4M10 16h4"/></svg><span>Đăng ký</span></button>
+        <button class="nav-btn section-nav-btn" data-public-nav="my" type="button" onclick="navigatePublic('my')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 16 2 2 4-4"/></svg><span>Lịch của tôi</span></button>
+        <button class="nav-btn section-nav-btn" data-public-nav="guide" type="button" onclick="navigatePublic('guide')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5Z"/><path d="M8 7h8M8 11h6"/></svg><span>Hướng dẫn</span></button>
       </div>
     </nav>
   </div>
@@ -389,8 +424,10 @@
       <div class="brand-mark" style="width:42px;height:42px;flex-basis:42px">BM</div>
       <h1>QUẢN LÝ HIẾN TIỂU CẦU</h1>
       <div id="adminUserName" class="admin-user"></div>
-      <button class="staff-button" type="button" onclick="showPublicApp()">Trang người hiến</button>
       <button class="staff-button" type="button" onclick="logoutAdmin()">Đăng xuất</button>
+      <button class="menu-toggle mobile-menu-btn" type="button" onclick="openAppSwitcher()" aria-label="Mở menu ứng dụng" title="Menu ứng dụng">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
     </header>
     <div id="adminScroll" class="scroll-area">
       <main class="admin-content">
@@ -496,6 +533,7 @@
 
     <nav id="adminTabbar" class="bottom-nav admin-nav" aria-label="Điều hướng quản lý">
       <div class="nav-inner">
+        <button class="nav-btn desktop-menu-btn" type="button" onclick="openAppSwitcher()" aria-label="Mở menu ứng dụng" title="Menu ứng dụng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menu</span></button>
         <button class="nav-btn active" data-admin-nav="overview" type="button" onclick="showAdminTab('overview')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Tổng quan</span></button>
         <button class="nav-btn" data-admin-nav="appointments" type="button" onclick="showAdminTab('appointments')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/></svg><span>Lịch hẹn</span></button>
         <button class="nav-btn" data-admin-nav="checkin" type="button" onclick="showAdminTab('checkin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"/></svg><span>Tiếp nhận</span></button>
@@ -503,6 +541,26 @@
         <button class="nav-btn" data-admin-nav="more" type="button" onclick="showAdminTab('more')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span>Thêm</span></button>
       </div>
     </nav>
+  </div>
+
+  <div id="appSwitcher" class="app-switcher-backdrop" onclick="handleAppSwitcherBackdrop(event)" aria-hidden="true">
+    <aside class="app-switcher-drawer" role="dialog" aria-modal="true" aria-label="Chọn khu vực sử dụng">
+      <div class="switcher-head">
+        <div class="brand-mark" style="width:44px;height:44px;flex-basis:44px">BM</div>
+        <div class="switcher-head-copy"><b>HIẾN TIỂU CẦU BẠCH MAI</b><span>Chọn khu vực sử dụng ứng dụng</span></div>
+        <button class="switcher-close" type="button" onclick="closeAppSwitcher()" aria-label="Đóng menu">×</button>
+      </div>
+      <div class="switcher-body">
+        <button id="switchPublicBtn" class="switcher-app-btn" type="button" onclick="selectPublicApp()">
+          <span class="switcher-app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-7-11a4 4 0 0 1 7-2.8A4 4 0 0 1 19 10c0 6.6-7 11-7 11Z"/></svg></span>
+          <span class="switcher-app-copy"><b>Đăng ký hiến tiểu cầu</b><span>Trang dành cho người hiến tiểu cầu</span></span>
+        </button>
+        <button id="switchAdminBtn" class="switcher-app-btn" type="button" onclick="selectAdminApp()">
+          <span class="switcher-app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+          <span class="switcher-app-copy"><b>Quản lý Hiến tiểu cầu</b><span>Trang dành cho nhân viên được phân quyền</span></span>
+        </button>
+      </div>
+    </aside>
   </div>
 
   <div id="loading" class="loading-overlay hidden"><div class="loading-card"><div class="spinner"></div><b id="loadingText">Đang tải dữ liệu...</b></div></div>
@@ -569,7 +627,7 @@
   <script>
     'use strict';
 
-    const FRONTEND_VERSION = '3.2';
+    const FRONTEND_VERSION = '4.2';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
     const STATUS_LABELS = {
       CONFIRMED:'Đã xác nhận',CHECKED_IN:'Đã đến',SCREENING:'Đang sàng lọc',ELIGIBLE:'Đủ điều kiện',IN_PROGRESS:'Đang thực hiện',COMPLETED:'Hoàn thành',DEFERRED:'Tạm hoãn',CANCELLED:'Đã hủy',NO_SHOW:'Không đến'
@@ -593,6 +651,7 @@
       const today=localIsoDate(new Date());
       ['dashboardDate','filterFrom','filterTo','reportFrom','reportTo','slotFrom','slotTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today});
       document.getElementById('birthDate').max=today;
+      document.addEventListener('keydown',event=>{if(event.key==='Escape')closeAppSwitcher()});
 
       setLoading(true,'Đang tải cấu hình...');
       try{
@@ -644,6 +703,18 @@
     function formatDateTimeVi(value){if(!value)return '';const d=new Date(value);return Number.isNaN(d.getTime())?String(value):d.toLocaleString('vi-VN')}
     function localIsoDate(date){const y=date.getFullYear();const m=String(date.getMonth()+1).padStart(2,'0');const d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}
 
+    function openAppSwitcher(){
+      const switcher=document.getElementById('appSwitcher');
+      const publicVisible=!document.getElementById('publicApp').classList.contains('hidden');
+      document.getElementById('switchPublicBtn').classList.toggle('active',publicVisible);
+      document.getElementById('switchAdminBtn').classList.toggle('active',!publicVisible);
+      switcher.classList.add('show');switcher.setAttribute('aria-hidden','false');
+    }
+    function closeAppSwitcher(){const switcher=document.getElementById('appSwitcher');if(!switcher)return;switcher.classList.remove('show');switcher.setAttribute('aria-hidden','true')}
+    function handleAppSwitcherBackdrop(event){if(event.target===event.currentTarget)closeAppSwitcher()}
+    function selectPublicApp(){closeAppSwitcher();showPublicApp();if(!state.flowActive)navigatePublic('home')}
+    function selectAdminApp(){closeAppSwitcher();openAdminLogin()}
+
     function navigatePublic(view){
       if(state.flowActive)return;
       state.publicView=view;
@@ -659,8 +730,7 @@
       document.querySelectorAll('.public-view').forEach(el=>el.classList.toggle('active',el.id==='viewRegister'));
       document.getElementById('registerIntro').classList.add('hidden');
       document.getElementById('wizardCard').classList.remove('hidden');
-      document.getElementById('publicTabbar').classList.add('hidden');
-      document.getElementById('staffEntryBtn').classList.add('hidden');
+      document.getElementById('publicTabbar').classList.add('flow-active');
       document.getElementById('flowExitBtn').classList.remove('hidden');
       goToStep(state.step || 1,false);
     }
@@ -670,8 +740,7 @@
       state.flowActive=false;
       document.getElementById('registerIntro').classList.remove('hidden');
       document.getElementById('wizardCard').classList.add('hidden');
-      document.getElementById('publicTabbar').classList.remove('hidden');
-      document.getElementById('staffEntryBtn').classList.remove('hidden');
+      document.getElementById('publicTabbar').classList.remove('flow-active');
       document.getElementById('flowExitBtn').classList.add('hidden');
       document.querySelectorAll('[data-public-nav]').forEach(btn=>btn.classList.toggle('active',btn.dataset.publicNav==='register'));
       document.getElementById('publicScroll').scrollTo({top:0,behavior:'smooth'});
@@ -771,7 +840,7 @@
     }
 
     function resetRegistration(startFlow=false){closeModal('successModal');clearRegistrationState();if(startFlow){state.flowActive=true;document.getElementById('registerIntro').classList.add('hidden');document.getElementById('wizardCard').classList.remove('hidden');goToStep(1)}else{exitRegistrationFlow()}}
-    function goToMyAfterSuccess(){closeModal('successModal');state.flowActive=false;document.getElementById('registerIntro').classList.remove('hidden');document.getElementById('wizardCard').classList.add('hidden');document.getElementById('publicTabbar').classList.remove('hidden');document.getElementById('staffEntryBtn').classList.remove('hidden');document.getElementById('flowExitBtn').classList.add('hidden');navigatePublic('my')}
+    function goToMyAfterSuccess(){closeModal('successModal');state.flowActive=false;document.getElementById('registerIntro').classList.remove('hidden');document.getElementById('wizardCard').classList.add('hidden');document.getElementById('publicTabbar').classList.remove('flow-active');document.getElementById('flowExitBtn').classList.add('hidden');navigatePublic('my')}
 
     function goToStep(step,scroll=true){
       state.step=step;document.querySelectorAll('#wizardCard .wizard-panel').forEach(panel=>panel.classList.toggle('active',Number(panel.dataset.panel)===step));document.querySelectorAll('#wizardCard .step-tab').forEach(tab=>{const n=Number(tab.dataset.step);tab.classList.toggle('active',n===step);tab.classList.toggle('done',n<step);tab.querySelector('.step-dot').textContent=n<step?'✓':String(n)});document.getElementById('flowProgressText').textContent=`Bước ${step}/5`;if(scroll)document.getElementById('publicScroll').scrollTo({top:0,behavior:'smooth'})
@@ -820,11 +889,12 @@
     async function logoutAdmin(){try{if(state.adminToken)await api('account_logout',{token:state.adminToken})}catch(error){}state.adminToken='';state.adminUser=null;sessionStorage.removeItem('bm_admin_token');sessionStorage.removeItem('bm_admin_user');showPublicApp()}
 
     function showAdminApp(){
+      closeAppSwitcher();
       document.getElementById('publicApp').classList.add('hidden');document.getElementById('adminApp').classList.remove('hidden');document.getElementById('adminUserName').innerHTML=`<b>${escapeHtml(state.adminUser?.fullName || '')}</b><br>${escapeHtml(state.adminUser?.role || '')}`;
       const role=state.adminUser?.role;const canCheckin=['SUPER_ADMIN','ADMIN','RECEPTION','SCREENING'].includes(role);const canReport=['SUPER_ADMIN','ADMIN','REPORT_VIEWER'].includes(role);const canMore=['SUPER_ADMIN','ADMIN'].includes(role);
       document.querySelector('[data-admin-nav="checkin"]').classList.toggle('hidden',!canCheckin);document.querySelector('[data-admin-nav="reports"]').classList.toggle('hidden',!canReport);document.querySelector('[data-admin-nav="more"]').classList.toggle('hidden',!canMore);showAdminTab('overview');document.getElementById('adminScroll').scrollTo(0,0)
     }
-    function showPublicApp(){document.getElementById('adminApp').classList.add('hidden');document.getElementById('publicApp').classList.remove('hidden');document.getElementById('publicScroll').scrollTo(0,0)}
+    function showPublicApp(){closeAppSwitcher();document.getElementById('adminApp').classList.add('hidden');document.getElementById('publicApp').classList.remove('hidden');document.getElementById('publicScroll').scrollTo(0,0)}
 
     async function showAdminTab(tab){
       state.adminTab=tab;document.querySelectorAll('.admin-view').forEach(el=>el.classList.toggle('active',el.id===`admin${capitalize(tab)}`));document.querySelectorAll('[data-admin-nav]').forEach(btn=>btn.classList.toggle('active',btn.dataset.adminNav===tab));document.getElementById('adminScroll').scrollTo({top:0,behavior:'smooth'});
