@@ -724,7 +724,7 @@
           </div>
           <div class="admin-card push-card">
             <div><h3 style="margin:0 0 6px">Thông báo đăng ký mới</h3><p id="pushStatusText" style="margin:0;color:var(--muted);line-height:1.5">Đang kiểm tra khả năng nhận thông báo trên thiết bị này.</p></div>
-            <div class="push-actions"><button id="installPwaBtn" class="btn btn-outline hidden" type="button" onclick="installPwa()">Cài ứng dụng</button><button id="enablePushBtn" class="btn btn-primary" type="button" onclick="enablePushNotifications()">Bật thông báo</button><button id="disablePushBtn" class="btn btn-danger hidden" type="button" onclick="disablePushNotifications()">Tắt thông báo</button></div>
+            <div class="push-actions"><button id="installPwaBtn" class="btn btn-outline hidden" type="button" onclick="installPwa()">Cài ứng dụng</button><button id="enablePushBtn" class="btn btn-primary" type="button" onclick="enablePushNotifications()">Bật thông báo</button><button id="testPushBtn" class="btn btn-outline hidden" type="button" onclick="sendTestPushNotification()">Gửi thử</button><button id="disablePushBtn" class="btn btn-danger hidden" type="button" onclick="disablePushNotifications()">Tắt thông báo</button></div>
           </div>
         </section>
 
@@ -878,7 +878,7 @@
   <script>
     'use strict';
 
-    const FRONTEND_VERSION = '9.6';
+    const FRONTEND_VERSION = '10.7';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
     const STATUS_LABELS = {
       CONFIRMED:'Đã xác nhận',CHECKED_IN:'Đã đến',SCREENING:'Đang sàng lọc',ELIGIBLE:'Đủ điều kiện',IN_PROGRESS:'Đang thực hiện',COMPLETED:'Hoàn thành',DEFERRED:'Tạm hoãn',CANCELLED:'Đã hủy',NO_SHOW:'Không đến'
@@ -892,7 +892,7 @@
       rescheduleSlots:[],rescheduleSelectedSlot:null,reportRows:[],
       adminToken:sessionStorage.getItem('bm_admin_token') || '',
       adminUser:safeJsonParse(sessionStorage.getItem('bm_admin_user'),null),adminTab:'appointments',adminSection:'info',pendingAdminSection:'info',
-      schedule:{startDate:'',endDate:'',excludedDates:[],slots:[]},push:{enabled:false,serverReady:false},deferredInstallPrompt:null,adminMenuExpanded:false
+      schedule:{startDate:'',endDate:'',excludedDates:[],slots:[]},push:{enabled:false,serverReady:false},deferredInstallPrompt:null,adminMenuExpanded:false,pushForegroundReady:false
     };
 
     document.addEventListener('DOMContentLoaded',init);
@@ -901,7 +901,7 @@
       setupDateInputs();
       setupCitizenIdInputs();
       initPwaInstallPrompt();
-      registerServiceWorker();
+      await registerServiceWorker();
       document.querySelectorAll('.versionText').forEach(el=>el.textContent=FRONTEND_VERSION);
       const today=localIsoDate(new Date());
       ['dashboardDate','filterFrom','filterTo','reportFrom','reportTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today});
@@ -912,7 +912,7 @@
       try{
         const data=await api('public_bootstrap',{});
         state.app=data.app || {};state.schedule=data.schedule || state.schedule;state.push=data.push || state.push;state.questions=data.questions || [];state.guides=data.guides || [];state.serverDate=data.serverDate || today;
-        applyBranding();configurePublicDates();renderQuestions();renderGuides();initTurnstile();handleLaunchRoute();
+        applyBranding();configurePublicDates();renderQuestions();renderGuides();initTurnstile();handleLaunchRoute();initForegroundPushListener();
       }catch(error){showToast(error.message || 'Không tải được cấu hình ứng dụng.')}finally{setLoading(false)}
     }
 
@@ -1273,15 +1273,39 @@
     async function showSystemSection(section){document.querySelectorAll('[id^="system"]').forEach(el=>{if(el.classList.contains('more-section'))el.classList.toggle('active',el.id===`system${capitalize(section)}`)});document.querySelectorAll('[data-system]').forEach(btn=>btn.classList.toggle('active',btn.dataset.system===section));if(section==='users')await loadUsers();if(section==='audit')await loadSystemData('AUDIT');if(section==='notifications')await loadSystemData('NOTIFICATION')}
 
     function getPushDeviceId(){let id=localStorage.getItem('bm_push_device_id');if(!id){id='DEV_'+(crypto.randomUUID?crypto.randomUUID():`${Date.now()}_${Math.random().toString(36).slice(2)}`);localStorage.setItem('bm_push_device_id',id)}return id}
-    async function registerServiceWorker(){if(!('serviceWorker' in navigator))return null;try{return await navigator.serviceWorker.register('./service-worker.js',{scope:'./'})}catch(error){console.warn('Không đăng ký được service worker',error);return null}}
+    async function registerServiceWorker(){if(!('serviceWorker' in navigator))return null;try{const reg=await navigator.serviceWorker.register('./service-worker.js',{scope:'./',updateViaCache:'none'});try{await reg.update()}catch(error){}return reg}catch(error){console.warn('Không đăng ký được service worker',error);return null}}
     function initPwaInstallPrompt(){window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();state.deferredInstallPrompt=event;document.getElementById('installPwaBtn')?.classList.remove('hidden')});window.addEventListener('appinstalled',()=>{state.deferredInstallPrompt=null;document.getElementById('installPwaBtn')?.classList.add('hidden')})}
     async function installPwa(){if(state.deferredInstallPrompt){state.deferredInstallPrompt.prompt();await state.deferredInstallPrompt.userChoice;state.deferredInstallPrompt=null;document.getElementById('installPwaBtn').classList.add('hidden');return}showToast('Trên iPhone/iPad: mở menu Chia sẻ và chọn “Thêm vào Màn hình chính”.')}
     async function refreshPushStatus(){
-      const text=document.getElementById('pushStatusText');if(!text)return;const btn=document.getElementById('enablePushBtn');const supported='Notification' in window && 'serviceWorker' in navigator;if(!supported){text.textContent='Trình duyệt này không hỗ trợ thông báo nền.';btn.classList.add('hidden');return}btn.classList.remove('hidden');btn.disabled=false;if(!state.push?.enabled){text.textContent='Chưa cấu hình Firebase Web Push. Nút vẫn có thể bấm để xem nguyên nhân và hướng dẫn cấu hình.';document.getElementById('disablePushBtn').classList.add('hidden');return}if(!state.push?.serverReady){text.textContent='Đã có cấu hình Firebase phía trình duyệt nhưng backend còn thiếu service account để gửi thông báo.'}try{const status=await api('push_getStatus',{token:state.adminToken,deviceId:getPushDeviceId()});const registered=status.registered && Notification.permission==='granted';if(status.serverReady)text.textContent=registered?'Thiết bị này đang nhận thông báo tức thời khi có lượt đăng ký mới.':(Notification.permission==='denied'?'Quyền thông báo đang bị chặn trong cài đặt trình duyệt/điện thoại.':'Thiết bị này chưa bật nhận thông báo đăng ký mới.');btn.classList.toggle('hidden',registered);document.getElementById('disablePushBtn').classList.toggle('hidden',!registered)}catch(error){text.textContent=error.message}
+      const text=document.getElementById('pushStatusText');if(!text)return;const btn=document.getElementById('enablePushBtn');const testBtn=document.getElementById('testPushBtn');const disableBtn=document.getElementById('disablePushBtn');const supported='Notification' in window && 'serviceWorker' in navigator;if(!supported){text.textContent='Trình duyệt này không hỗ trợ thông báo nền.';btn.classList.add('hidden');testBtn?.classList.add('hidden');disableBtn?.classList.add('hidden');return}btn.classList.remove('hidden');btn.disabled=false;if(!state.push?.enabled){text.textContent='Chưa cấu hình Firebase Web Push. Nút vẫn có thể bấm để xem nguyên nhân và hướng dẫn cấu hình.';testBtn?.classList.add('hidden');disableBtn?.classList.add('hidden');return}if(!state.push?.serverReady){text.textContent='Đã có cấu hình Firebase phía trình duyệt nhưng backend còn thiếu service account để gửi thông báo.'}try{const status=await api('push_getStatus',{token:state.adminToken,deviceId:getPushDeviceId()});const registered=status.registered && Notification.permission==='granted';if(status.serverReady)text.textContent=registered?'Thiết bị này đang nhận thông báo tức thời khi có lượt đăng ký mới. Hãy bấm “Gửi thử” để kiểm tra đường truyền FCM.':(Notification.permission==='denied'?'Quyền thông báo đang bị chặn trong cài đặt trình duyệt/điện thoại.':'Thiết bị này chưa bật nhận thông báo đăng ký mới.');btn.classList.toggle('hidden',registered);testBtn?.classList.toggle('hidden',!registered);disableBtn?.classList.toggle('hidden',!registered)}catch(error){text.textContent=error.message;testBtn?.classList.add('hidden')}
     }
-    async function getFirebaseMessagingModules(){const appMod=await import('https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js');const msgMod=await import('https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging.js');return {...appMod,...msgMod}}
+    async function getFirebaseMessagingModules(){const appMod=await import('https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js');const msgMod=await import('https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging.js');return {...appMod,...msgMod}}
+    async function initForegroundPushListener(){
+      if(state.pushForegroundReady || !state.push?.enabled || !('Notification' in window) || !('serviceWorker' in navigator))return;
+      try{
+        const firebase=await getFirebaseMessagingModules();
+        if(firebase.isSupported && !(await firebase.isSupported()))return;
+        const app=firebase.getApps().length?firebase.getApp():firebase.initializeApp(state.push.firebaseConfig);
+        const messaging=firebase.getMessaging(app);
+        firebase.onMessage(messaging,payload=>{
+          const body=payload?.notification?.body || payload?.data?.body || 'Có lượt đăng ký hiến tiểu cầu mới.';
+          showToast(body);
+          if(Notification.permission==='granted' && document.visibilityState==='hidden'){
+            navigator.serviceWorker.ready.then(reg=>reg.showNotification(payload?.notification?.title || payload?.data?.title || 'Hiến tiểu cầu Bạch Mai',{body,icon:'./icon-192-v5.3.png',badge:'./icon-192-v5.3.png',tag:payload?.data?.appointmentId || 'new-registration',data:{url:payload?.data?.url || './?admin=1&section=appointments'}})).catch(()=>{});
+          }
+        });
+        state.pushForegroundReady=true;
+      }catch(error){console.warn('Không khởi tạo được listener thông báo foreground',error)}
+    }
+    async function sendTestPushNotification(){
+      setLoading(true,'Đang gửi thông báo thử...');
+      try{
+        const data=await api('push_sendTest',{token:state.adminToken,deviceId:getPushDeviceId()});
+        showToast(data.sent?'Đã gửi thông báo thử. Vui lòng kiểm tra khay thông báo.':'Không gửi được thông báo thử.');
+      }catch(error){showToast(error.message)}finally{setLoading(false)}
+    }
     async function enablePushNotifications(){
-      if(!state.push?.enabled)return showToast('Chưa cấu hình Firebase Web Push trong Script Properties nên chưa thể bật thông báo.');if(!state.push?.serverReady)return showToast('Firebase còn thiếu service account phía backend nên chưa thể gửi thông báo.');if(!('Notification' in window) || !('serviceWorker' in navigator))return showToast('Thiết bị này không hỗ trợ thông báo nền.');setLoading(true,'Đang bật thông báo...');try{const permission=await Notification.requestPermission();if(permission!=='granted')throw new Error('Bạn chưa cấp quyền hiển thị thông báo.');const reg=await navigator.serviceWorker.ready;const firebase=await getFirebaseMessagingModules();const app=firebase.getApps().length?firebase.getApp():firebase.initializeApp(state.push.firebaseConfig);const messaging=firebase.getMessaging(app);const fcmToken=await firebase.getToken(messaging,{vapidKey:state.push.vapidKey,serviceWorkerRegistration:reg});if(!fcmToken)throw new Error('Không tạo được mã nhận thông báo.');await api('push_registerDevice',{token:state.adminToken,deviceId:getPushDeviceId(),fcmToken,userAgent:navigator.userAgent,platform:navigator.userAgentData?.platform || navigator.platform || ''});firebase.onMessage(messaging,payload=>showToast(payload?.data?.body || 'Có lượt đăng ký hiến tiểu cầu mới.'));showToast('Đã bật thông báo đăng ký mới.');await refreshPushStatus()}catch(error){showToast(error.message)}finally{setLoading(false)}
+      if(!state.push?.enabled)return showToast('Chưa cấu hình Firebase Web Push trong Script Properties nên chưa thể bật thông báo.');if(!state.push?.serverReady)return showToast('Firebase còn thiếu service account phía backend nên chưa thể gửi thông báo.');if(!('Notification' in window) || !('serviceWorker' in navigator))return showToast('Thiết bị này không hỗ trợ thông báo nền.');setLoading(true,'Đang bật thông báo...');try{const permission=await Notification.requestPermission();if(permission!=='granted')throw new Error('Bạn chưa cấp quyền hiển thị thông báo.');const reg=await navigator.serviceWorker.ready;const firebase=await getFirebaseMessagingModules();const app=firebase.getApps().length?firebase.getApp():firebase.initializeApp(state.push.firebaseConfig);const messaging=firebase.getMessaging(app);const fcmToken=await firebase.getToken(messaging,{vapidKey:state.push.vapidKey,serviceWorkerRegistration:reg});if(!fcmToken)throw new Error('Không tạo được mã nhận thông báo.');await api('push_registerDevice',{token:state.adminToken,deviceId:getPushDeviceId(),fcmToken,userAgent:navigator.userAgent,platform:navigator.userAgentData?.platform || navigator.platform || ''});await initForegroundPushListener();showToast('Đã bật thông báo đăng ký mới.');await refreshPushStatus()}catch(error){showToast(error.message)}finally{setLoading(false)}
     }
     async function disablePushNotifications(){setLoading(true,'Đang tắt thông báo...');try{await api('push_unregisterDevice',{token:state.adminToken,deviceId:getPushDeviceId()});showToast('Đã tắt thông báo trên thiết bị này.');await refreshPushStatus()}catch(error){handleAdminError(error)}finally{setLoading(false)}}
     function handleLaunchRoute(){const params=new URLSearchParams(location.search);if(params.get('admin')==='1'){state.pendingAdminSection='info';state.adminTab=params.get('section') || 'appointments';setTimeout(()=>openAdminLogin(),250)}}
