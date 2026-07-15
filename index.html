@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b6b3a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon-v5.3.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon-v5.3.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192-v5.3.png">
   <title>Hiến tiểu cầu Bạch Mai</title>
   <style>
     :root{
@@ -215,6 +221,36 @@
     .more-section{display:none}.more-section.active{display:block}
     .json-detail{max-width:420px;white-space:pre-wrap;word-break:break-word;font-size:11px;color:var(--muted)}
 
+
+    .admin-toolbar{flex:0 0 auto;z-index:28;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 6px 18px rgba(20,54,35,.08);display:flex;align-items:stretch;padding:6px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left));gap:7px;overflow:hidden}
+    .admin-toolbar-menu{flex:0 0 46px;width:46px;min-height:46px;border:0;border-radius:11px;background:var(--primary-soft);color:var(--primary-dark);display:grid;place-items:center}
+    .admin-toolbar-menu svg{width:22px;height:22px}
+    .admin-info-tabs{display:flex;gap:6px;min-width:0;overflow-x:auto;scrollbar-width:thin;flex:1}
+    .admin-info-tab{min-height:46px;min-width:126px;border:0;border-radius:11px;background:#fff;color:#546159;font-weight:700;padding:0 15px;white-space:nowrap}
+    .admin-info-tab.active{background:var(--primary);color:#fff}
+    .admin-section-title{display:flex;align-items:center;min-height:46px;padding:0 12px;color:var(--primary-dark);font-weight:800;letter-spacing:.1px}
+    .switcher-parent{text-transform:uppercase}
+    .switcher-parent .switcher-app-copy b{text-transform:uppercase}
+    .switcher-chevron{margin-left:auto;width:22px;height:22px;transition:transform .2s}
+    .switcher-parent.expanded .switcher-chevron{transform:rotate(180deg)}
+    .switcher-submenu{display:grid;gap:5px;margin:-3px 0 8px 55px;max-height:0;overflow:hidden;transition:max-height .24s ease}
+    .switcher-submenu.expanded{max-height:220px}
+    .switcher-child{border:0;background:transparent;color:#354139;text-align:left;border-radius:10px;padding:11px 12px;font-weight:600}
+    .switcher-child:hover,.switcher-child.active{background:var(--primary-soft);color:var(--primary-dark)}
+    .schedule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+    .excluded-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:end}
+    .excluded-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .excluded-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid #cddbd2;background:var(--primary-pale);border-radius:999px;padding:8px 10px;font-size:13px}
+    .excluded-chip button{width:24px;height:24px;border:0;border-radius:50%;background:#e7eee9;color:var(--danger);font-weight:800}
+    .slot-config-list{display:grid;gap:9px;margin-top:12px}
+    .slot-config-row{display:grid;grid-template-columns:minmax(150px,1fr) minmax(150px,220px);align-items:center;gap:14px;border:1px solid var(--line);border-radius:13px;padding:12px;background:#fbfdfb}
+    .slot-config-row b{color:var(--primary-dark)}
+    .push-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center}
+    .push-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .system-tools{margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fbfdfb}
+    .system-tools summary{cursor:pointer;font-weight:700;color:var(--primary-dark)}
+    .system-tools-body{margin-top:14px}
+
     @media(min-width:900px){
       .app-shell>.topbar,.app-shell>.admin-top{order:0}
       .app-shell>.bottom-nav{order:1;border-top:0;border-bottom:1px solid var(--line);padding:6px 18px;box-shadow:0 7px 20px rgba(20,54,35,.08)}
@@ -228,6 +264,8 @@
       #publicTabbar.flow-active .section-nav-btn{display:none}
       #publicTabbar.flow-active .nav-inner{grid-template-columns:48px;justify-content:start}
       .admin-content{padding-bottom:35px}
+      .admin-toolbar{padding-left:18px;padding-right:18px}
+      .admin-info-tabs{max-width:1180px}
     }
     @media(max-width:900px){
       .hero-card{grid-template-columns:1fr}.feature-grid,.guide-grid{grid-template-columns:1fr}.slots{grid-template-columns:repeat(3,minmax(0,1fr))}.admin-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.filter-row .btn{width:100%}
@@ -237,6 +275,7 @@
       #publicTabbar.flow-active{display:none}
     }
     @media(max-width:760px){
+      .admin-info-tab{min-width:112px;padding:0 11px}.schedule-grid{grid-template-columns:1fr}.slot-config-row{grid-template-columns:minmax(0,1fr) 130px}.push-card{grid-template-columns:1fr}.push-actions{justify-content:flex-start}
       .topbar{padding-left:11px;padding-right:11px}.brand{gap:9px}.brand-mark{width:43px;height:43px;flex-basis:43px;font-size:14px}.brand-copy h1{font-size:14px}.brand-copy p{font-size:9px}.staff-button,.flow-exit{padding:8px;font-size:10px}.mobile-menu-btn{display:grid}.menu-toggle{width:38px;height:38px}.header-actions{gap:6px}#publicTabbar.flow-active{display:none}
       .content{padding:12px 11px 24px}.card,.hero-card{padding:16px;border-radius:17px;box-shadow:none}.hero-card h2{font-size:24px}.hero-card p{font-size:14px}.feature-grid{margin-top:11px}
       .wizard-card{margin:0 -11px;border-left:0;border-right:0;border-radius:0;box-shadow:none}.wizard-flow-head{padding:12px 13px}.steps{position:sticky;top:0;z-index:8}.step-tab{padding:10px 2px;font-size:8px}.step-dot{width:28px;height:28px;font-size:11px}.step-tab:not(:last-child)::after{top:23px}.wizard-panel{padding:18px 13px}.panel-title h3{font-size:20px}
@@ -291,7 +330,7 @@
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg><h3>Xác thực an toàn</h3><p>Số điện thoại được xác thực bằng OTP trước khi ghi nhận thông tin.</p></article>
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"/></svg><h3>Tiếp nhận bằng QR</h3><p>Lưu mã QR sau đăng ký để nhân viên tra cứu nhanh khi đến.</p></article>
           </div>
-          <footer class="footer">Phiên bản <span class="versionText">4.2</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">5.3</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
 
         <section id="viewRegister" class="public-view">
@@ -396,14 +435,14 @@
           <div class="section-head"><div><h2>Lịch của tôi</h2><p>Hiển thị lịch đăng ký gần nhất được lưu an toàn trên thiết bị này.</p></div><button class="btn btn-outline btn-sm" type="button" onclick="loadMyAppointment(true)">Tải lại</button></div>
           <div id="myEmpty" class="empty-state"><b>Chưa có lịch đăng ký trên thiết bị này.</b><p>Hãy đăng ký mới hoặc mở lại bằng đúng thiết bị đã sử dụng khi đăng ký.</p><button class="btn btn-primary" type="button" onclick="startRegistrationFlow()">Đăng ký ngay</button></div>
           <div id="myAppointment" class="hidden"></div>
-          <footer class="footer">Phiên bản <span class="versionText">4.2</span> · Dữ liệu tra cứu được xác thực bằng mã quản lý lưu trên thiết bị</footer>
+          <footer class="footer">Phiên bản <span class="versionText">5.3</span> · Dữ liệu tra cứu được xác thực bằng mã quản lý lưu trên thiết bị</footer>
         </section>
 
         <section id="viewGuide" class="public-view">
           <div class="section-head"><div><h2>Hướng dẫn hiến tiểu cầu</h2><p>Các nội dung chuẩn bị trước khi đến và lưu ý trong quá trình tiếp nhận.</p></div></div>
           <div id="guideGrid" class="guide-grid"></div>
           <div class="notice notice-info" style="margin-top:15px"><b>Cần hỗ trợ:</b> <span id="guidePhone">Đang cập nhật</span></div>
-          <footer class="footer">Phiên bản <span class="versionText">4.2</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">5.3</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
       </main>
     </div>
@@ -429,26 +468,22 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
     </header>
+
+    <nav id="adminToolbar" class="admin-toolbar" aria-label="Thanh công cụ quản lý">
+      <button class="admin-toolbar-menu" type="button" onclick="openAppSwitcher()" aria-label="Mở menu ứng dụng" title="Menu ứng dụng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div id="adminInfoTabs" class="admin-info-tabs">
+        <button class="admin-info-tab active" data-admin-nav="appointments" type="button" onclick="showAdminTab('appointments')">Lịch hẹn</button>
+        <button class="admin-info-tab" data-admin-nav="checkin" type="button" onclick="showAdminTab('checkin')">Tiếp nhận</button>
+        <button class="admin-info-tab" data-admin-nav="overview" type="button" onclick="showAdminTab('overview')">Dashboard</button>
+        <button class="admin-info-tab" data-admin-nav="donors" type="button" onclick="showAdminTab('donors')">Danh sách</button>
+        <button class="admin-info-tab" data-admin-nav="reports" type="button" onclick="showAdminTab('reports')">Báo cáo</button>
+      </div>
+      <div id="adminSectionTitle" class="admin-section-title hidden"></div>
+    </nav>
+
     <div id="adminScroll" class="scroll-area">
       <main class="admin-content">
-        <section id="adminOverview" class="admin-view active">
-          <div class="admin-card">
-            <div class="section-head"><div><h2>Tổng quan trong ngày</h2><p>Theo dõi số lượng đăng ký, tiếp nhận và chỗ còn lại.</p></div></div>
-            <div class="filter-row" style="grid-template-columns:240px auto 1fr">
-              <div class="field"><label>Ngày tổng quan</label><input id="dashboardDate" class="input" type="date"></div>
-              <button class="btn btn-primary" type="button" onclick="loadAdminDashboard()">Tải dữ liệu</button><div></div>
-            </div>
-          </div>
-          <div class="admin-grid">
-            <div class="metric"><span>Tổng đăng ký</span><strong id="mTotal">0</strong></div>
-            <div class="metric"><span>Đã xác nhận</span><strong id="mConfirmed">0</strong></div>
-            <div class="metric"><span>Đã đến</span><strong id="mCheckin">0</strong></div>
-            <div class="metric"><span>Hoàn thành</span><strong id="mCompleted">0</strong></div>
-            <div class="metric"><span>Chỗ còn lại</span><strong id="mRemaining">0</strong></div>
-          </div>
-        </section>
-
-        <section id="adminAppointments" class="admin-view">
+        <section id="adminAppointments" class="admin-view active">
           <div class="admin-card">
             <div class="section-head"><div><h2>Lịch hẹn</h2><p>Tìm kiếm, lọc và cập nhật trạng thái người đăng ký.</p></div></div>
             <div class="filter-row">
@@ -468,6 +503,35 @@
             <div class="field"><label for="checkinInput">Mã QR hoặc mã đăng ký</label><input id="checkinInput" class="input checkin-input" autocomplete="off" placeholder="BMTC|... hoặc TC..."></div>
             <button class="btn btn-primary" style="width:100%;margin-top:13px" type="button" onclick="checkInByQr()">XÁC NHẬN ĐÃ ĐẾN</button>
             <div id="checkinResult" style="margin-top:15px"></div>
+          </div>
+        </section>
+
+        <section id="adminOverview" class="admin-view">
+          <div class="admin-card">
+            <div class="section-head"><div><h2>Dashboard trong ngày</h2><p>Theo dõi số lượng đăng ký, tiếp nhận và chỗ còn lại.</p></div></div>
+            <div class="filter-row" style="grid-template-columns:240px auto 1fr">
+              <div class="field"><label>Ngày tổng quan</label><input id="dashboardDate" class="input" type="date"></div>
+              <button class="btn btn-primary" type="button" onclick="loadAdminDashboard()">Tải dữ liệu</button><div></div>
+            </div>
+          </div>
+          <div class="admin-grid">
+            <div class="metric"><span>Tổng đăng ký</span><strong id="mTotal">0</strong></div>
+            <div class="metric"><span>Đã xác nhận</span><strong id="mConfirmed">0</strong></div>
+            <div class="metric"><span>Đã đến</span><strong id="mCheckin">0</strong></div>
+            <div class="metric"><span>Hoàn thành</span><strong id="mCompleted">0</strong></div>
+            <div class="metric"><span>Chỗ còn lại</span><strong id="mRemaining">0</strong></div>
+          </div>
+          <div class="admin-card push-card">
+            <div><h3 style="margin:0 0 6px">Thông báo đăng ký mới</h3><p id="pushStatusText" style="margin:0;color:var(--muted);line-height:1.5">Đang kiểm tra khả năng nhận thông báo trên thiết bị này.</p></div>
+            <div class="push-actions"><button id="installPwaBtn" class="btn btn-outline hidden" type="button" onclick="installPwa()">Cài ứng dụng</button><button id="enablePushBtn" class="btn btn-primary" type="button" onclick="enablePushNotifications()">Bật thông báo</button><button id="disablePushBtn" class="btn btn-danger hidden" type="button" onclick="disablePushNotifications()">Tắt thông báo</button></div>
+          </div>
+        </section>
+
+        <section id="adminDonors" class="admin-view">
+          <div class="admin-card">
+            <div class="section-head"><div><h2>Danh sách người hiến</h2><p>Tra cứu hồ sơ người đã đăng ký hiến tiểu cầu.</p></div></div>
+            <div class="filter-row" style="grid-template-columns:minmax(240px,1fr) auto 2fr"><div class="field"><label>Tìm người hiến</label><input id="donorKeyword" class="input" placeholder="Họ tên, số điện thoại, mã người hiến"></div><button class="btn btn-primary" type="button" onclick="loadDonors()">Tìm</button><div></div></div>
+            <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>Mã</th><th>Họ tên</th><th>Điện thoại</th><th>Ngày sinh</th><th>Giới tính</th><th>Tỉnh/TP</th><th>Cập nhật</th></tr></thead><tbody id="donorBody"></tbody></table></div>
           </div>
         </section>
 
@@ -491,56 +555,36 @@
           <div class="admin-card"><h3 style="margin-top:0">Theo ngày</h3><div class="table-wrap"><table><thead><tr><th>Ngày</th><th>Tổng</th><th>Hoàn thành</th><th>Đã hủy</th><th>Không đến</th></tr></thead><tbody id="reportDailyBody"></tbody></table></div></div>
         </section>
 
-        <section id="adminMore" class="admin-view">
+        <section id="adminSchedule" class="admin-view">
           <div class="admin-card">
-            <div class="section-head"><div><h2>Thêm</h2><p>Cấu hình lịch, danh sách người hiến, bộ câu hỏi, tài khoản và dữ liệu hệ thống.</p></div></div>
-            <div class="more-tabs">
-              <button class="more-tab active" data-more="slots" type="button" onclick="showMoreSection('slots')">Cấu hình lịch</button>
-              <button class="more-tab" data-more="donors" type="button" onclick="showMoreSection('donors')">Người hiến</button>
-              <button class="more-tab" data-more="questions" type="button" onclick="showMoreSection('questions')">Câu hỏi</button>
-              <button class="more-tab" data-more="users" type="button" onclick="showMoreSection('users')">Tài khoản</button>
-              <button class="more-tab" data-more="audit" type="button" onclick="showMoreSection('audit')">Nhật ký</button>
-              <button class="more-tab" data-more="notifications" type="button" onclick="showMoreSection('notifications')">Thông báo</button>
+            <div class="section-head"><div><h2>CẤU HÌNH LỊCH HIẾN TIỂU CẦU</h2><p>Cấu hình mới chỉ áp dụng cho đăng ký mới hoặc đổi lịch sau thời điểm lưu; không thay đổi các lịch đã lưu.</p></div></div>
+            <div class="schedule-grid">
+              <div class="field"><label>Từ ngày</label><div class="vi-date-wrap"><input id="scheduleStartDateDisplay" class="input vi-date-display date-vi-input" type="text" readonly placeholder="dd/mm/yyyy"><input id="scheduleStartDate" class="vi-date-native" type="date" aria-label="Từ ngày"><span class="date-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span></div></div>
+              <div class="field"><label>Đến ngày</label><div class="vi-date-wrap"><input id="scheduleEndDateDisplay" class="input vi-date-display date-vi-input" type="text" readonly placeholder="dd/mm/yyyy"><input id="scheduleEndDate" class="vi-date-native" type="date" aria-label="Đến ngày"><span class="date-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span></div></div>
             </div>
-
-            <div id="moreSlots" class="more-section active">
-              <h3>Tạo khung giờ</h3>
-              <div class="grid-3">
-                <div class="field"><label>Từ ngày</label><input id="slotFrom" class="input" type="date"></div>
-                <div class="field"><label>Đến ngày</label><input id="slotTo" class="input" type="date"></div>
-                <div class="field"><label>Số người/khung</label><input id="slotCapacity" class="input" type="number" min="1" value="4"></div>
-                <div class="field"><label>Giờ bắt đầu</label><input id="slotStart" class="input" type="time" value="07:00"></div>
-                <div class="field"><label>Giờ kết thúc</label><input id="slotEnd" class="input" type="time" value="16:00"></div>
-                <div class="field"><label>Số phút/khung</label><input id="slotInterval" class="input" type="number" min="15" step="15" value="60"></div>
-              </div>
-              <label class="consent" style="display:inline-flex"><input id="slotWeekend" type="checkbox"><span>Tạo cả thứ Bảy và Chủ nhật</span></label>
-              <div class="actions"><div></div><button class="btn btn-primary" type="button" onclick="generateSlots()">Tạo khung giờ</button></div>
+            <div style="margin-top:18px"><h3 style="margin-bottom:10px">Ngày không tổ chức hiến</h3><div class="excluded-row"><div class="field"><label>Chọn ngày cần loại trừ</label><div class="vi-date-wrap"><input id="excludedDateInputDisplay" class="input vi-date-display date-vi-input" type="text" readonly placeholder="dd/mm/yyyy"><input id="excludedDateInput" class="vi-date-native" type="date" aria-label="Ngày không tổ chức"><span class="date-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span></div></div><button class="btn btn-outline" type="button" onclick="addExcludedDate()">+ Thêm ngày</button></div><div id="excludedDateList" class="excluded-list"></div></div>
+            <div style="margin-top:22px"><h3 style="margin-bottom:4px">Số người đăng ký tối đa theo khung giờ</h3><p style="margin:0;color:var(--muted);font-size:13px">Nhập 0 nếu tạm thời không nhận đăng ký mới ở khung đó.</p><div id="fixedSlotConfig" class="slot-config-list"></div></div>
+            <div class="actions"><div></div><button class="btn btn-primary" type="button" onclick="saveScheduleConfig()">LƯU LỊCH</button></div>
+          </div>
+          <details class="system-tools">
+            <summary>Công cụ quản trị hệ thống</summary>
+            <div class="system-tools-body"><div class="more-tabs"><button class="more-tab active" data-system="users" type="button" onclick="showSystemSection('users')">Tài khoản</button><button class="more-tab" data-system="audit" type="button" onclick="showSystemSection('audit')">Nhật ký</button><button class="more-tab" data-system="notifications" type="button" onclick="showSystemSection('notifications')">Hàng đợi thông báo</button></div>
+              <div id="systemUsers" class="more-section active"><div class="table-wrap"><table><thead><tr><th>Tài khoản</th><th>Họ tên</th><th>Vai trò</th><th>Trạng thái</th><th>Cập nhật</th></tr></thead><tbody id="userBody"></tbody></table></div></div>
+              <div id="systemAudit" class="more-section"><div class="table-wrap"><table><thead><tr><th>Thời gian</th><th>Hành động</th><th>Đối tượng</th><th>Người thực hiện</th><th>Chi tiết</th></tr></thead><tbody id="auditBody"></tbody></table></div></div>
+              <div id="systemNotifications" class="more-section"><div class="table-wrap"><table><thead><tr><th>Thời gian</th><th>Lịch hẹn</th><th>Kênh</th><th>Mẫu tin</th><th>Người nhận</th><th>Trạng thái</th></tr></thead><tbody id="notificationBody"></tbody></table></div></div>
             </div>
+          </details>
+        </section>
 
-            <div id="moreDonors" class="more-section">
-              <div class="filter-row" style="grid-template-columns:minmax(240px,1fr) auto 2fr"><div class="field"><label>Tìm người hiến</label><input id="donorKeyword" class="input" placeholder="Họ tên, số điện thoại, mã người hiến"></div><button class="btn btn-primary" type="button" onclick="loadDonors()">Tìm</button><div></div></div>
-              <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>Mã</th><th>Họ tên</th><th>Điện thoại</th><th>Ngày sinh</th><th>Giới tính</th><th>Tỉnh/TP</th><th>Cập nhật</th></tr></thead><tbody id="donorBody"></tbody></table></div>
-            </div>
-
-            <div id="moreQuestions" class="more-section"><div class="notice notice-warning" style="margin-bottom:12px">Chỉ bật/tắt câu hỏi sau khi nội dung đã được Viện phê duyệt.</div><div class="table-wrap"><table><thead><tr><th>Mã</th><th>Nhóm</th><th>Nội dung</th><th>Bắt buộc</th><th>Cảnh báo</th><th>Hoạt động</th></tr></thead><tbody id="questionAdminBody"></tbody></table></div></div>
-            <div id="moreUsers" class="more-section"><div class="table-wrap"><table><thead><tr><th>Tài khoản</th><th>Họ tên</th><th>Vai trò</th><th>Trạng thái</th><th>Cập nhật</th></tr></thead><tbody id="userBody"></tbody></table></div></div>
-            <div id="moreAudit" class="more-section"><div class="table-wrap"><table><thead><tr><th>Thời gian</th><th>Hành động</th><th>Đối tượng</th><th>Người thực hiện</th><th>Chi tiết</th></tr></thead><tbody id="auditBody"></tbody></table></div></div>
-            <div id="moreNotifications" class="more-section"><div class="table-wrap"><table><thead><tr><th>Thời gian</th><th>Lịch hẹn</th><th>Kênh</th><th>Mẫu tin</th><th>Người nhận</th><th>Trạng thái</th></tr></thead><tbody id="notificationBody"></tbody></table></div></div>
+        <section id="adminQuestions" class="admin-view">
+          <div class="admin-card">
+            <div class="section-head"><div><h2>Bộ câu hỏi khảo sát</h2><p>Quản lý trạng thái sử dụng bộ câu hỏi sức khỏe đã được Viện phê duyệt.</p></div></div>
+            <div class="notice notice-warning" style="margin-bottom:12px">Chỉ bật/tắt câu hỏi sau khi nội dung đã được Viện phê duyệt.</div>
+            <div class="table-wrap"><table><thead><tr><th>Mã</th><th>Nhóm</th><th>Nội dung</th><th>Bắt buộc</th><th>Cảnh báo</th><th>Hoạt động</th></tr></thead><tbody id="questionAdminBody"></tbody></table></div>
           </div>
         </section>
       </main>
     </div>
-
-    <nav id="adminTabbar" class="bottom-nav admin-nav" aria-label="Điều hướng quản lý">
-      <div class="nav-inner">
-        <button class="nav-btn desktop-menu-btn" type="button" onclick="openAppSwitcher()" aria-label="Mở menu ứng dụng" title="Menu ứng dụng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menu</span></button>
-        <button class="nav-btn active" data-admin-nav="overview" type="button" onclick="showAdminTab('overview')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Tổng quan</span></button>
-        <button class="nav-btn" data-admin-nav="appointments" type="button" onclick="showAdminTab('appointments')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/></svg><span>Lịch hẹn</span></button>
-        <button class="nav-btn" data-admin-nav="checkin" type="button" onclick="showAdminTab('checkin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"/></svg><span>Tiếp nhận</span></button>
-        <button class="nav-btn" data-admin-nav="reports" type="button" onclick="showAdminTab('reports')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg><span>Báo cáo</span></button>
-        <button class="nav-btn" data-admin-nav="more" type="button" onclick="showAdminTab('more')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span>Thêm</span></button>
-      </div>
-    </nav>
   </div>
 
   <div id="appSwitcher" class="app-switcher-backdrop" onclick="handleAppSwitcherBackdrop(event)" aria-hidden="true">
@@ -551,14 +595,20 @@
         <button class="switcher-close" type="button" onclick="closeAppSwitcher()" aria-label="Đóng menu">×</button>
       </div>
       <div class="switcher-body">
-        <button id="switchPublicBtn" class="switcher-app-btn" type="button" onclick="selectPublicApp()">
+        <button id="switchPublicBtn" class="switcher-app-btn switcher-parent" type="button" onclick="selectPublicApp()">
           <span class="switcher-app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-7-11a4 4 0 0 1 7-2.8A4 4 0 0 1 19 10c0 6.6-7 11-7 11Z"/></svg></span>
-          <span class="switcher-app-copy"><b>Đăng ký hiến tiểu cầu</b><span>Trang dành cho người hiến tiểu cầu</span></span>
+          <span class="switcher-app-copy"><b>ĐĂNG KÝ HIẾN TIỂU CẦU</b><span>Trang dành cho người hiến tiểu cầu</span></span>
         </button>
-        <button id="switchAdminBtn" class="switcher-app-btn" type="button" onclick="selectAdminApp()">
+        <button id="switchAdminBtn" class="switcher-app-btn switcher-parent" type="button" onclick="toggleAdminMenu()">
           <span class="switcher-app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
-          <span class="switcher-app-copy"><b>Quản lý Hiến tiểu cầu</b><span>Trang dành cho nhân viên được phân quyền</span></span>
+          <span class="switcher-app-copy"><b>QUẢN LÝ HIẾN TIỂU CẦU</b><span>Trang dành cho nhân viên được phân quyền</span></span>
+          <svg class="switcher-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
         </button>
+        <div id="adminSubmenu" class="switcher-submenu">
+          <button id="menuAdminInfo" class="switcher-child" type="button" onclick="selectAdminSection('info')">Thông tin hiến tiểu cầu</button>
+          <button id="menuAdminSchedule" class="switcher-child" type="button" onclick="selectAdminSection('schedule')">Lịch hiến máu</button>
+          <button id="menuAdminQuestions" class="switcher-child" type="button" onclick="selectAdminSection('questions')">Bộ câu hỏi khảo sát</button>
+        </div>
       </div>
     </aside>
   </div>
@@ -627,7 +677,7 @@
   <script>
     'use strict';
 
-    const FRONTEND_VERSION = '4.2';
+    const FRONTEND_VERSION = '5.3';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
     const STATUS_LABELS = {
       CONFIRMED:'Đã xác nhận',CHECKED_IN:'Đã đến',SCREENING:'Đang sàng lọc',ELIGIBLE:'Đủ điều kiện',IN_PROGRESS:'Đang thực hiện',COMPLETED:'Hoàn thành',DEFERRED:'Tạm hoãn',CANCELLED:'Đã hủy',NO_SHOW:'Không đến'
@@ -640,24 +690,27 @@
       otpSeconds:0,otpTimerId:null,turnstileWidgetId:null,registration:null,myAppointment:null,
       rescheduleSlots:[],rescheduleSelectedSlot:null,reportRows:[],
       adminToken:sessionStorage.getItem('bm_admin_token') || '',
-      adminUser:safeJsonParse(sessionStorage.getItem('bm_admin_user'),null),adminTab:'overview',moreSection:'slots'
+      adminUser:safeJsonParse(sessionStorage.getItem('bm_admin_user'),null),adminTab:'appointments',adminSection:'info',pendingAdminSection:'info',
+      schedule:{startDate:'',endDate:'',excludedDates:[],slots:[]},push:{enabled:false,serverReady:false},deferredInstallPrompt:null,adminMenuExpanded:false
     };
 
     document.addEventListener('DOMContentLoaded',init);
 
     async function init(){
       setupDateInputs();
+      initPwaInstallPrompt();
+      registerServiceWorker();
       document.querySelectorAll('.versionText').forEach(el=>el.textContent=FRONTEND_VERSION);
       const today=localIsoDate(new Date());
-      ['dashboardDate','filterFrom','filterTo','reportFrom','reportTo','slotFrom','slotTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today});
+      ['dashboardDate','filterFrom','filterTo','reportFrom','reportTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today});
       document.getElementById('birthDate').max=today;
       document.addEventListener('keydown',event=>{if(event.key==='Escape')closeAppSwitcher()});
 
       setLoading(true,'Đang tải cấu hình...');
       try{
         const data=await api('public_bootstrap',{});
-        state.app=data.app || {};state.questions=data.questions || [];state.guides=data.guides || [];state.serverDate=data.serverDate || today;
-        applyBranding();configurePublicDates();renderQuestions();renderGuides();initTurnstile();
+        state.app=data.app || {};state.schedule=data.schedule || state.schedule;state.push=data.push || state.push;state.questions=data.questions || [];state.guides=data.guides || [];state.serverDate=data.serverDate || today;
+        applyBranding();configurePublicDates();renderQuestions();renderGuides();initTurnstile();handleLaunchRoute();
       }catch(error){showToast(error.message || 'Không tải được cấu hình ứng dụng.')}finally{setLoading(false)}
     }
 
@@ -683,17 +736,16 @@
     }
 
     function configurePublicDates(){
-      const min=state.serverDate || localIsoDate(new Date());
-      const maxDate=new Date(min+'T12:00:00');
-      maxDate.setDate(maxDate.getDate()+Math.max(1,Number(state.app.maxBookingDays || 30)));
-      const max=localIsoDate(maxDate);
-      ['registerDate','rescheduleDate'].forEach(id=>{const input=document.getElementById(id);input.min=min;input.max=max;if(!input.value)input.value=min;syncDateDisplay(input)});
+      const today=state.serverDate || localIsoDate(new Date());
+      const min=(state.schedule.startDate && state.schedule.startDate>today)?state.schedule.startDate:today;
+      const max=state.schedule.endDate || localIsoDate(new Date(new Date(today+'T12:00:00').getTime()+Math.max(1,Number(state.app.maxBookingDays || 30))*86400000));
+      ['registerDate','rescheduleDate'].forEach(id=>{const input=document.getElementById(id);input.min=min;input.max=max;if(!input.value || input.value<min || input.value>max)input.value=min;syncDateDisplay(input)});
     }
 
     function setupDateInputs(){
-      ['registerDate','birthDate','rescheduleDate'].forEach(id=>{
+      ['registerDate','birthDate','rescheduleDate','scheduleStartDate','scheduleEndDate','excludedDateInput'].forEach(id=>{
         const input=document.getElementById(id);if(!input)return;
-        input.addEventListener('change',()=>{syncDateDisplay(input);if(id==='rescheduleDate' && document.getElementById('rescheduleModal').classList.contains('show'))loadRescheduleSlots()});
+        input.addEventListener('change',()=>{syncDateDisplay(input);if(id==='rescheduleDate' && document.getElementById('rescheduleModal').classList.contains('show'))loadRescheduleSlots();if(id==='scheduleStartDate'||id==='scheduleEndDate')syncExcludedDateBounds()});
         input.addEventListener('input',()=>syncDateDisplay(input));
       });
     }
@@ -708,12 +760,23 @@
       const publicVisible=!document.getElementById('publicApp').classList.contains('hidden');
       document.getElementById('switchPublicBtn').classList.toggle('active',publicVisible);
       document.getElementById('switchAdminBtn').classList.toggle('active',!publicVisible);
+      state.adminMenuExpanded=!publicVisible || state.adminMenuExpanded;
+      updateAdminDrawer();
       switcher.classList.add('show');switcher.setAttribute('aria-hidden','false');
     }
     function closeAppSwitcher(){const switcher=document.getElementById('appSwitcher');if(!switcher)return;switcher.classList.remove('show');switcher.setAttribute('aria-hidden','true')}
     function handleAppSwitcherBackdrop(event){if(event.target===event.currentTarget)closeAppSwitcher()}
+    function toggleAdminMenu(){state.adminMenuExpanded=!state.adminMenuExpanded;updateAdminDrawer()}
+    function updateAdminDrawer(){
+      document.getElementById('switchAdminBtn').classList.toggle('expanded',state.adminMenuExpanded);
+      document.getElementById('adminSubmenu').classList.toggle('expanded',state.adminMenuExpanded);
+      ['info','schedule','questions'].forEach(section=>document.getElementById(`menuAdmin${capitalize(section)}`)?.classList.toggle('active',state.adminSection===section && !document.getElementById('adminApp').classList.contains('hidden')));
+      const role=state.adminUser?.role;const canConfigure=['SUPER_ADMIN','ADMIN'].includes(role);const canQuestions=['SUPER_ADMIN','ADMIN','SCREENING'].includes(role);
+      document.getElementById('menuAdminSchedule').classList.toggle('hidden',!!role && !canConfigure);
+      document.getElementById('menuAdminQuestions').classList.toggle('hidden',!!role && !canQuestions);
+    }
     function selectPublicApp(){closeAppSwitcher();showPublicApp();if(!state.flowActive)navigatePublic('home')}
-    function selectAdminApp(){closeAppSwitcher();openAdminLogin()}
+    function selectAdminSection(section){state.pendingAdminSection=section;if(!state.adminToken || !state.adminUser){closeAppSwitcher();openAdminLogin();return}closeAppSwitcher();showAdminApp(section)}
 
     function navigatePublic(view){
       if(state.flowActive)return;
@@ -881,24 +944,39 @@
       const wrap=document.getElementById('guideGrid');const guides=state.guides.length?state.guides:[{title:'Hướng dẫn',items:['Vui lòng liên hệ đơn vị tiếp nhận để được hướng dẫn.']}];wrap.innerHTML=guides.map(g=>`<article class="guide-card"><h3>${escapeHtml(g.title || '')}</h3><ul>${(g.items || []).map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul></article>`).join('');
     }
 
-    function openAdminLogin(){if(state.adminToken && state.adminUser){showAdminApp();return}openModal('adminLoginModal');setTimeout(()=>document.getElementById('adminUsername').focus(),100)}
+    function openAdminLogin(){if(state.adminToken && state.adminUser){showAdminApp(state.pendingAdminSection || 'info');return}openModal('adminLoginModal');setTimeout(()=>document.getElementById('adminUsername').focus(),100)}
     async function loginAdmin(){
       const username=document.getElementById('adminUsername').value.trim();const password=document.getElementById('adminPassword').value;if(!username || !password)return showToast('Vui lòng nhập tài khoản và mật khẩu.');
-      setLoading(true,'Đang đăng nhập...');try{const data=await api('account_login',{username,password});state.adminToken=data.token;state.adminUser=data.user;sessionStorage.setItem('bm_admin_token',data.token);sessionStorage.setItem('bm_admin_user',JSON.stringify(data.user));document.getElementById('adminPassword').value='';closeModal('adminLoginModal');showAdminApp();await loadAdminDashboard()}catch(error){showToast(error.message)}finally{setLoading(false)}
+      setLoading(true,'Đang đăng nhập...');try{const data=await api('account_login',{username,password});state.adminToken=data.token;state.adminUser=data.user;sessionStorage.setItem('bm_admin_token',data.token);sessionStorage.setItem('bm_admin_user',JSON.stringify(data.user));document.getElementById('adminPassword').value='';closeModal('adminLoginModal');showAdminApp(state.pendingAdminSection || 'info')}catch(error){showToast(error.message)}finally{setLoading(false)}
     }
     async function logoutAdmin(){try{if(state.adminToken)await api('account_logout',{token:state.adminToken})}catch(error){}state.adminToken='';state.adminUser=null;sessionStorage.removeItem('bm_admin_token');sessionStorage.removeItem('bm_admin_user');showPublicApp()}
 
-    function showAdminApp(){
-      closeAppSwitcher();
-      document.getElementById('publicApp').classList.add('hidden');document.getElementById('adminApp').classList.remove('hidden');document.getElementById('adminUserName').innerHTML=`<b>${escapeHtml(state.adminUser?.fullName || '')}</b><br>${escapeHtml(state.adminUser?.role || '')}`;
-      const role=state.adminUser?.role;const canCheckin=['SUPER_ADMIN','ADMIN','RECEPTION','SCREENING'].includes(role);const canReport=['SUPER_ADMIN','ADMIN','REPORT_VIEWER'].includes(role);const canMore=['SUPER_ADMIN','ADMIN'].includes(role);
-      document.querySelector('[data-admin-nav="checkin"]').classList.toggle('hidden',!canCheckin);document.querySelector('[data-admin-nav="reports"]').classList.toggle('hidden',!canReport);document.querySelector('[data-admin-nav="more"]').classList.toggle('hidden',!canMore);showAdminTab('overview');document.getElementById('adminScroll').scrollTo(0,0)
+    function showAdminApp(section='info'){
+      closeAppSwitcher();document.getElementById('publicApp').classList.add('hidden');document.getElementById('adminApp').classList.remove('hidden');document.getElementById('adminUserName').innerHTML=`<b>${escapeHtml(state.adminUser?.fullName || '')}</b><br>${escapeHtml(state.adminUser?.role || '')}`;
+      applyAdminPermissions();showAdminSection(section);updateAdminDrawer();document.getElementById('adminScroll').scrollTo(0,0)
     }
     function showPublicApp(){closeAppSwitcher();document.getElementById('adminApp').classList.add('hidden');document.getElementById('publicApp').classList.remove('hidden');document.getElementById('publicScroll').scrollTo(0,0)}
-
+    function applyAdminPermissions(){
+      const role=state.adminUser?.role;const canCheckin=['SUPER_ADMIN','ADMIN','RECEPTION','SCREENING'].includes(role);const canReport=['SUPER_ADMIN','ADMIN','REPORT_VIEWER'].includes(role);const canDonors=['SUPER_ADMIN','ADMIN','RECEPTION','SCREENING'].includes(role);
+      document.querySelector('[data-admin-nav="checkin"]').classList.toggle('hidden',!canCheckin);document.querySelector('[data-admin-nav="reports"]').classList.toggle('hidden',!canReport);document.querySelector('[data-admin-nav="donors"]').classList.toggle('hidden',!canDonors)
+    }
+    async function showAdminSection(section){
+      const role=state.adminUser?.role;const canConfigure=['SUPER_ADMIN','ADMIN'].includes(role);const canQuestions=['SUPER_ADMIN','ADMIN','SCREENING'].includes(role);
+      if(section==='schedule' && !canConfigure){showToast('Bạn không có quyền cấu hình lịch.');section='info'}
+      if(section==='questions' && !canQuestions){showToast('Bạn không có quyền xem bộ câu hỏi.');section='info'}
+      state.adminSection=section;state.pendingAdminSection=section;
+      document.getElementById('adminInfoTabs').classList.toggle('hidden',section!=='info');document.getElementById('adminSectionTitle').classList.toggle('hidden',section==='info');
+      if(section==='info'){
+        const preferred=isAdminTabAllowed(state.adminTab)?state.adminTab:(role==='REPORT_VIEWER'?'overview':'appointments');await showAdminTab(preferred)
+      }else{
+        document.querySelectorAll('.admin-view').forEach(el=>el.classList.remove('active'));document.getElementById(section==='schedule'?'adminSchedule':'adminQuestions').classList.add('active');document.getElementById('adminSectionTitle').textContent=section==='schedule'?'Lịch hiến máu':'Bộ câu hỏi khảo sát';document.getElementById('adminScroll').scrollTo({top:0,behavior:'smooth'});if(section==='schedule')await loadScheduleConfig();else await loadAdminQuestions()
+      }
+      updateAdminDrawer()
+    }
+    function isAdminTabAllowed(tab){const btn=document.querySelector(`[data-admin-nav="${tab}"]`);return !!btn && !btn.classList.contains('hidden')}
     async function showAdminTab(tab){
-      state.adminTab=tab;document.querySelectorAll('.admin-view').forEach(el=>el.classList.toggle('active',el.id===`admin${capitalize(tab)}`));document.querySelectorAll('[data-admin-nav]').forEach(btn=>btn.classList.toggle('active',btn.dataset.adminNav===tab));document.getElementById('adminScroll').scrollTo({top:0,behavior:'smooth'});
-      if(tab==='overview')await loadAdminDashboard();if(tab==='appointments')await loadAppointments();if(tab==='reports')await loadReport();if(tab==='more')await showMoreSection(state.moreSection || 'slots');if(tab==='checkin')setTimeout(()=>document.getElementById('checkinInput').focus(),100)
+      if(!isAdminTabAllowed(tab))return;state.adminSection='info';state.adminTab=tab;document.querySelectorAll('.admin-view').forEach(el=>el.classList.toggle('active',el.id===`admin${capitalize(tab)}`));document.querySelectorAll('[data-admin-nav]').forEach(btn=>btn.classList.toggle('active',btn.dataset.adminNav===tab));document.getElementById('adminScroll').scrollTo({top:0,behavior:'smooth'});
+      if(tab==='overview'){await loadAdminDashboard();await refreshPushStatus()}if(tab==='appointments')await loadAppointments();if(tab==='reports')await loadReport();if(tab==='donors')await loadDonors();if(tab==='checkin')setTimeout(()=>document.getElementById('checkinInput').focus(),100)
     }
 
     async function loadAdminDashboard(){
@@ -923,11 +1001,41 @@
     }
     function exportReportCsv(){if(!state.reportRows.length)return showToast('Chưa có dữ liệu để xuất.');const headers=['Mã đăng ký','Họ và tên','Số điện thoại','Ngày','Giờ bắt đầu','Giờ kết thúc','Trạng thái','Cảnh báo','Thời điểm tạo'];const rows=state.reportRows.map(r=>[r.code,r.fullName,r.phone,r.date,r.startTime,r.endTime,statusLabel(r.status),riskLabel(r.riskLevel),r.createdAt]);const csv='\uFEFF'+[headers,...rows].map(row=>row.map(csvCell).join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Bao_cao_hien_tieu_cau_${document.getElementById('reportFrom').value}_${document.getElementById('reportTo').value}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 
-    async function showMoreSection(section){
-      state.moreSection=section;document.querySelectorAll('.more-section').forEach(el=>el.classList.toggle('active',el.id===`more${capitalize(section)}`));document.querySelectorAll('[data-more]').forEach(btn=>btn.classList.toggle('active',btn.dataset.more===section));
-      if(section==='donors')await loadDonors();if(section==='questions')await loadAdminQuestions();if(section==='users')await loadUsers();if(section==='audit')await loadSystemData('AUDIT');if(section==='notifications')await loadSystemData('NOTIFICATION')
+    const FIXED_SLOT_UI=[
+      {id:'SLOT_0700_0900',startTime:'07:00',endTime:'09:00'},
+      {id:'SLOT_0900_1100',startTime:'09:00',endTime:'11:00'},
+      {id:'SLOT_1100_1300',startTime:'11:00',endTime:'13:00'},
+      {id:'SLOT_1300_1500',startTime:'13:00',endTime:'15:00'},
+      {id:'SLOT_1500_1600',startTime:'15:00',endTime:'16:00'},
+      {id:'SLOT_1600_1700',startTime:'16:00',endTime:'17:00'}
+    ];
+    async function loadScheduleConfig(){
+      setLoading(true,'Đang tải cấu hình lịch...');try{const data=await api('schedule_getConfig',{token:state.adminToken});state.schedule=data.schedule || state.schedule;document.getElementById('scheduleStartDate').value=state.schedule.startDate || '';document.getElementById('scheduleEndDate').value=state.schedule.endDate || '';syncDateDisplay(document.getElementById('scheduleStartDate'));syncDateDisplay(document.getElementById('scheduleEndDate'));state.schedule.excludedDates=Array.isArray(state.schedule.excludedDates)?state.schedule.excludedDates:[];renderExcludedDates();renderFixedSlotConfig();syncExcludedDateBounds()}catch(error){handleAdminError(error)}finally{setLoading(false)}
     }
-    async function generateSlots(){setLoading(true,'Đang tạo khung giờ...');try{const data=await api('admin_generateSlots',{token:state.adminToken,fromDate:document.getElementById('slotFrom').value,toDate:document.getElementById('slotTo').value,capacity:Number(document.getElementById('slotCapacity').value || 4),startTime:document.getElementById('slotStart').value,endTime:document.getElementById('slotEnd').value,intervalMinutes:Number(document.getElementById('slotInterval').value || 60),includeWeekends:document.getElementById('slotWeekend').checked});showToast(`Đã tạo ${data.created || 0} khung giờ mới.`)}catch(error){handleAdminError(error)}finally{setLoading(false)}}
+    function renderFixedSlotConfig(){const map=Object.fromEntries((state.schedule.slots || []).map(slot=>[slot.id,slot]));document.getElementById('fixedSlotConfig').innerHTML=FIXED_SLOT_UI.map(slot=>`<div class="slot-config-row"><b>${slot.startTime}–${slot.endTime}</b><div class="field"><label for="capacity_${slot.id}">Số người/khung</label><input id="capacity_${slot.id}" class="input" type="number" min="0" max="100" step="1" value="${Number(map[slot.id]?.capacity ?? 4)}"></div></div>`).join('')}
+    function syncExcludedDateBounds(){const input=document.getElementById('excludedDateInput');input.min=document.getElementById('scheduleStartDate').value || '';input.max=document.getElementById('scheduleEndDate').value || '';if(input.value && (input.value<input.min || input.value>input.max)){input.value='';syncDateDisplay(input)}}
+    function addExcludedDate(){syncExcludedDateBounds();const date=document.getElementById('excludedDateInput').value;const start=document.getElementById('scheduleStartDate').value;const end=document.getElementById('scheduleEndDate').value;if(!date)return showToast('Vui lòng chọn ngày không tổ chức.');if(!start || !end || date<start || date>end)return showToast('Ngày không tổ chức phải nằm trong khoảng từ ngày đến ngày.');if(state.schedule.excludedDates.includes(date))return showToast('Ngày này đã có trong danh sách.');state.schedule.excludedDates.push(date);state.schedule.excludedDates.sort();renderExcludedDates();document.getElementById('excludedDateInput').value='';syncDateDisplay(document.getElementById('excludedDateInput'))}
+    function removeExcludedDate(date){state.schedule.excludedDates=state.schedule.excludedDates.filter(item=>item!==date);renderExcludedDates()}
+    function renderExcludedDates(){const wrap=document.getElementById('excludedDateList');wrap.innerHTML=state.schedule.excludedDates.length?state.schedule.excludedDates.map(date=>`<span class="excluded-chip">${formatDateVi(date)}<button type="button" onclick="removeExcludedDate('${escapeAttr(date)}')" aria-label="Bỏ ngày ${formatDateVi(date)}">×</button></span>`).join(''):'<span style="font-size:13px;color:var(--muted)">Không có ngày loại trừ.</span>'}
+    async function saveScheduleConfig(){
+      const startDate=document.getElementById('scheduleStartDate').value;const endDate=document.getElementById('scheduleEndDate').value;if(!startDate || !endDate || startDate>endDate)return showToast('Khoảng ngày tổ chức không hợp lệ.');const slots=FIXED_SLOT_UI.map(slot=>({...slot,capacity:Number(document.getElementById(`capacity_${slot.id}`).value)}));if(slots.some(slot=>!Number.isInteger(slot.capacity)||slot.capacity<0||slot.capacity>100))return showToast('Số người mỗi khung phải là số nguyên từ 0 đến 100.');const excludedDates=state.schedule.excludedDates.filter(date=>date>=startDate && date<=endDate);setLoading(true,'Đang lưu cấu hình lịch...');try{const data=await api('schedule_saveConfig',{token:state.adminToken,payload:{startDate,endDate,excludedDates,slots}});state.schedule=data.schedule;renderExcludedDates();renderFixedSlotConfig();configurePublicDates();showToast('Đã lưu lịch. Cấu hình mới chỉ áp dụng cho đăng ký mới và đổi lịch mới.')}catch(error){handleAdminError(error)}finally{setLoading(false)}
+    }
+    async function showSystemSection(section){document.querySelectorAll('[id^="system"]').forEach(el=>{if(el.classList.contains('more-section'))el.classList.toggle('active',el.id===`system${capitalize(section)}`)});document.querySelectorAll('[data-system]').forEach(btn=>btn.classList.toggle('active',btn.dataset.system===section));if(section==='users')await loadUsers();if(section==='audit')await loadSystemData('AUDIT');if(section==='notifications')await loadSystemData('NOTIFICATION')}
+
+    function getPushDeviceId(){let id=localStorage.getItem('bm_push_device_id');if(!id){id='DEV_'+(crypto.randomUUID?crypto.randomUUID():`${Date.now()}_${Math.random().toString(36).slice(2)}`);localStorage.setItem('bm_push_device_id',id)}return id}
+    async function registerServiceWorker(){if(!('serviceWorker' in navigator))return null;try{return await navigator.serviceWorker.register('./service-worker.js',{scope:'./'})}catch(error){console.warn('Không đăng ký được service worker',error);return null}}
+    function initPwaInstallPrompt(){window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();state.deferredInstallPrompt=event;document.getElementById('installPwaBtn')?.classList.remove('hidden')});window.addEventListener('appinstalled',()=>{state.deferredInstallPrompt=null;document.getElementById('installPwaBtn')?.classList.add('hidden')})}
+    async function installPwa(){if(state.deferredInstallPrompt){state.deferredInstallPrompt.prompt();await state.deferredInstallPrompt.userChoice;state.deferredInstallPrompt=null;document.getElementById('installPwaBtn').classList.add('hidden');return}showToast('Trên iPhone/iPad: mở menu Chia sẻ và chọn “Thêm vào Màn hình chính”.')}
+    async function refreshPushStatus(){
+      const text=document.getElementById('pushStatusText');if(!text)return;const supported='Notification' in window && 'serviceWorker' in navigator;if(!supported){text.textContent='Trình duyệt này không hỗ trợ thông báo nền.';document.getElementById('enablePushBtn').classList.add('hidden');return}if(!state.push?.enabled){text.textContent='Chưa cấu hình Firebase Push trên backend.';document.getElementById('enablePushBtn').classList.remove('hidden');document.getElementById('enablePushBtn').disabled=true;return}document.getElementById('enablePushBtn').disabled=false;try{const status=await api('push_getStatus',{token:state.adminToken,deviceId:getPushDeviceId()});const registered=status.registered && Notification.permission==='granted';text.textContent=registered?'Thiết bị này đang nhận thông báo tức thời khi có lượt đăng ký mới.':(Notification.permission==='denied'?'Quyền thông báo đang bị chặn trong cài đặt trình duyệt/điện thoại.':'Thiết bị này chưa bật nhận thông báo đăng ký mới.');document.getElementById('enablePushBtn').classList.toggle('hidden',registered);document.getElementById('disablePushBtn').classList.toggle('hidden',!registered)}catch(error){text.textContent=error.message}
+    }
+    async function getFirebaseMessagingModules(){const appMod=await import('https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js');const msgMod=await import('https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging.js');return {...appMod,...msgMod}}
+    async function enablePushNotifications(){
+      if(!state.push?.enabled)return showToast('Firebase Push chưa được cấu hình.');if(!('Notification' in window) || !('serviceWorker' in navigator))return showToast('Thiết bị này không hỗ trợ thông báo nền.');setLoading(true,'Đang bật thông báo...');try{const permission=await Notification.requestPermission();if(permission!=='granted')throw new Error('Bạn chưa cấp quyền hiển thị thông báo.');const reg=await navigator.serviceWorker.ready;const firebase=await getFirebaseMessagingModules();const app=firebase.getApps().length?firebase.getApp():firebase.initializeApp(state.push.firebaseConfig);const messaging=firebase.getMessaging(app);const fcmToken=await firebase.getToken(messaging,{vapidKey:state.push.vapidKey,serviceWorkerRegistration:reg});if(!fcmToken)throw new Error('Không tạo được mã nhận thông báo.');await api('push_registerDevice',{token:state.adminToken,deviceId:getPushDeviceId(),fcmToken,userAgent:navigator.userAgent,platform:navigator.userAgentData?.platform || navigator.platform || ''});firebase.onMessage(messaging,payload=>showToast(payload?.data?.body || 'Có lượt đăng ký hiến tiểu cầu mới.'));showToast('Đã bật thông báo đăng ký mới.');await refreshPushStatus()}catch(error){showToast(error.message)}finally{setLoading(false)}
+    }
+    async function disablePushNotifications(){setLoading(true,'Đang tắt thông báo...');try{await api('push_unregisterDevice',{token:state.adminToken,deviceId:getPushDeviceId()});showToast('Đã tắt thông báo trên thiết bị này.');await refreshPushStatus()}catch(error){handleAdminError(error)}finally{setLoading(false)}}
+    function handleLaunchRoute(){const params=new URLSearchParams(location.search);if(params.get('admin')==='1'){state.pendingAdminSection='info';state.adminTab=params.get('section') || 'appointments';setTimeout(()=>openAdminLogin(),250)}}
+
     async function loadDonors(){setLoading(true,'Đang tải danh sách người hiến...');try{const data=await api('admin_listDonors',{token:state.adminToken,keyword:document.getElementById('donorKeyword').value.trim()});const body=document.getElementById('donorBody');body.innerHTML=(data.items || []).length?data.items.map(item=>`<tr><td>${escapeHtml(item.donorId)}</td><td><b>${escapeHtml(item.fullName)}</b></td><td>${escapeHtml(item.phone)}</td><td>${formatDateVi(item.dateOfBirth)}</td><td>${escapeHtml(GENDER_LABELS[item.gender] || item.gender || '')}</td><td>${escapeHtml(item.province || '')}</td><td>${escapeHtml(formatDateTimeVi(item.updatedAt))}</td></tr>`).join(''):'<tr><td colspan="7" style="text-align:center">Không có dữ liệu.</td></tr>'}catch(error){handleAdminError(error)}finally{setLoading(false)}}
     async function loadAdminQuestions(){setLoading(true,'Đang tải bộ câu hỏi...');try{const data=await api('admin_listQuestions',{token:state.adminToken});const canEdit=['SUPER_ADMIN','ADMIN'].includes(state.adminUser?.role);const body=document.getElementById('questionAdminBody');body.innerHTML=(data.items || []).map(item=>`<tr><td>${escapeHtml(item.id)}</td><td>${escapeHtml(item.group)}</td><td style="min-width:320px">${escapeHtml(item.text)}</td><td>${item.required?'Có':'Không'}</td><td>${escapeHtml(riskLabel(item.flagLevel))}</td><td>${canEdit?`<button class="btn btn-sm ${item.active?'btn-danger':'btn-primary'}" type="button" onclick="toggleQuestion('${escapeAttr(item.id)}',${!item.active})">${item.active?'Tắt':'Bật'}</button>`:(item.active?'Đang bật':'Đã tắt')}</td></tr>`).join('')}catch(error){handleAdminError(error)}finally{setLoading(false)}}
     async function toggleQuestion(questionId,active){setLoading(true,'Đang cập nhật câu hỏi...');try{await api('admin_updateQuestion',{token:state.adminToken,questionId,active});await loadAdminQuestions();showToast('Đã cập nhật trạng thái câu hỏi.')}catch(error){handleAdminError(error)}finally{setLoading(false)}}
