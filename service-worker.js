@@ -1,5 +1,5 @@
-/* Hiến tiểu cầu Bạch Mai - Service Worker 5.3 */
-const CACHE_NAME = 'hien-tieu-cau-bm-v5-3';
+/* Hiến tiểu cầu Bạch Mai - Service Worker 10.7 */
+const CACHE_NAME = 'hien-tieu-cau-bm-v10-7';
 const APP_SHELL = ['./', './index.html', './manifest.json', './icon-192-v5.3.png', './icon-512-v5.3.png', './apple-touch-icon-v5.3.png'];
 const API_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
 
@@ -28,8 +28,8 @@ let messagingReadyPromise;
 async function ensureMessaging() {
   if (messagingReadyPromise) return messagingReadyPromise;
   messagingReadyPromise = (async () => {
-    importScripts('https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js');
-    importScripts('https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging-compat.js');
+    importScripts('https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js');
+    importScripts('https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging-compat.js');
     const response = await fetch(API_URL, {method:'POST', body:JSON.stringify({action:'public_bootstrap',data:{}})});
     const result = await response.json();
     const push = result && result.ok && result.data ? result.data.push : null;
@@ -37,8 +37,9 @@ async function ensureMessaging() {
     if (!firebase.apps.length) firebase.initializeApp(push.firebaseConfig);
     const messaging = firebase.messaging();
     messaging.onBackgroundMessage(payload => {
-      const data = payload.data || {};
-      self.registration.showNotification(data.title || 'Hiến tiểu cầu Bạch Mai', {
+      if (payload && payload.notification) return;
+      const data = payload && payload.data || {};
+      return self.registration.showNotification(data.title || 'Hiến tiểu cầu Bạch Mai', {
         body: data.body || 'Có thông tin đăng ký mới.',
         icon: './icon-192-v5.3.png',
         badge: './icon-192-v5.3.png',
