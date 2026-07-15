@@ -878,7 +878,7 @@
   <script>
     'use strict';
 
-    const FRONTEND_VERSION = '10.7';
+    const FRONTEND_VERSION = '11.7';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
     const STATUS_LABELS = {
       CONFIRMED:'Đã xác nhận',CHECKED_IN:'Đã đến',SCREENING:'Đang sàng lọc',ELIGIBLE:'Đủ điều kiện',IN_PROGRESS:'Đang thực hiện',COMPLETED:'Hoàn thành',DEFERRED:'Tạm hoãn',CANCELLED:'Đã hủy',NO_SHOW:'Không đến'
@@ -1273,7 +1273,7 @@
     async function showSystemSection(section){document.querySelectorAll('[id^="system"]').forEach(el=>{if(el.classList.contains('more-section'))el.classList.toggle('active',el.id===`system${capitalize(section)}`)});document.querySelectorAll('[data-system]').forEach(btn=>btn.classList.toggle('active',btn.dataset.system===section));if(section==='users')await loadUsers();if(section==='audit')await loadSystemData('AUDIT');if(section==='notifications')await loadSystemData('NOTIFICATION')}
 
     function getPushDeviceId(){let id=localStorage.getItem('bm_push_device_id');if(!id){id='DEV_'+(crypto.randomUUID?crypto.randomUUID():`${Date.now()}_${Math.random().toString(36).slice(2)}`);localStorage.setItem('bm_push_device_id',id)}return id}
-    async function registerServiceWorker(){if(!('serviceWorker' in navigator))return null;try{const reg=await navigator.serviceWorker.register('./service-worker.js',{scope:'./',updateViaCache:'none'});try{await reg.update()}catch(error){}return reg}catch(error){console.warn('Không đăng ký được service worker',error);return null}}
+    async function registerServiceWorker(){if(!('serviceWorker' in navigator))return null;try{const reg=await navigator.serviceWorker.register('./service-worker.js?v=11.7',{scope:'./',updateViaCache:'none'});if(!window.__bmPushMessageBound){window.__bmPushMessageBound=true;navigator.serviceWorker.addEventListener('message',event=>{const message=event.data;if(!message || message.type!=='BM_PUSH_MESSAGE')return;const title=message.payload?.notification?.title || message.payload?.data?.title || 'Hiến tiểu cầu Bạch Mai';const body=message.payload?.notification?.body || message.payload?.data?.body || 'Có thông tin đăng ký mới.';showToast(title+': '+body)});}try{await reg.update()}catch(error){}return reg}catch(error){console.warn('Không đăng ký được service worker',error);return null}}
     function initPwaInstallPrompt(){window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();state.deferredInstallPrompt=event;document.getElementById('installPwaBtn')?.classList.remove('hidden')});window.addEventListener('appinstalled',()=>{state.deferredInstallPrompt=null;document.getElementById('installPwaBtn')?.classList.add('hidden')})}
     async function installPwa(){if(state.deferredInstallPrompt){state.deferredInstallPrompt.prompt();await state.deferredInstallPrompt.userChoice;state.deferredInstallPrompt=null;document.getElementById('installPwaBtn').classList.add('hidden');return}showToast('Trên iPhone/iPad: mở menu Chia sẻ và chọn “Thêm vào Màn hình chính”.')}
     async function refreshPushStatus(){
