@@ -108,8 +108,10 @@
     .textarea{height:auto;min-height:96px;padding:12px;resize:vertical}
     .input:focus,.select:focus,.textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(11,107,58,.12)}
     .vi-date-wrap{position:relative;height:49px}
-    .vi-date-display{position:absolute;inset:0;z-index:1;padding-right:44px}
-    .vi-date-native{position:absolute;inset:0;z-index:2;width:100%;height:100%;opacity:0;cursor:pointer}
+    .vi-date-display{position:absolute;inset:0;z-index:1;padding-right:44px;pointer-events:none}
+    .vi-date-native{position:absolute;inset:0;z-index:3;width:100%;height:100%;opacity:0;cursor:pointer}
+    .vi-date-wrap.date-disabled{opacity:.68}
+    .vi-date-wrap.date-disabled .vi-date-native{cursor:not-allowed}
     .date-icon{position:absolute;right:13px;top:50%;transform:translateY(-50%);z-index:1;color:var(--primary);pointer-events:none}
     .date-icon svg{width:20px;height:20px}
     .btn{min-height:47px;border-radius:12px;border:0;padding:0 17px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
@@ -361,11 +363,12 @@
               <div class="grid-2">
                 <div class="field">
                   <label for="registerDate">Ngày dự kiến hiến *</label>
-                  <div class="vi-date-wrap">
+                  <div id="registerDateWrap" class="vi-date-wrap">
                     <input id="registerDateDisplay" class="input vi-date-display date-vi-input" type="text" readonly placeholder="dd/mm/yyyy">
                     <input id="registerDate" class="vi-date-native" type="date" aria-label="Ngày dự kiến hiến">
                     <span class="date-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span>
                   </div>
+                  <small id="registerDateNotice"></small>
                   <small>Khung giờ đã qua hoặc quá gần thời điểm hiện tại sẽ không thể chọn.</small>
                 </div>
                 <div class="field">
@@ -677,7 +680,7 @@
   <script>
     'use strict';
 
-    const FRONTEND_VERSION = '5.3';
+    const FRONTEND_VERSION = '6.5';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
     const STATUS_LABELS = {
       CONFIRMED:'Đã xác nhận',CHECKED_IN:'Đã đến',SCREENING:'Đang sàng lọc',ELIGIBLE:'Đủ điều kiện',IN_PROGRESS:'Đang thực hiện',COMPLETED:'Hoàn thành',DEFERRED:'Tạm hoãn',CANCELLED:'Đã hủy',NO_SHOW:'Không đến'
@@ -737,14 +740,37 @@
 
     function configurePublicDates(){
       const today=state.serverDate || localIsoDate(new Date());
-      const min=(state.schedule.startDate && state.schedule.startDate>today)?state.schedule.startDate:today;
-      const max=state.schedule.endDate || localIsoDate(new Date(new Date(today+'T12:00:00').getTime()+Math.max(1,Number(state.app.maxBookingDays || 30))*86400000));
-      ['registerDate','rescheduleDate'].forEach(id=>{const input=document.getElementById(id);input.min=min;input.max=max;if(!input.value || input.value<min || input.value>max)input.value=min;syncDateDisplay(input)});
+      const scheduleStart=String(state.schedule.startDate || '');
+      const scheduleEnd=String(state.schedule.endDate || '');
+      const excluded=new Set(Array.isArray(state.schedule.excludedDates)?state.schedule.excludedDates:[]);
+      const min=(scheduleStart && scheduleStart>today)?scheduleStart:today;
+      const fallbackMax=localIsoDate(new Date(new Date(today+'T12:00:00').getTime()+Math.max(1,Number(state.app.maxBookingDays || 30))*86400000));
+      const max=scheduleEnd || fallbackMax;
+      const scheduleUsable=/^\d{4}-\d{2}-\d{2}$/.test(min) && /^\d{4}-\d{2}-\d{2}$/.test(max) && min<=max;
+      let firstAvailable='';
+      if(scheduleUsable){
+        let cursor=new Date(min+'T12:00:00');const end=new Date(max+'T12:00:00');
+        while(cursor<=end){const iso=localIsoDate(cursor);if(!excluded.has(iso)){firstAvailable=iso;break}cursor.setDate(cursor.getDate()+1)}
+      }
+      ['registerDate','rescheduleDate'].forEach(id=>{
+        const input=document.getElementById(id);if(!input)return;
+        input.min=scheduleUsable?min:'';input.max=scheduleUsable?max:'';input.disabled=!firstAvailable;
+        const wrap=input.closest('.vi-date-wrap');if(wrap)wrap.classList.toggle('date-disabled',!firstAvailable);
+        if(!firstAvailable){input.value=''}else if(!input.value || input.value<min || input.value>max || excluded.has(input.value)){input.value=firstAvailable}
+        syncDateDisplay(input);
+      });
+      const notice=document.getElementById('registerDateNotice');
+      if(notice){
+        notice.textContent=firstAvailable?`Nhận đăng ký từ ${formatDateVi(min)} đến ${formatDateVi(max)}.`:'Hiện chưa có ngày tổ chức hiến tiểu cầu khả dụng. Vui lòng liên hệ đơn vị tiếp nhận hoặc nhân viên quản trị cập nhật Lịch hiến máu.';
+        notice.style.color=firstAvailable?'var(--muted)':'var(--danger)';
+      }
     }
 
     function setupDateInputs(){
       ['registerDate','birthDate','rescheduleDate','scheduleStartDate','scheduleEndDate','excludedDateInput'].forEach(id=>{
         const input=document.getElementById(id);if(!input)return;
+        const wrap=input.closest('.vi-date-wrap');
+        if(wrap)wrap.addEventListener('click',event=>{if(input.disabled || event.target===input)return;if(typeof input.showPicker==='function'){try{input.showPicker()}catch(ignored){input.focus()}}else{input.focus()}});
         input.addEventListener('change',()=>{syncDateDisplay(input);if(id==='rescheduleDate' && document.getElementById('rescheduleModal').classList.contains('show'))loadRescheduleSlots();if(id==='scheduleStartDate'||id==='scheduleEndDate')syncExcludedDateBounds()});
         input.addEventListener('input',()=>syncDateDisplay(input));
       });
@@ -819,8 +845,10 @@
     function resetTurnstile(){if(state.turnstileWidgetId!==null && window.turnstile)turnstile.reset(state.turnstileWidgetId)}
 
     async function requestOtp(isResend=false){
-      const date=document.getElementById('registerDate').value;const phone=document.getElementById('phone').value.replace(/\D/g,'');
+      const dateInput=document.getElementById('registerDate');const date=dateInput.value;const phone=document.getElementById('phone').value.replace(/\D/g,'');
+      if(dateInput.disabled)return showToast('Hiện chưa có ngày tổ chức hiến tiểu cầu khả dụng. Vui lòng liên hệ đơn vị tiếp nhận.');
       if(!date)return showToast('Vui lòng chọn ngày dự kiến hiến.');
+      if(Array.isArray(state.schedule.excludedDates) && state.schedule.excludedDates.includes(date))return showToast('Ngày đã chọn không tổ chức hiến tiểu cầu. Vui lòng chọn ngày khác.');
       if(!/^0\d{9}$/.test(phone))return showToast('Số điện thoại chưa đúng định dạng.');
       setLoading(true,isResend?'Đang gửi lại OTP...':'Đang gửi OTP...');
       try{
