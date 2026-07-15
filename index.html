@@ -524,7 +524,7 @@
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg><h3>Xác thực an toàn</h3><p>Số điện thoại được xác thực bằng OTP trước khi ghi nhận thông tin.</p></article>
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"/></svg><h3>Tiếp nhận bằng QR</h3><p>Lưu mã QR sau đăng ký để nhân viên tra cứu nhanh khi đến.</p></article>
           </div>
-          <footer class="footer">Phiên bản <span class="versionText">8.6</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">9.6</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
 
         <section id="viewRegister" class="public-view">
@@ -600,7 +600,7 @@
                   </div>
                 </div>
                 <div class="field"><label for="gender">Giới tính *</label><select id="gender" class="select"><option value="">Chọn giới tính</option><option value="MALE">Nam</option><option value="FEMALE">Nữ</option><option value="OTHER">Khác</option></select></div>
-                <div class="field"><label for="citizenId">Số căn cước công dân *</label><input id="citizenId" class="input" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Nhập đúng 12 số CCCD"><small>CCCD được dùng để liên kết và tra cứu toàn bộ lịch sử đăng ký của người hiến.</small></div>
+                <div class="field"><label for="citizenId">Số căn cước công dân *</label><input id="citizenId" class="input" type="text" inputmode="numeric" minlength="12" maxlength="12" pattern="[0-9]{12}" enterkeyhint="next" autocomplete="off" placeholder="Nhập đúng 12 số CCCD"><small>CCCD được dùng để liên kết và tra cứu toàn bộ lịch sử đăng ký của người hiến.</small></div>
                 <div class="field"><label for="province">Tỉnh/Thành phố</label><input id="province" class="input" maxlength="100" placeholder="Nơi đang sinh sống"></div>
                 <div class="field"><label for="email">Email</label><input id="email" class="input" type="email" maxlength="120" placeholder="Không bắt buộc"></div>
               </div>
@@ -630,20 +630,20 @@
           <div class="section-head"><div><h2>Lịch của tôi</h2><p>Tra cứu toàn bộ lịch đăng ký theo đúng số căn cước công dân.</p></div></div>
           <div class="card">
             <div class="history-search">
-              <div class="field"><label for="myCitizenId">Số căn cước công dân *</label><input id="myCitizenId" class="input" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Nhập đúng 12 số CCCD"><small>Hệ thống chỉ tìm khi số CCCD khớp chính xác.</small></div>
+              <div class="field"><label for="myCitizenId">Số căn cước công dân *</label><input id="myCitizenId" class="input" type="text" inputmode="numeric" minlength="12" maxlength="12" pattern="[0-9]{12}" enterkeyhint="search" autocomplete="off" placeholder="Nhập đúng 12 số CCCD"><small>Hệ thống chỉ tìm khi số CCCD khớp chính xác.</small></div>
               <button class="btn btn-primary" type="button" onclick="loadMyAppointment(true)">Tra cứu lịch</button>
             </div>
             <div id="myEmpty" class="empty-state"><b>Nhập số CCCD để tra cứu.</b><p>Lịch sắp tới và lịch sử đăng ký sẽ được hiển thị theo đúng hồ sơ người hiến.</p></div>
             <div id="myAppointment" class="hidden"></div>
           </div>
-          <footer class="footer">Phiên bản <span class="versionText">8.6</span> · Tra cứu theo số CCCD khớp chính xác</footer>
+          <footer class="footer">Phiên bản <span class="versionText">9.6</span> · Tra cứu theo số CCCD khớp chính xác</footer>
         </section>
 
         <section id="viewGuide" class="public-view">
           <div class="section-head"><div><h2>Hướng dẫn hiến tiểu cầu</h2><p>Các nội dung chuẩn bị trước khi đến và lưu ý trong quá trình tiếp nhận.</p></div></div>
           <div id="guideGrid" class="guide-grid"></div>
           <div class="notice notice-info" style="margin-top:15px"><b>Cần hỗ trợ:</b> <span id="guidePhone">Đang cập nhật</span></div>
-          <footer class="footer">Phiên bản <span class="versionText">8.6</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">9.6</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
       </main>
     </div>
@@ -878,7 +878,7 @@
   <script>
     'use strict';
 
-    const FRONTEND_VERSION = '8.6';
+    const FRONTEND_VERSION = '9.6';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
     const STATUS_LABELS = {
       CONFIRMED:'Đã xác nhận',CHECKED_IN:'Đã đến',SCREENING:'Đang sàng lọc',ELIGIBLE:'Đủ điều kiện',IN_PROGRESS:'Đang thực hiện',COMPLETED:'Hoàn thành',DEFERRED:'Tạm hoãn',CANCELLED:'Đã hủy',NO_SHOW:'Không đến'
@@ -899,6 +899,7 @@
 
     async function init(){
       setupDateInputs();
+      setupCitizenIdInputs();
       initPwaInstallPrompt();
       registerServiceWorker();
       document.querySelectorAll('.versionText').forEach(el=>el.textContent=FRONTEND_VERSION);
@@ -971,6 +972,17 @@
         if(wrap)wrap.addEventListener('click',event=>{if(input.disabled || event.target===input)return;if(typeof input.showPicker==='function'){try{input.showPicker()}catch(ignored){input.focus()}}else{input.focus()}});
         input.addEventListener('change',()=>{syncDateDisplay(input);if(id==='rescheduleDate' && document.getElementById('rescheduleModal').classList.contains('show'))loadRescheduleSlots();if(id==='scheduleStartDate'||id==='scheduleEndDate')syncExcludedDateBounds()});
         input.addEventListener('input',()=>syncDateDisplay(input));
+      });
+    }
+
+    function setupCitizenIdInputs(){
+      ['citizenId','myCitizenId'].forEach(id=>{
+        const input=document.getElementById(id);if(!input)return;
+        input.type='text';input.inputMode='numeric';input.minLength=12;input.maxLength=12;
+        input.setAttribute('minlength','12');input.setAttribute('maxlength','12');input.setAttribute('pattern','[0-9]{12}');
+        const normalize=()=>{const digits=String(input.value || '').replace(/\D/g,'').slice(0,12);if(input.value!==digits)input.value=digits};
+        input.addEventListener('input',normalize);
+        input.addEventListener('paste',()=>requestAnimationFrame(normalize));
       });
     }
 
