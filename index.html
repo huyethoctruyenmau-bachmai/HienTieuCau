@@ -254,6 +254,13 @@
     .history-list{display:grid;gap:14px}
     .history-list .appointment-ticket{margin:0}
     .history-manage-note{margin-top:9px;color:var(--muted);font-size:12px}
+    .mobile-install-only{display:none}
+    .install-guide{display:grid;gap:12px}
+    .install-step{display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid var(--line);border-radius:8px;background:#f8f9fa}
+    .install-step-number{width:28px;height:28px;flex:0 0 28px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:#fff;font-weight:700;font-size:13px}
+    .install-step b{display:block;margin:2px 0 4px;color:var(--text)}
+    .install-step span{display:block;color:var(--muted);font-size:13px;line-height:1.5}
+    .install-note{margin-top:2px;color:var(--muted);font-size:12px;line-height:1.5}
     .system-tools{margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fbfdfb}
     .system-tools summary{cursor:pointer;font-weight:700;color:var(--primary-dark)}
     .system-tools-body{margin-top:14px}
@@ -279,6 +286,8 @@
     }
     @media(max-width:899px){
       .mobile-menu-btn{display:grid}
+      .mobile-install-only:not(.hidden){display:inline-flex}
+      .switcher-app-btn.mobile-install-only:not(.hidden){display:flex}
       #publicTabbar.flow-active{display:none}
     }
     @media(max-width:760px){
@@ -511,6 +520,10 @@
                   Đăng ký ngay
                 </button>
                 <button class="btn btn-outline" type="button" onclick="navigatePublic('my')">Xem lịch của tôi</button>
+                <button class="btn btn-outline mobile-install-only js-install-pwa hidden" type="button" onclick="installPwa()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+                  Cài ứng dụng
+                </button>
               </div>
             </div>
             <div class="hero-info">
@@ -724,7 +737,7 @@
           </div>
           <div class="admin-card push-card">
             <div><h3 style="margin:0 0 6px">Thông báo đăng ký mới</h3><p id="pushStatusText" style="margin:0;color:var(--muted);line-height:1.5">Đang kiểm tra khả năng nhận thông báo trên thiết bị này.</p></div>
-            <div class="push-actions"><button id="installPwaBtn" class="btn btn-outline hidden" type="button" onclick="installPwa()">Cài ứng dụng</button><button id="enablePushBtn" class="btn btn-primary" type="button" onclick="enablePushNotifications()">Bật thông báo</button><button id="testPushBtn" class="btn btn-outline hidden" type="button" onclick="sendTestPushNotification()">Gửi thử</button><button id="disablePushBtn" class="btn btn-danger hidden" type="button" onclick="disablePushNotifications()">Tắt thông báo</button></div>
+            <div class="push-actions"><button id="installPwaBtn" class="btn btn-outline js-install-pwa hidden" type="button" onclick="installPwa()">Cài ứng dụng</button><button id="enablePushBtn" class="btn btn-primary" type="button" onclick="enablePushNotifications()">Bật thông báo</button><button id="testPushBtn" class="btn btn-outline hidden" type="button" onclick="sendTestPushNotification()">Gửi thử</button><button id="disablePushBtn" class="btn btn-danger hidden" type="button" onclick="disablePushNotifications()">Tắt thông báo</button></div>
           </div>
         </section>
 
@@ -810,6 +823,10 @@
           <button id="menuAdminSchedule" class="switcher-child" type="button" onclick="selectAdminSection('schedule')">Lịch hiến máu</button>
           <button id="menuAdminQuestions" class="switcher-child" type="button" onclick="selectAdminSection('questions')">Bộ câu hỏi khảo sát</button>
         </div>
+        <button class="switcher-app-btn mobile-install-only js-install-pwa hidden" type="button" onclick="installPwa()">
+          <span class="switcher-app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></span>
+          <span class="switcher-app-copy"><b>Cài ứng dụng</b><span>Đưa ứng dụng ra màn hình chính điện thoại</span></span>
+        </button>
       </div>
     </aside>
   </div>
@@ -855,6 +872,16 @@
     </div>
   </div>
 
+  <div id="installGuideModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-head"><h3 id="installGuideTitle">Cài ứng dụng trên điện thoại</h3><button class="icon-btn" type="button" onclick="closeModal('installGuideModal')">×</button></div>
+      <div class="modal-body">
+        <div id="installGuideContent" class="install-guide"></div>
+        <div class="actions"><div></div><button class="btn btn-primary" type="button" onclick="closeModal('installGuideModal')">ĐÃ HIỂU</button></div>
+      </div>
+    </div>
+  </div>
+
   <div id="rescheduleModal" class="modal-backdrop">
     <div class="modal">
       <div class="modal-head"><h3>Đổi ngày và khung giờ</h3><button class="icon-btn" type="button" onclick="closeModal('rescheduleModal')">×</button></div>
@@ -878,7 +905,7 @@
   <script>
     'use strict';
 
-    const FRONTEND_VERSION = '11.7';
+    const FRONTEND_VERSION = '12.8';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
     const STATUS_LABELS = {
       CONFIRMED:'Đã xác nhận',CHECKED_IN:'Đã đến',SCREENING:'Đang sàng lọc',ELIGIBLE:'Đủ điều kiện',IN_PROGRESS:'Đang thực hiện',COMPLETED:'Hoàn thành',DEFERRED:'Tạm hoãn',CANCELLED:'Đã hủy',NO_SHOW:'Không đến'
@@ -1274,8 +1301,44 @@
 
     function getPushDeviceId(){let id=localStorage.getItem('bm_push_device_id');if(!id){id='DEV_'+(crypto.randomUUID?crypto.randomUUID():`${Date.now()}_${Math.random().toString(36).slice(2)}`);localStorage.setItem('bm_push_device_id',id)}return id}
     async function registerServiceWorker(){if(!('serviceWorker' in navigator))return null;try{const reg=await navigator.serviceWorker.register('./service-worker.js?v=11.7',{scope:'./',updateViaCache:'none'});if(!window.__bmPushMessageBound){window.__bmPushMessageBound=true;navigator.serviceWorker.addEventListener('message',event=>{const message=event.data;if(!message || message.type!=='BM_PUSH_MESSAGE')return;const title=message.payload?.notification?.title || message.payload?.data?.title || 'Hiến tiểu cầu Bạch Mai';const body=message.payload?.notification?.body || message.payload?.data?.body || 'Có thông tin đăng ký mới.';showToast(title+': '+body)});}try{await reg.update()}catch(error){}return reg}catch(error){console.warn('Không đăng ký được service worker',error);return null}}
-    function initPwaInstallPrompt(){window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();state.deferredInstallPrompt=event;document.getElementById('installPwaBtn')?.classList.remove('hidden')});window.addEventListener('appinstalled',()=>{state.deferredInstallPrompt=null;document.getElementById('installPwaBtn')?.classList.add('hidden')})}
-    async function installPwa(){if(state.deferredInstallPrompt){state.deferredInstallPrompt.prompt();await state.deferredInstallPrompt.userChoice;state.deferredInstallPrompt=null;document.getElementById('installPwaBtn').classList.add('hidden');return}showToast('Trên iPhone/iPad: mở menu Chia sẻ và chọn “Thêm vào Màn hình chính”.')}
+    function isPwaStandalone(){return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true}
+    function isMobileDevice(){return window.matchMedia('(max-width:899px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '')}
+    function isIosDevice(){return /iPhone|iPad|iPod/i.test(navigator.userAgent || '')}
+    function updatePwaInstallUi(){
+      const installed=isPwaStandalone();
+      const canOffer=!!state.deferredInstallPrompt || isMobileDevice();
+      document.querySelectorAll('.js-install-pwa').forEach(button=>button.classList.toggle('hidden',installed || !canOffer));
+    }
+    function initPwaInstallPrompt(){
+      updatePwaInstallUi();
+      window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();state.deferredInstallPrompt=event;updatePwaInstallUi()});
+      window.addEventListener('appinstalled',()=>{state.deferredInstallPrompt=null;updatePwaInstallUi();showToast('Đã cài ứng dụng Hiến tiểu cầu Bạch Mai.')});
+      const displayMode=window.matchMedia('(display-mode: standalone)');
+      if(typeof displayMode.addEventListener==='function')displayMode.addEventListener('change',updatePwaInstallUi);
+      window.addEventListener('resize',updatePwaInstallUi);
+    }
+    function showInstallGuide(){
+      const ios=isIosDevice();
+      document.getElementById('installGuideTitle').textContent=ios?'Cài ứng dụng trên iPhone/iPad':'Cài ứng dụng trên điện thoại';
+      document.getElementById('installGuideContent').innerHTML=ios
+        ? '<div class="install-step"><span class="install-step-number">1</span><div><b>Mở bằng Safari</b><span>Đảm bảo trang đang được mở trực tiếp trong trình duyệt Safari.</span></div></div><div class="install-step"><span class="install-step-number">2</span><div><b>Nhấn nút Chia sẻ</b><span>Chọn biểu tượng hình vuông có mũi tên hướng lên ở thanh công cụ Safari.</span></div></div><div class="install-step"><span class="install-step-number">3</span><div><b>Chọn “Thêm vào Màn hình chính”</b><span>Sau đó nhấn “Thêm” để hoàn tất. Hãy mở app từ biểu tượng mới để nhận thông báo nền.</span></div></div><div class="install-note">iPhone/iPad không cho website tự mở hộp cài đặt; người dùng cần thực hiện các bước trên một lần.</div>'
+        : '<div class="install-step"><span class="install-step-number">1</span><div><b>Mở menu trình duyệt</b><span>Nhấn biểu tượng ba chấm ở góc trên của Chrome, Edge hoặc Samsung Internet.</span></div></div><div class="install-step"><span class="install-step-number">2</span><div><b>Chọn cài đặt</b><span>Chọn “Cài đặt ứng dụng” hoặc “Thêm vào màn hình chính”.</span></div></div><div class="install-step"><span class="install-step-number">3</span><div><b>Xác nhận</b><span>Nhấn “Cài đặt/Thêm”, sau đó mở app từ biểu tượng trên màn hình chính.</span></div></div><div class="install-note">Nếu không thấy lựa chọn cài đặt, hãy mở trang bằng Chrome và kiểm tra lại kết nối Internet.</div>';
+      openModal('installGuideModal');
+    }
+    async function installPwa(){
+      closeAppSwitcher();
+      if(isPwaStandalone()){showToast('Ứng dụng đã được cài trên thiết bị này.');updatePwaInstallUi();return}
+      if(state.deferredInstallPrompt){
+        const promptEvent=state.deferredInstallPrompt;
+        state.deferredInstallPrompt=null;
+        promptEvent.prompt();
+        const choice=await promptEvent.userChoice;
+        if(choice?.outcome==='accepted')showToast('Đang cài ứng dụng...');
+        updatePwaInstallUi();
+        return;
+      }
+      showInstallGuide();
+    }
     async function refreshPushStatus(){
       const text=document.getElementById('pushStatusText');if(!text)return;const btn=document.getElementById('enablePushBtn');const testBtn=document.getElementById('testPushBtn');const disableBtn=document.getElementById('disablePushBtn');const supported='Notification' in window && 'serviceWorker' in navigator;if(!supported){text.textContent='Trình duyệt này không hỗ trợ thông báo nền.';btn.classList.add('hidden');testBtn?.classList.add('hidden');disableBtn?.classList.add('hidden');return}btn.classList.remove('hidden');btn.disabled=false;if(!state.push?.enabled){text.textContent='Chưa cấu hình Firebase Web Push. Nút vẫn có thể bấm để xem nguyên nhân và hướng dẫn cấu hình.';testBtn?.classList.add('hidden');disableBtn?.classList.add('hidden');return}if(!state.push?.serverReady){text.textContent='Đã có cấu hình Firebase phía trình duyệt nhưng backend còn thiếu service account để gửi thông báo.'}try{const status=await api('push_getStatus',{token:state.adminToken,deviceId:getPushDeviceId()});const registered=status.registered && Notification.permission==='granted';if(status.serverReady)text.textContent=registered?'Thiết bị này đang nhận thông báo tức thời khi có lượt đăng ký mới. Hãy bấm “Gửi thử” để kiểm tra đường truyền FCM.':(Notification.permission==='denied'?'Quyền thông báo đang bị chặn trong cài đặt trình duyệt/điện thoại.':'Thiết bị này chưa bật nhận thông báo đăng ký mới.');btn.classList.toggle('hidden',registered);testBtn?.classList.toggle('hidden',!registered);disableBtn?.classList.toggle('hidden',!registered)}catch(error){text.textContent=error.message;testBtn?.classList.add('hidden')}
     }
