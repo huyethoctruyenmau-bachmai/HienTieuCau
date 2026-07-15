@@ -249,6 +249,11 @@
     .slot-config-row b{color:var(--primary-dark)}
     .push-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center}
     .push-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .history-search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-bottom:16px}
+    .history-summary{margin:0 0 13px;color:var(--muted);font-size:14px}
+    .history-list{display:grid;gap:14px}
+    .history-list .appointment-ticket{margin:0}
+    .history-manage-note{margin-top:9px;color:var(--muted);font-size:12px}
     .system-tools{margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fbfdfb}
     .system-tools summary{cursor:pointer;font-weight:700;color:var(--primary-dark)}
     .system-tools-body{margin-top:14px}
@@ -277,7 +282,7 @@
       #publicTabbar.flow-active{display:none}
     }
     @media(max-width:760px){
-      .admin-info-tab{min-width:112px;padding:0 11px}.schedule-grid{grid-template-columns:1fr}.slot-config-row{grid-template-columns:minmax(0,1fr) 130px}.push-card{grid-template-columns:1fr}.push-actions{justify-content:flex-start}
+      .admin-info-tab{min-width:112px;padding:0 11px}.schedule-grid{grid-template-columns:1fr}.slot-config-row{grid-template-columns:minmax(0,1fr) 130px}.push-card{grid-template-columns:1fr}.push-actions{justify-content:flex-start}.history-search{grid-template-columns:1fr}
       .topbar{padding-left:11px;padding-right:11px}.brand{gap:9px}.brand-mark{width:43px;height:43px;flex-basis:43px;font-size:14px}.brand-copy h1{font-size:14px}.brand-copy p{font-size:9px}.staff-button,.flow-exit{padding:8px;font-size:10px}.mobile-menu-btn{display:grid}.menu-toggle{width:38px;height:38px}.header-actions{gap:6px}#publicTabbar.flow-active{display:none}
       .content{padding:12px 11px 24px}.card,.hero-card{padding:16px;border-radius:17px;box-shadow:none}.hero-card h2{font-size:24px}.hero-card p{font-size:14px}.feature-grid{margin-top:11px}
       .wizard-card{margin:0 -11px;border-left:0;border-right:0;border-radius:0;box-shadow:none}.wizard-flow-head{padding:12px 13px}.steps{position:sticky;top:0;z-index:8}.step-tab{padding:10px 2px;font-size:8px}.step-dot{width:28px;height:28px;font-size:11px}.step-tab:not(:last-child)::after{top:23px}.wizard-panel{padding:18px 13px}.panel-title h3{font-size:20px}
@@ -519,7 +524,7 @@
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg><h3>Xác thực an toàn</h3><p>Số điện thoại được xác thực bằng OTP trước khi ghi nhận thông tin.</p></article>
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"/></svg><h3>Tiếp nhận bằng QR</h3><p>Lưu mã QR sau đăng ký để nhân viên tra cứu nhanh khi đến.</p></article>
           </div>
-          <footer class="footer">Phiên bản <span class="versionText">5.3</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">8.6</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
 
         <section id="viewRegister" class="public-view">
@@ -595,7 +600,7 @@
                   </div>
                 </div>
                 <div class="field"><label for="gender">Giới tính *</label><select id="gender" class="select"><option value="">Chọn giới tính</option><option value="MALE">Nam</option><option value="FEMALE">Nữ</option><option value="OTHER">Khác</option></select></div>
-                <div class="field"><label for="citizenIdLast4">4 số cuối CCCD</label><input id="citizenIdLast4" class="input" inputmode="numeric" maxlength="4" placeholder="Không bắt buộc"></div>
+                <div class="field"><label for="citizenId">Số căn cước công dân *</label><input id="citizenId" class="input" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Nhập đúng 12 số CCCD"><small>CCCD được dùng để liên kết và tra cứu toàn bộ lịch sử đăng ký của người hiến.</small></div>
                 <div class="field"><label for="province">Tỉnh/Thành phố</label><input id="province" class="input" maxlength="100" placeholder="Nơi đang sinh sống"></div>
                 <div class="field"><label for="email">Email</label><input id="email" class="input" type="email" maxlength="120" placeholder="Không bắt buộc"></div>
               </div>
@@ -622,17 +627,23 @@
         </section>
 
         <section id="viewMy" class="public-view">
-          <div class="section-head"><div><h2>Lịch của tôi</h2><p>Hiển thị lịch đăng ký gần nhất được lưu an toàn trên thiết bị này.</p></div><button class="btn btn-outline btn-sm" type="button" onclick="loadMyAppointment(true)">Tải lại</button></div>
-          <div id="myEmpty" class="empty-state"><b>Chưa có lịch đăng ký trên thiết bị này.</b><p>Hãy đăng ký mới hoặc mở lại bằng đúng thiết bị đã sử dụng khi đăng ký.</p><button class="btn btn-primary" type="button" onclick="startRegistrationFlow()">Đăng ký ngay</button></div>
-          <div id="myAppointment" class="hidden"></div>
-          <footer class="footer">Phiên bản <span class="versionText">5.3</span> · Dữ liệu tra cứu được xác thực bằng mã quản lý lưu trên thiết bị</footer>
+          <div class="section-head"><div><h2>Lịch của tôi</h2><p>Tra cứu toàn bộ lịch đăng ký theo đúng số căn cước công dân.</p></div></div>
+          <div class="card">
+            <div class="history-search">
+              <div class="field"><label for="myCitizenId">Số căn cước công dân *</label><input id="myCitizenId" class="input" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Nhập đúng 12 số CCCD"><small>Hệ thống chỉ tìm khi số CCCD khớp chính xác.</small></div>
+              <button class="btn btn-primary" type="button" onclick="loadMyAppointment(true)">Tra cứu lịch</button>
+            </div>
+            <div id="myEmpty" class="empty-state"><b>Nhập số CCCD để tra cứu.</b><p>Lịch sắp tới và lịch sử đăng ký sẽ được hiển thị theo đúng hồ sơ người hiến.</p></div>
+            <div id="myAppointment" class="hidden"></div>
+          </div>
+          <footer class="footer">Phiên bản <span class="versionText">8.6</span> · Tra cứu theo số CCCD khớp chính xác</footer>
         </section>
 
         <section id="viewGuide" class="public-view">
           <div class="section-head"><div><h2>Hướng dẫn hiến tiểu cầu</h2><p>Các nội dung chuẩn bị trước khi đến và lưu ý trong quá trình tiếp nhận.</p></div></div>
           <div id="guideGrid" class="guide-grid"></div>
           <div class="notice notice-info" style="margin-top:15px"><b>Cần hỗ trợ:</b> <span id="guidePhone">Đang cập nhật</span></div>
-          <footer class="footer">Phiên bản <span class="versionText">5.3</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">8.6</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
       </main>
     </div>
@@ -867,7 +878,7 @@
   <script>
     'use strict';
 
-    const FRONTEND_VERSION = '7.5';
+    const FRONTEND_VERSION = '8.6';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
     const STATUS_LABELS = {
       CONFIRMED:'Đã xác nhận',CHECKED_IN:'Đã đến',SCREENING:'Đang sàng lọc',ELIGIBLE:'Đủ điều kiện',IN_PROGRESS:'Đang thực hiện',COMPLETED:'Hoàn thành',DEFERRED:'Tạm hoãn',CANCELLED:'Đã hủy',NO_SHOW:'Không đến'
@@ -877,7 +888,7 @@
     const state = {
       publicView:'home',flowActive:false,step:1,serverDate:'',app:{},questions:[],guides:[],
       registerDate:'',phone:'',otpSessionId:'',publicToken:'',selectedSlot:null,slots:[],answers:{},
-      otpSeconds:0,otpTimerId:null,turnstileWidgetId:null,registration:null,myAppointment:null,
+      otpSeconds:0,otpTimerId:null,turnstileWidgetId:null,registration:null,myAppointment:null,myAppointments:[],lastCitizenId:'',
       rescheduleSlots:[],rescheduleSelectedSlot:null,reportRows:[],
       adminToken:sessionStorage.getItem('bm_admin_token') || '',
       adminUser:safeJsonParse(sessionStorage.getItem('bm_admin_user'),null),adminTab:'appointments',adminSection:'info',pendingAdminSection:'info',
@@ -964,6 +975,7 @@
     }
 
     function syncDateDisplay(input){const display=document.getElementById(input.id+'Display');if(display)display.value=formatDateVi(input.value)}
+    function maskCitizenId(value){const digits=String(value || '').replace(/\D/g,'');return digits.length===12?`${digits.slice(0,3)}******${digits.slice(-3)}`:digits}
     function formatDateVi(iso){if(!/^\d{4}-\d{2}-\d{2}$/.test(iso || ''))return '';const [y,m,d]=iso.split('-');return `${d}/${m}/${y}`}
     function formatDateTimeVi(value){if(!value)return '';const d=new Date(value);return Number.isNaN(d.getTime())?String(value):d.toLocaleString('vi-VN')}
     function localIsoDate(date){const y=date.getFullYear();const m=String(date.getMonth()+1).padStart(2,'0');const d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}
@@ -1060,8 +1072,8 @@
 
     async function loadDonorAndSlots(){
       const [profile,slotData]=await Promise.all([api('donor_getProfile',{token:state.publicToken}),api('schedule_getSlots',{token:state.publicToken,date:state.registerDate})]);
-      ['fullName','birthDate','citizenIdLast4','province','email'].forEach(id=>document.getElementById(id).value='');document.getElementById('gender').value='';syncDateDisplay(document.getElementById('birthDate'));
-      if(profile.exists){document.getElementById('fullName').value=profile.fullName || '';document.getElementById('birthDate').value=profile.birthDate || '';syncDateDisplay(document.getElementById('birthDate'));document.getElementById('gender').value=profile.gender || '';document.getElementById('citizenIdLast4').value=profile.citizenIdLast4 || '';document.getElementById('province').value=profile.province || '';document.getElementById('email').value=profile.email || ''}
+      ['fullName','birthDate','citizenId','province','email'].forEach(id=>document.getElementById(id).value='');document.getElementById('gender').value='';syncDateDisplay(document.getElementById('birthDate'));
+      if(profile.exists){document.getElementById('fullName').value=profile.fullName || '';document.getElementById('birthDate').value=profile.birthDate || '';syncDateDisplay(document.getElementById('birthDate'));document.getElementById('gender').value=profile.gender || '';document.getElementById('province').value=profile.province || '';document.getElementById('email').value=profile.email || ''}
       state.slots=slotData.slots || [];state.selectedSlot=null;document.getElementById('slotDateText').textContent=formatDateVi(state.registerDate);renderSlots('slots',state.slots,'selectedSlot','slotsEmpty');
     }
 
@@ -1071,8 +1083,8 @@
     }
 
     function continueToQuestions(){
-      const fullName=document.getElementById('fullName').value.trim();const birthDate=document.getElementById('birthDate').value;const gender=document.getElementById('gender').value;const cccd=document.getElementById('citizenIdLast4').value.trim();const email=document.getElementById('email').value.trim();
-      if(!fullName)return showToast('Vui lòng nhập họ và tên.');if(!birthDate)return showToast('Vui lòng chọn ngày sinh.');if(!gender)return showToast('Vui lòng chọn giới tính.');if(cccd && !/^\d{4}$/.test(cccd))return showToast('4 số cuối CCCD phải gồm đúng 4 chữ số.');if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return showToast('Email chưa đúng định dạng.');if(!state.selectedSlot)return showToast('Vui lòng chọn khung giờ.');goToStep(4)
+      const fullName=document.getElementById('fullName').value.trim();const birthDate=document.getElementById('birthDate').value;const gender=document.getElementById('gender').value;const cccd=document.getElementById('citizenId').value.replace(/\D/g,'');const email=document.getElementById('email').value.trim();
+      if(!fullName)return showToast('Vui lòng nhập họ và tên.');if(!birthDate)return showToast('Vui lòng chọn ngày sinh.');if(!gender)return showToast('Vui lòng chọn giới tính.');if(!/^\d{12}$/.test(cccd))return showToast('Số CCCD phải gồm đúng 12 chữ số.');document.getElementById('citizenId').value=cccd;if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return showToast('Email chưa đúng định dạng.');if(!state.selectedSlot)return showToast('Vui lòng chọn khung giờ.');goToStep(4)
     }
 
     function renderQuestions(){
@@ -1094,15 +1106,15 @@
     function continueToReview(){const missing=state.questions.filter(q=>q.required && (state.answers[q.id]===undefined || state.answers[q.id]===''));if(missing.length)return showToast('Vui lòng trả lời đầy đủ các câu hỏi bắt buộc.');renderReview();goToStep(5)}
     function renderReview(){
       const flagged=state.questions.filter(q=>q.flagAnswer && String(state.answers[q.id]).toUpperCase()===String(q.flagAnswer).toUpperCase());
-      const rows=[['Họ và tên',document.getElementById('fullName').value.trim()],['Ngày sinh',formatDateVi(document.getElementById('birthDate').value)],['Giới tính',GENDER_LABELS[document.getElementById('gender').value] || ''],['Số điện thoại',state.phone],['Ngày đăng ký',formatDateVi(state.registerDate)],['Khung giờ',`${state.selectedSlot.startTime} – ${state.selectedSlot.endTime}`],['Địa điểm',state.app.location || ''],['Nội dung cần xem xét',flagged.length?`${flagged.length} nội dung`:'Không có cảnh báo tự động']];
+      const citizenId=document.getElementById('citizenId').value.trim();const rows=[['Họ và tên',document.getElementById('fullName').value.trim()],['Ngày sinh',formatDateVi(document.getElementById('birthDate').value)],['Giới tính',GENDER_LABELS[document.getElementById('gender').value] || ''],['CCCD',maskCitizenId(citizenId)],['Số điện thoại',state.phone],['Ngày đăng ký',formatDateVi(state.registerDate)],['Khung giờ',`${state.selectedSlot.startTime} – ${state.selectedSlot.endTime}`],['Địa điểm',state.app.location || ''],['Nội dung cần xem xét',flagged.length?`${flagged.length} nội dung`:'Không có cảnh báo tự động']];
       document.getElementById('reviewCard').innerHTML=rows.map(([label,value])=>`<div class="review-row"><b>${escapeHtml(label)}</b><span>${escapeHtml(value)}</span></div>`).join('');document.getElementById('consent').checked=false;
     }
 
     async function submitRegistration(){
       if(!document.getElementById('consent').checked)return showToast('Vui lòng xác nhận nội dung cam kết.');
-      const payload={fullName:document.getElementById('fullName').value.trim(),birthDate:document.getElementById('birthDate').value,gender:document.getElementById('gender').value,citizenIdLast4:document.getElementById('citizenIdLast4').value.trim(),province:document.getElementById('province').value.trim(),email:document.getElementById('email').value.trim(),date:state.registerDate,slotId:state.selectedSlot.slotId,answers:state.answers};
+      const citizenId=document.getElementById('citizenId').value.replace(/\D/g,'');const payload={fullName:document.getElementById('fullName').value.trim(),birthDate:document.getElementById('birthDate').value,gender:document.getElementById('gender').value,citizenId,province:document.getElementById('province').value.trim(),email:document.getElementById('email').value.trim(),date:state.registerDate,slotId:state.selectedSlot.slotId,answers:state.answers};
       setLoading(true,'Đang ghi nhận đăng ký...');
-      try{const data=await api('registration_create',{token:state.publicToken,payload});state.registration=data;localStorage.setItem('bm_last_registration',JSON.stringify({code:data.code,manageToken:data.manageToken}));showSuccess(data)}catch(error){showToast(error.message);if(error.code==='SLOT_FULL' || error.code==='SLOT_PAST'){await loadDonorAndSlots();goToStep(3)}}finally{setLoading(false)}
+      try{const data=await api('registration_create',{token:state.publicToken,payload});state.registration=data;state.lastCitizenId=citizenId;localStorage.setItem('bm_last_registration',JSON.stringify({code:data.code,manageToken:data.manageToken}));showSuccess(data)}catch(error){showToast(error.message);if(error.code==='SLOT_FULL' || error.code==='SLOT_PAST'){await loadDonorAndSlots();goToStep(3)}}finally{setLoading(false)}
     }
 
     function showSuccess(data){
@@ -1114,45 +1126,56 @@
 
     function clearRegistrationState(){
       clearInterval(state.otpTimerId);state.step=1;state.registerDate='';state.phone='';state.otpSessionId='';state.publicToken='';state.selectedSlot=null;state.slots=[];state.answers={};state.registration=null;
-      ['phone','otp','fullName','birthDate','citizenIdLast4','province','email'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});document.getElementById('gender').value='';document.getElementById('consent').checked=false;syncDateDisplay(document.getElementById('birthDate'));document.querySelectorAll('#wizardCard input[type=radio]').forEach(el=>el.checked=false);renderQuestions();configurePublicDates();resetTurnstile();
+      ['phone','otp','fullName','birthDate','citizenId','province','email'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});document.getElementById('gender').value='';document.getElementById('consent').checked=false;syncDateDisplay(document.getElementById('birthDate'));document.querySelectorAll('#wizardCard input[type=radio]').forEach(el=>el.checked=false);renderQuestions();configurePublicDates();resetTurnstile();
     }
 
     function resetRegistration(startFlow=false){closeModal('successModal');clearRegistrationState();if(startFlow){state.flowActive=true;document.getElementById('registerIntro').classList.add('hidden');document.getElementById('wizardCard').classList.remove('hidden');goToStep(1)}else{exitRegistrationFlow()}}
-    function goToMyAfterSuccess(){closeModal('successModal');state.flowActive=false;document.getElementById('registerIntro').classList.remove('hidden');document.getElementById('wizardCard').classList.add('hidden');document.getElementById('publicTabbar').classList.remove('flow-active');document.getElementById('flowExitBtn').classList.add('hidden');navigatePublic('my')}
+    function goToMyAfterSuccess(){closeModal('successModal');state.flowActive=false;document.getElementById('registerIntro').classList.remove('hidden');document.getElementById('wizardCard').classList.add('hidden');document.getElementById('publicTabbar').classList.remove('flow-active');document.getElementById('flowExitBtn').classList.add('hidden');const input=document.getElementById('myCitizenId');if(input && state.lastCitizenId)input.value=state.lastCitizenId;navigatePublic('my')}
 
     function goToStep(step,scroll=true){
       state.step=step;document.querySelectorAll('#wizardCard .wizard-panel').forEach(panel=>panel.classList.toggle('active',Number(panel.dataset.panel)===step));document.querySelectorAll('#wizardCard .step-tab').forEach(tab=>{const n=Number(tab.dataset.step);tab.classList.toggle('active',n===step);tab.classList.toggle('done',n<step);tab.querySelector('.step-dot').textContent=n<step?'✓':String(n)});document.getElementById('flowProgressText').textContent=`Bước ${step}/5`;if(scroll)document.getElementById('publicScroll').scrollTo({top:0,behavior:'smooth'})
     }
 
     async function loadMyAppointment(showLoader=true){
-      const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);const empty=document.getElementById('myEmpty');const wrap=document.getElementById('myAppointment');
-      if(!saved?.code || !saved?.manageToken){state.myAppointment=null;empty.classList.remove('hidden');wrap.classList.add('hidden');return}
-      if(showLoader)setLoading(true,'Đang tải lịch đăng ký...');
-      try{const data=await api('registration_getDetail',{code:saved.code,manageToken:saved.manageToken});state.myAppointment=data;empty.classList.add('hidden');wrap.classList.remove('hidden');renderMyAppointment(data)}catch(error){empty.classList.remove('hidden');wrap.classList.add('hidden');if(error.code==='UNAUTHORIZED')localStorage.removeItem('bm_last_registration');showToast(error.message)}finally{if(showLoader)setLoading(false)}
+      const input=document.getElementById('myCitizenId');const citizenId=String(input?.value || '').replace(/\D/g,'');const empty=document.getElementById('myEmpty');const wrap=document.getElementById('myAppointment');
+      if(!citizenId){state.myAppointments=[];state.myAppointment=null;empty.innerHTML='<b>Nhập số CCCD để tra cứu.</b><p>Lịch sắp tới và lịch sử đăng ký sẽ được hiển thị theo đúng hồ sơ người hiến.</p>';empty.classList.remove('hidden');wrap.classList.add('hidden');return}
+      if(!/^\d{12}$/.test(citizenId))return showToast('Số CCCD phải gồm đúng 12 chữ số.');
+      input.value=citizenId;if(showLoader)setLoading(true,'Đang tra cứu lịch theo CCCD...');
+      try{const data=await api('registration_getHistoryByCitizenId',{citizenId});state.myAppointments=data.items || [];state.myAppointment=null;if(!state.myAppointments.length){empty.innerHTML='<b>Không tìm thấy lịch đăng ký.</b><p>Vui lòng kiểm tra lại đúng 12 số CCCD đã khai khi đăng ký.</p>';empty.classList.remove('hidden');wrap.classList.add('hidden');return}empty.classList.add('hidden');wrap.classList.remove('hidden');renderMyAppointments(data)}catch(error){empty.innerHTML='<b>Chưa tra cứu được lịch.</b><p>Vui lòng kiểm tra lại thông tin và thử lại.</p>';empty.classList.remove('hidden');wrap.classList.add('hidden');showToast(error.message)}finally{if(showLoader)setLoading(false)}
     }
 
-    function renderMyAppointment(item){
-      const canEdit=item.status==='CONFIRMED';
-      document.getElementById('myAppointment').innerHTML=`<div class="appointment-ticket"><div class="ticket-head"><div><div style="font-size:12px;color:var(--muted)">MÃ ĐĂNG KÝ</div><div class="ticket-code">${escapeHtml(item.code)}</div></div><span class="status ${escapeHtml(item.status)}">${escapeHtml(statusLabel(item.status))}</span></div><div class="ticket-grid"><div class="ticket-cell"><b>Người hiến</b><span>${escapeHtml(item.fullName)}</span></div><div class="ticket-cell"><b>Số điện thoại</b><span>${escapeHtml(item.phone)}</span></div><div class="ticket-cell"><b>Ngày dự kiến</b><span>${formatDateVi(item.date)}</span></div><div class="ticket-cell"><b>Khung giờ</b><span>${escapeHtml(item.startTime)} – ${escapeHtml(item.endTime)}</span></div><div class="ticket-cell"><b>Địa điểm</b><span>${escapeHtml(item.location || '')}</span></div><div class="ticket-cell"><b>Trạng thái</b><span>${escapeHtml(statusLabel(item.status))}</span></div></div></div><div class="actions"><button class="btn btn-outline" type="button" onclick="loadMyAppointment(true)">Tải lại</button><div class="actions-right">${canEdit?'<button class="btn btn-secondary" type="button" onclick="openRescheduleModal()">Đổi lịch</button><button class="btn btn-danger" type="button" onclick="openModal(\'cancelModal\')">Hủy lịch</button>':''}</div></div>`;
+    function renderMyAppointments(data){
+      const items=data.items || [];const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);const nowDate=state.serverDate || localIsoDate(new Date());const upcoming=items.filter(item=>item.date>=nowDate && !['COMPLETED','CANCELLED','NO_SHOW'].includes(item.status));const history=items.filter(item=>!upcoming.includes(item));
+      const renderGroup=(title,list)=>list.length?`<section><h3 style="margin:18px 0 10px">${escapeHtml(title)} <span style="color:var(--muted);font-size:13px;font-weight:600">(${list.length})</span></h3><div class="history-list">${list.map(item=>renderHistoryTicket(item,saved)).join('')}</div></section>`:'';
+      document.getElementById('myAppointment').innerHTML=`<p class="history-summary"><b>${escapeHtml(data.donor?.fullName || '')}</b> · CCCD ${escapeHtml(data.donor?.citizenIdMasked || '')} · ${items.length} lượt đăng ký</p>${renderGroup('Lịch sắp tới',upcoming)}${renderGroup('Lịch sử',history)}`;
+    }
+
+    function renderHistoryTicket(item,saved){
+      const canEdit=item.status==='CONFIRMED' && saved?.code===item.code && saved?.manageToken;const actions=canEdit?`<div class="actions"><div class="history-manage-note">Thiết bị này đang giữ mã quản lý của lịch.</div><div class="actions-right"><button class="btn btn-secondary" type="button" onclick="manageHistoryAppointment('${escapeAttr(item.code)}','reschedule')">Đổi lịch</button><button class="btn btn-danger" type="button" onclick="manageHistoryAppointment('${escapeAttr(item.code)}','cancel')">Hủy lịch</button></div></div>`:'';
+      return `<div><div class="appointment-ticket"><div class="ticket-head"><div><div style="font-size:12px;color:var(--muted)">MÃ ĐĂNG KÝ</div><div class="ticket-code">${escapeHtml(item.code)}</div></div><span class="status ${escapeHtml(item.status)}">${escapeHtml(statusLabel(item.status))}</span></div><div class="ticket-grid"><div class="ticket-cell"><b>Người hiến</b><span>${escapeHtml(item.fullName)}</span></div><div class="ticket-cell"><b>Số điện thoại</b><span>${escapeHtml(item.phone)}</span></div><div class="ticket-cell"><b>Ngày dự kiến</b><span>${formatDateVi(item.date)}</span></div><div class="ticket-cell"><b>Khung giờ</b><span>${escapeHtml(item.startTime)} – ${escapeHtml(item.endTime)}</span></div><div class="ticket-cell"><b>Địa điểm</b><span>${escapeHtml(item.location || '')}</span></div><div class="ticket-cell"><b>Trạng thái</b><span>${escapeHtml(statusLabel(item.status))}</span></div></div></div>${actions}</div>`;
+    }
+
+    function manageHistoryAppointment(code,action){
+      const item=state.myAppointments.find(row=>row.code===code);if(!item)return showToast('Không tìm thấy lịch cần thao tác.');state.myAppointment=item;if(action==='reschedule')openRescheduleModal();else openModal('cancelModal');
     }
 
     async function confirmCancelRegistration(){
-      const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);if(!saved)return;
+      const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);if(!saved || !state.myAppointment || saved.code!==state.myAppointment.code)return showToast('Thiết bị này không có mã quản lý của lịch.');
       const select=document.getElementById('cancelReasonSelect').value;const note=document.getElementById('cancelReasonNote').value.trim();const reason=note?`${select}: ${note}`:select;
       setLoading(true,'Đang hủy lịch...');
-      try{const data=await api('registration_cancel',{code:saved.code,manageToken:saved.manageToken,reason});closeModal('cancelModal');state.myAppointment=data;renderMyAppointment(data);showToast('Đã hủy lịch đăng ký.')}catch(error){showToast(error.message)}finally{setLoading(false)}
+      try{await api('registration_cancel',{code:state.myAppointment.code,manageToken:saved.manageToken,reason});closeModal('cancelModal');showToast('Đã hủy lịch đăng ký.');await loadMyAppointment(false)}catch(error){showToast(error.message)}finally{setLoading(false)}
     }
 
     function openRescheduleModal(){
       const input=document.getElementById('rescheduleDate');input.value=state.myAppointment?.date || state.serverDate;syncDateDisplay(input);state.rescheduleSelectedSlot=null;openModal('rescheduleModal');loadRescheduleSlots();
     }
     async function loadRescheduleSlots(){
-      const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);const date=document.getElementById('rescheduleDate').value;if(!saved || !date)return;
-      setLoading(true,'Đang tải khung giờ...');try{const data=await api('registration_getRescheduleSlots',{code:saved.code,manageToken:saved.manageToken,date});state.rescheduleSlots=data.slots || [];state.rescheduleSelectedSlot=null;renderSlots('rescheduleSlots',state.rescheduleSlots,'rescheduleSelectedSlot','rescheduleEmpty')}catch(error){showToast(error.message)}finally{setLoading(false)}
+      const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);const date=document.getElementById('rescheduleDate').value;if(!saved || !state.myAppointment || saved.code!==state.myAppointment.code || !date)return;
+      setLoading(true,'Đang tải khung giờ...');try{const data=await api('registration_getRescheduleSlots',{code:state.myAppointment.code,manageToken:saved.manageToken,date});state.rescheduleSlots=data.slots || [];state.rescheduleSelectedSlot=null;renderSlots('rescheduleSlots',state.rescheduleSlots,'rescheduleSelectedSlot','rescheduleEmpty')}catch(error){showToast(error.message)}finally{setLoading(false)}
     }
     async function confirmReschedule(){
-      const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);const date=document.getElementById('rescheduleDate').value;if(!state.rescheduleSelectedSlot)return showToast('Vui lòng chọn khung giờ mới.');
-      setLoading(true,'Đang đổi lịch...');try{const data=await api('registration_reschedule',{code:saved.code,manageToken:saved.manageToken,date,slotId:state.rescheduleSelectedSlot.slotId});closeModal('rescheduleModal');state.myAppointment=data;renderMyAppointment(data);showToast('Đã đổi lịch thành công.')}catch(error){showToast(error.message);if(error.code==='SLOT_FULL')loadRescheduleSlots()}finally{setLoading(false)}
+      const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);const date=document.getElementById('rescheduleDate').value;if(!saved || !state.myAppointment || saved.code!==state.myAppointment.code)return showToast('Thiết bị này không có mã quản lý của lịch.');if(!state.rescheduleSelectedSlot)return showToast('Vui lòng chọn khung giờ mới.');
+      setLoading(true,'Đang đổi lịch...');try{await api('registration_reschedule',{code:state.myAppointment.code,manageToken:saved.manageToken,date,slotId:state.rescheduleSelectedSlot.slotId});closeModal('rescheduleModal');showToast('Đã đổi lịch thành công.');await loadMyAppointment(false)}catch(error){showToast(error.message);if(error.code==='SLOT_FULL')loadRescheduleSlots()}finally{setLoading(false)}
     }
 
     function renderGuides(){
@@ -1242,11 +1265,11 @@
     function initPwaInstallPrompt(){window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();state.deferredInstallPrompt=event;document.getElementById('installPwaBtn')?.classList.remove('hidden')});window.addEventListener('appinstalled',()=>{state.deferredInstallPrompt=null;document.getElementById('installPwaBtn')?.classList.add('hidden')})}
     async function installPwa(){if(state.deferredInstallPrompt){state.deferredInstallPrompt.prompt();await state.deferredInstallPrompt.userChoice;state.deferredInstallPrompt=null;document.getElementById('installPwaBtn').classList.add('hidden');return}showToast('Trên iPhone/iPad: mở menu Chia sẻ và chọn “Thêm vào Màn hình chính”.')}
     async function refreshPushStatus(){
-      const text=document.getElementById('pushStatusText');if(!text)return;const supported='Notification' in window && 'serviceWorker' in navigator;if(!supported){text.textContent='Trình duyệt này không hỗ trợ thông báo nền.';document.getElementById('enablePushBtn').classList.add('hidden');return}if(!state.push?.enabled){text.textContent='Chưa cấu hình Firebase Push trên backend.';document.getElementById('enablePushBtn').classList.remove('hidden');document.getElementById('enablePushBtn').disabled=true;return}document.getElementById('enablePushBtn').disabled=false;try{const status=await api('push_getStatus',{token:state.adminToken,deviceId:getPushDeviceId()});const registered=status.registered && Notification.permission==='granted';text.textContent=registered?'Thiết bị này đang nhận thông báo tức thời khi có lượt đăng ký mới.':(Notification.permission==='denied'?'Quyền thông báo đang bị chặn trong cài đặt trình duyệt/điện thoại.':'Thiết bị này chưa bật nhận thông báo đăng ký mới.');document.getElementById('enablePushBtn').classList.toggle('hidden',registered);document.getElementById('disablePushBtn').classList.toggle('hidden',!registered)}catch(error){text.textContent=error.message}
+      const text=document.getElementById('pushStatusText');if(!text)return;const btn=document.getElementById('enablePushBtn');const supported='Notification' in window && 'serviceWorker' in navigator;if(!supported){text.textContent='Trình duyệt này không hỗ trợ thông báo nền.';btn.classList.add('hidden');return}btn.classList.remove('hidden');btn.disabled=false;if(!state.push?.enabled){text.textContent='Chưa cấu hình Firebase Web Push. Nút vẫn có thể bấm để xem nguyên nhân và hướng dẫn cấu hình.';document.getElementById('disablePushBtn').classList.add('hidden');return}if(!state.push?.serverReady){text.textContent='Đã có cấu hình Firebase phía trình duyệt nhưng backend còn thiếu service account để gửi thông báo.'}try{const status=await api('push_getStatus',{token:state.adminToken,deviceId:getPushDeviceId()});const registered=status.registered && Notification.permission==='granted';if(status.serverReady)text.textContent=registered?'Thiết bị này đang nhận thông báo tức thời khi có lượt đăng ký mới.':(Notification.permission==='denied'?'Quyền thông báo đang bị chặn trong cài đặt trình duyệt/điện thoại.':'Thiết bị này chưa bật nhận thông báo đăng ký mới.');btn.classList.toggle('hidden',registered);document.getElementById('disablePushBtn').classList.toggle('hidden',!registered)}catch(error){text.textContent=error.message}
     }
     async function getFirebaseMessagingModules(){const appMod=await import('https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js');const msgMod=await import('https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging.js');return {...appMod,...msgMod}}
     async function enablePushNotifications(){
-      if(!state.push?.enabled)return showToast('Firebase Push chưa được cấu hình.');if(!('Notification' in window) || !('serviceWorker' in navigator))return showToast('Thiết bị này không hỗ trợ thông báo nền.');setLoading(true,'Đang bật thông báo...');try{const permission=await Notification.requestPermission();if(permission!=='granted')throw new Error('Bạn chưa cấp quyền hiển thị thông báo.');const reg=await navigator.serviceWorker.ready;const firebase=await getFirebaseMessagingModules();const app=firebase.getApps().length?firebase.getApp():firebase.initializeApp(state.push.firebaseConfig);const messaging=firebase.getMessaging(app);const fcmToken=await firebase.getToken(messaging,{vapidKey:state.push.vapidKey,serviceWorkerRegistration:reg});if(!fcmToken)throw new Error('Không tạo được mã nhận thông báo.');await api('push_registerDevice',{token:state.adminToken,deviceId:getPushDeviceId(),fcmToken,userAgent:navigator.userAgent,platform:navigator.userAgentData?.platform || navigator.platform || ''});firebase.onMessage(messaging,payload=>showToast(payload?.data?.body || 'Có lượt đăng ký hiến tiểu cầu mới.'));showToast('Đã bật thông báo đăng ký mới.');await refreshPushStatus()}catch(error){showToast(error.message)}finally{setLoading(false)}
+      if(!state.push?.enabled)return showToast('Chưa cấu hình Firebase Web Push trong Script Properties nên chưa thể bật thông báo.');if(!state.push?.serverReady)return showToast('Firebase còn thiếu service account phía backend nên chưa thể gửi thông báo.');if(!('Notification' in window) || !('serviceWorker' in navigator))return showToast('Thiết bị này không hỗ trợ thông báo nền.');setLoading(true,'Đang bật thông báo...');try{const permission=await Notification.requestPermission();if(permission!=='granted')throw new Error('Bạn chưa cấp quyền hiển thị thông báo.');const reg=await navigator.serviceWorker.ready;const firebase=await getFirebaseMessagingModules();const app=firebase.getApps().length?firebase.getApp():firebase.initializeApp(state.push.firebaseConfig);const messaging=firebase.getMessaging(app);const fcmToken=await firebase.getToken(messaging,{vapidKey:state.push.vapidKey,serviceWorkerRegistration:reg});if(!fcmToken)throw new Error('Không tạo được mã nhận thông báo.');await api('push_registerDevice',{token:state.adminToken,deviceId:getPushDeviceId(),fcmToken,userAgent:navigator.userAgent,platform:navigator.userAgentData?.platform || navigator.platform || ''});firebase.onMessage(messaging,payload=>showToast(payload?.data?.body || 'Có lượt đăng ký hiến tiểu cầu mới.'));showToast('Đã bật thông báo đăng ký mới.');await refreshPushStatus()}catch(error){showToast(error.message)}finally{setLoading(false)}
     }
     async function disablePushNotifications(){setLoading(true,'Đang tắt thông báo...');try{await api('push_unregisterDevice',{token:state.adminToken,deviceId:getPushDeviceId()});showToast('Đã tắt thông báo trên thiết bị này.');await refreshPushStatus()}catch(error){handleAdminError(error)}finally{setLoading(false)}}
     function handleLaunchRoute(){const params=new URLSearchParams(location.search);if(params.get('admin')==='1'){state.pendingAdminSection='info';state.adminTab=params.get('section') || 'appointments';setTimeout(()=>openAdminLogin(),250)}}
