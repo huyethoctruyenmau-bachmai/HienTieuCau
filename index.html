@@ -617,7 +617,7 @@
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg><h3>Đối chiếu danh tính</h3><p>CCCD 12 số được dùng để liên kết lịch sử; khi đến, nhân viên đối chiếu CCCD gốc và mã QR.</p></article>
             <article class="feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"/></svg><h3>Tiếp nhận bằng QR</h3><p>Lưu mã QR sau đăng ký để nhân viên tra cứu nhanh khi đến.</p></article>
           </div>
-          <footer class="footer">Phiên bản <span class="versionText">15.11</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">16.12</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
 
         <section id="viewRegister" class="public-view active">
@@ -693,7 +693,7 @@
               <div class="actions"><button class="btn btn-secondary" type="button" onclick="goToStep(3)">← Quay lại</button><div class="actions-right"><button class="btn btn-primary" type="button" onclick="submitRegistration()">XÁC NHẬN ĐĂNG KÝ</button></div></div>
             </section>
           </section>
-          <footer class="footer">Phiên bản <span class="versionText">15.11</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">16.12</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
 
         <section id="viewMy" class="public-view">
@@ -706,14 +706,14 @@
             <div id="myEmpty" class="empty-state"><b>Nhập số CCCD để tra cứu.</b><p>Lịch sắp tới và lịch sử đăng ký sẽ được hiển thị theo đúng hồ sơ người hiến.</p></div>
             <div id="myAppointment" class="hidden"></div>
           </div>
-          <footer class="footer">Phiên bản <span class="versionText">15.11</span> · Tra cứu theo số CCCD khớp chính xác</footer>
+          <footer class="footer">Phiên bản <span class="versionText">16.12</span> · Tra cứu theo số CCCD khớp chính xác</footer>
         </section>
 
         <section id="viewGuide" class="public-view">
           <div class="section-head"><div><h2>Hướng dẫn hiến tiểu cầu</h2><p>Các nội dung chuẩn bị trước khi đến và lưu ý trong quá trình tiếp nhận.</p></div></div>
           <div id="guideGrid" class="guide-grid"></div>
           <div class="notice notice-info" style="margin-top:15px"><b>Cần hỗ trợ:</b> <span id="guidePhone">Đang cập nhật</span></div>
-          <footer class="footer">Phiên bản <span class="versionText">15.11</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
+          <footer class="footer">Phiên bản <span class="versionText">16.12</span> · Viện Huyết học và Truyền máu Bạch Mai</footer>
         </section>
       </main>
     </div>
@@ -832,11 +832,11 @@
         <section id="adminSchedule" class="admin-view">
           <div class="admin-card">
             <div class="section-head"><div><h2>CẤU HÌNH LỊCH HIẾN TIỂU CẦU</h2><p>Cấu hình mới chỉ áp dụng cho đăng ký mới hoặc đổi lịch sau thời điểm lưu; không thay đổi các lịch đã lưu.</p></div></div>
-            <div class="schedule-grid">
-              <div class="field"><label>Từ ngày</label><div class="vi-date-wrap"><input id="scheduleStartDateDisplay" class="input vi-date-display date-vi-input" type="text" readonly placeholder="dd/mm/yyyy"><input id="scheduleStartDate" class="vi-date-native" type="date" aria-label="Từ ngày"><span class="date-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span></div></div>
-              <div class="field"><label>Đến ngày</label><div class="vi-date-wrap"><input id="scheduleEndDateDisplay" class="input vi-date-display date-vi-input" type="text" readonly placeholder="dd/mm/yyyy"><input id="scheduleEndDate" class="vi-date-native" type="date" aria-label="Đến ngày"><span class="date-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span></div></div>
+            <div class="notice notice-info" style="margin-bottom:18px">
+              <b>Khoảng nhận đăng ký tự động:</b> <span id="rollingScheduleRange">từ ngày hiện tại đến tối đa 01 tháng tiếp theo</span>.<br>
+              Hệ thống tự loại trừ <b>Thứ Bảy, Chủ nhật</b> và các ngày không tổ chức được cấu hình bên dưới.
             </div>
-            <div style="margin-top:18px"><h3 style="margin-bottom:10px">Ngày không tổ chức hiến</h3><div class="excluded-row"><div class="field"><label>Chọn ngày cần loại trừ</label><div class="vi-date-wrap"><input id="excludedDateInputDisplay" class="input vi-date-display date-vi-input" type="text" readonly placeholder="dd/mm/yyyy"><input id="excludedDateInput" class="vi-date-native" type="date" aria-label="Ngày không tổ chức"><span class="date-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span></div></div><button class="btn btn-outline" type="button" onclick="addExcludedDate()">+ Thêm ngày</button></div><div id="excludedDateList" class="excluded-list"></div></div>
+            <div><h3 style="margin-bottom:10px">Ngày không tổ chức hiến</h3><div class="excluded-row"><div class="field"><label>Chọn ngày cần loại trừ</label><div class="vi-date-wrap"><input id="excludedDateInputDisplay" class="input vi-date-display date-vi-input" type="text" readonly placeholder="dd/mm/yyyy"><input id="excludedDateInput" class="vi-date-native" type="date" aria-label="Ngày không tổ chức"><span class="date-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span></div></div><button class="btn btn-outline" type="button" onclick="addExcludedDate()">+ Thêm ngày</button></div><div id="excludedDateList" class="excluded-list"></div></div>
             <div style="margin-top:22px"><h3 style="margin-bottom:4px">Số người đăng ký tối đa theo khung giờ</h3><p style="margin:0;color:var(--muted);font-size:13px">Nhập 0 nếu tạm thời không nhận đăng ký mới ở khung đó.</p><div id="fixedSlotConfig" class="slot-config-list"></div></div>
             <div class="actions"><div></div><button class="btn btn-primary" type="button" onclick="saveScheduleConfig()">LƯU LỊCH</button></div>
           </div>
@@ -965,7 +965,7 @@
   <script>
     'use strict';
 
-    const FRONTEND_VERSION = '15.11';
+    const FRONTEND_VERSION = '16.12';
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw8uT0HvqtK3cv8hLVgqJv21VOaP5fY0Rno_lzDP0RYSqEZwS9zMIRV0LxmksTn9sRe/exec';
     const STATUS_LABELS = {
       CONFIRMED:'Đã xác nhận',CHECKED_IN:'Đã đến',SCREENING:'Đang sàng lọc',ELIGIBLE:'Đủ điều kiện',IN_PROGRESS:'Đang thực hiện',COMPLETED:'Hoàn thành',DEFERRED:'Tạm hoãn',CANCELLED:'Đã hủy',NO_SHOW:'Không đến'
@@ -979,7 +979,7 @@
       rescheduleSlots:[],rescheduleSelectedSlot:null,reportRows:[],
       adminToken:sessionStorage.getItem('bm_admin_token') || '',
       adminUser:safeJsonParse(sessionStorage.getItem('bm_admin_user'),null),adminTab:'appointments',adminSection:'info',pendingAdminSection:'info',
-      schedule:{startDate:'',endDate:'',excludedDates:[],slots:[]},push:{enabled:false,serverReady:false},deferredInstallPrompt:null,adminMenuExpanded:false,pushForegroundReady:false,
+      schedule:{startDate:'',endDate:'',excludedDates:[],slots:[],excludeWeekends:true,maxBookingMonths:1},push:{enabled:false,serverReady:false},deferredInstallPrompt:null,adminMenuExpanded:false,pushForegroundReady:false,
       infoLoaded:false,scheduleLoaded:false,questionsLoaded:false,guidesLoaded:false,pushConfigLoaded:false
     };
 
@@ -1058,40 +1058,48 @@
       document.getElementById('guidePhone').textContent=state.app.supportPhone || 'Đang cập nhật';
     }
 
+    function isWeekendIso(date){
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(String(date || '')))return false;
+      const d=new Date(date+'T12:00:00');return d.getDay()===0 || d.getDay()===6;
+    }
+    function isPublicDateBlocked(date){
+      if(!date)return true;
+      const excluded=Array.isArray(state.schedule.excludedDates)?state.schedule.excludedDates:[];
+      return isWeekendIso(date) || excluded.includes(date);
+    }
     function configurePublicDates(){
       const today=state.serverDate || localIsoDate(new Date());
-      const scheduleStart=String(state.schedule.startDate || '');
-      const scheduleEnd=String(state.schedule.endDate || '');
+      const min=String(state.schedule.startDate || today);
+      const max=String(state.schedule.endDate || addCalendarMonthsIso(today,1));
       const excluded=new Set(Array.isArray(state.schedule.excludedDates)?state.schedule.excludedDates:[]);
-      const min=(scheduleStart && scheduleStart>today)?scheduleStart:today;
-      const fallbackMax=localIsoDate(new Date(new Date(today+'T12:00:00').getTime()+Math.max(1,Number(state.app.maxBookingDays || 30))*86400000));
-      const max=scheduleEnd || fallbackMax;
       const scheduleUsable=/^\d{4}-\d{2}-\d{2}$/.test(min) && /^\d{4}-\d{2}-\d{2}$/.test(max) && min<=max;
       let firstAvailable='';
       if(scheduleUsable){
         let cursor=new Date(min+'T12:00:00');const end=new Date(max+'T12:00:00');
-        while(cursor<=end){const iso=localIsoDate(cursor);if(!excluded.has(iso)){firstAvailable=iso;break}cursor.setDate(cursor.getDate()+1)}
+        while(cursor<=end){const iso=localIsoDate(cursor);if(!excluded.has(iso) && !isWeekendIso(iso)){firstAvailable=iso;break}cursor.setDate(cursor.getDate()+1)}
       }
       ['registerDate','rescheduleDate'].forEach(id=>{
         const input=document.getElementById(id);if(!input)return;
         input.min=scheduleUsable?min:'';input.max=scheduleUsable?max:'';input.disabled=!firstAvailable;
         const wrap=input.closest('.vi-date-wrap');if(wrap)wrap.classList.toggle('date-disabled',!firstAvailable);
-        if(!firstAvailable){input.value=''}else if(!input.value || input.value<min || input.value>max || excluded.has(input.value)){input.value=firstAvailable}
+        if(!firstAvailable){input.value=''}else if(!input.value || input.value<min || input.value>max || excluded.has(input.value) || isWeekendIso(input.value)){input.value=firstAvailable}
         syncDateDisplay(input);
       });
       const notice=document.getElementById('registerDateNotice');
       if(notice){
-        notice.textContent=firstAvailable?`Nhận đăng ký từ ${formatDateVi(min)} đến ${formatDateVi(max)}.`:'Hiện chưa có ngày tổ chức hiến tiểu cầu khả dụng. Vui lòng liên hệ đơn vị tiếp nhận hoặc nhân viên quản trị cập nhật Lịch hiến máu.';
+        notice.textContent=firstAvailable?`Nhận đăng ký từ ${formatDateVi(min)} đến ${formatDateVi(max)}; không nhận Thứ Bảy, Chủ nhật và các ngày loại trừ.`:'Hiện chưa có ngày hiến tiểu cầu khả dụng trong 01 tháng tới.';
         notice.style.color=firstAvailable?'var(--muted)':'var(--danger)';
       }
+      const range=document.getElementById('rollingScheduleRange');
+      if(range)range.textContent=scheduleUsable?`${formatDateVi(min)} – ${formatDateVi(max)}`:'từ ngày hiện tại đến tối đa 01 tháng tiếp theo';
     }
 
     function setupDateInputs(){
-      ['registerDate','rescheduleDate','scheduleStartDate','scheduleEndDate','excludedDateInput'].forEach(id=>{
+      ['registerDate','rescheduleDate','excludedDateInput'].forEach(id=>{
         const input=document.getElementById(id);if(!input)return;
         const wrap=input.closest('.vi-date-wrap');
         if(wrap)wrap.addEventListener('click',event=>{if(input.disabled || event.target===input)return;if(typeof input.showPicker==='function'){try{input.showPicker()}catch(ignored){input.focus()}}else{input.focus()}});
-        input.addEventListener('change',()=>{syncDateDisplay(input);if(id==='registerDate' && state.publicToken && state.step===2)loadRegistrationSlots();if(id==='rescheduleDate' && document.getElementById('rescheduleModal').classList.contains('show'))loadRescheduleSlots();if(id==='scheduleStartDate'||id==='scheduleEndDate')syncExcludedDateBounds()});
+        input.addEventListener('change',()=>{syncDateDisplay(input);if(id==='registerDate' && state.publicToken && state.step===2)loadRegistrationSlots();if(id==='rescheduleDate' && document.getElementById('rescheduleModal').classList.contains('show'))loadRescheduleSlots()});
         input.addEventListener('input',()=>syncDateDisplay(input));
       });
     }
@@ -1142,6 +1150,7 @@
     function formatDateVi(iso){if(!/^\d{4}-\d{2}-\d{2}$/.test(iso || ''))return '';const [y,m,d]=iso.split('-');return `${d}/${m}/${y}`}
     function formatDateTimeVi(value){if(!value)return '';const d=new Date(value);return Number.isNaN(d.getTime())?String(value):d.toLocaleString('vi-VN')}
     function localIsoDate(date){const y=date.getFullYear();const m=String(date.getMonth()+1).padStart(2,'0');const d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}
+    function addCalendarMonthsIso(iso,months){const parts=String(iso||'').split('-').map(Number);if(parts.length!==3||parts.some(Number.isNaN))return '';const [y,m,d]=parts;const total=(m-1)+Number(months||0);const ty=y+Math.floor(total/12);const tm=((total%12)+12)%12;const last=new Date(ty,tm+1,0).getDate();return `${ty}-${String(tm+1).padStart(2,'0')}-${String(Math.min(d,last)).padStart(2,'0')}`}
 
     function openAppSwitcher(){
       const switcher=document.getElementById('appSwitcher');
@@ -1239,7 +1248,7 @@
       if(!state.publicToken)return;
       if(dateInput.disabled){state.slots=[];state.selectedSlot=null;renderSlots('slots',[], 'selectedSlot','slotsEmpty');return}
       if(!date){state.slots=[];state.selectedSlot=null;renderSlots('slots',[], 'selectedSlot','slotsEmpty');return}
-      if(Array.isArray(state.schedule.excludedDates) && state.schedule.excludedDates.includes(date)){showToast('Ngày đã chọn không tổ chức hiến tiểu cầu.');return}
+      if(isWeekendIso(date)){state.selectedSlot=null;state.slots=[];renderSlots('slots',[], 'selectedSlot','slotsEmpty');showToast('Không tổ chức hiến tiểu cầu vào Thứ Bảy và Chủ nhật. Vui lòng chọn ngày khác.');return}if(Array.isArray(state.schedule.excludedDates) && state.schedule.excludedDates.includes(date)){state.selectedSlot=null;state.slots=[];renderSlots('slots',[], 'selectedSlot','slotsEmpty');showToast('Ngày đã chọn không tổ chức hiến tiểu cầu. Vui lòng chọn ngày khác.');return}
       if(showLoader)setLoading(true,'Đang tải khung giờ...');
       try{
         const slotData=await api('schedule_getSlots',{token:state.publicToken,date});
@@ -1348,7 +1357,7 @@
       const input=document.getElementById('rescheduleDate');input.value=state.myAppointment?.date || state.serverDate;syncDateDisplay(input);state.rescheduleSelectedSlot=null;openModal('rescheduleModal');loadRescheduleSlots();
     }
     async function loadRescheduleSlots(){
-      const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);const date=document.getElementById('rescheduleDate').value;if(!saved || !state.myAppointment || saved.code!==state.myAppointment.code || !date)return;
+      const saved=safeJsonParse(localStorage.getItem('bm_last_registration'),null);const date=document.getElementById('rescheduleDate').value;if(!saved || !state.myAppointment || saved.code!==state.myAppointment.code || !date)return;if(isWeekendIso(date)){state.rescheduleSlots=[];state.rescheduleSelectedSlot=null;renderSlots('rescheduleSlots',[], 'rescheduleSelectedSlot','rescheduleEmpty');showToast('Không tổ chức hiến tiểu cầu vào Thứ Bảy và Chủ nhật.');return}if(Array.isArray(state.schedule.excludedDates) && state.schedule.excludedDates.includes(date)){state.rescheduleSlots=[];state.rescheduleSelectedSlot=null;renderSlots('rescheduleSlots',[], 'rescheduleSelectedSlot','rescheduleEmpty');showToast('Ngày này không tổ chức hiến tiểu cầu.');return}
       setLoading(true,'Đang tải khung giờ...');try{const data=await api('registration_getRescheduleSlots',{code:state.myAppointment.code,manageToken:saved.manageToken,date});state.rescheduleSlots=data.slots || [];state.rescheduleSelectedSlot=null;renderSlots('rescheduleSlots',state.rescheduleSlots,'rescheduleSelectedSlot','rescheduleEmpty')}catch(error){showToast(error.message)}finally{setLoading(false)}
     }
     async function confirmReschedule(){
@@ -1426,15 +1435,15 @@
       {id:'SLOT_1600_1700',startTime:'16:00',endTime:'17:00'}
     ];
     async function loadScheduleConfig(){
-      setLoading(true,'Đang tải cấu hình lịch...');try{const data=await api('schedule_getConfig',{token:state.adminToken});state.schedule=data.schedule || state.schedule;document.getElementById('scheduleStartDate').value=state.schedule.startDate || '';document.getElementById('scheduleEndDate').value=state.schedule.endDate || '';syncDateDisplay(document.getElementById('scheduleStartDate'));syncDateDisplay(document.getElementById('scheduleEndDate'));state.schedule.excludedDates=Array.isArray(state.schedule.excludedDates)?state.schedule.excludedDates:[];renderExcludedDates();renderFixedSlotConfig();syncExcludedDateBounds()}catch(error){handleAdminError(error)}finally{setLoading(false)}
+      setLoading(true,'Đang tải cấu hình lịch...');try{const data=await api('schedule_getConfig',{token:state.adminToken});state.schedule=data.schedule || state.schedule;state.schedule.excludedDates=Array.isArray(state.schedule.excludedDates)?state.schedule.excludedDates:[];renderExcludedDates();renderFixedSlotConfig();syncExcludedDateBounds();configurePublicDates()}catch(error){handleAdminError(error)}finally{setLoading(false)}
     }
     function renderFixedSlotConfig(){const map=Object.fromEntries((state.schedule.slots || []).map(slot=>[slot.id,slot]));document.getElementById('fixedSlotConfig').innerHTML=FIXED_SLOT_UI.map(slot=>`<div class="slot-config-row"><b>${slot.startTime}–${slot.endTime}</b><div class="field"><label for="capacity_${slot.id}">Số người/khung</label><input id="capacity_${slot.id}" class="input" type="number" min="0" max="100" step="1" value="${Number(map[slot.id]?.capacity ?? 4)}"></div></div>`).join('')}
-    function syncExcludedDateBounds(){const input=document.getElementById('excludedDateInput');input.min=document.getElementById('scheduleStartDate').value || '';input.max=document.getElementById('scheduleEndDate').value || '';if(input.value && (input.value<input.min || input.value>input.max)){input.value='';syncDateDisplay(input)}}
-    function addExcludedDate(){syncExcludedDateBounds();const date=document.getElementById('excludedDateInput').value;const start=document.getElementById('scheduleStartDate').value;const end=document.getElementById('scheduleEndDate').value;if(!date)return showToast('Vui lòng chọn ngày không tổ chức.');if(!start || !end || date<start || date>end)return showToast('Ngày không tổ chức phải nằm trong khoảng từ ngày đến ngày.');if(state.schedule.excludedDates.includes(date))return showToast('Ngày này đã có trong danh sách.');state.schedule.excludedDates.push(date);state.schedule.excludedDates.sort();renderExcludedDates();document.getElementById('excludedDateInput').value='';syncDateDisplay(document.getElementById('excludedDateInput'))}
+    function syncExcludedDateBounds(){const input=document.getElementById('excludedDateInput');if(!input)return;const today=state.serverDate || localIsoDate(new Date());const min=state.schedule.startDate || today;const max=state.schedule.endDate || addCalendarMonthsIso(today,1);input.min=min;input.max=max;if(input.value && (input.value<min || input.value>max)){input.value='';syncDateDisplay(input)}}
+    function addExcludedDate(){syncExcludedDateBounds();const date=document.getElementById('excludedDateInput').value;const min=document.getElementById('excludedDateInput').min;const max=document.getElementById('excludedDateInput').max;if(!date)return showToast('Vui lòng chọn ngày không tổ chức.');if(date<min || date>max)return showToast('Chỉ chọn ngày trong khoảng nhận đăng ký hiện tại.');if(isWeekendIso(date))return showToast('Thứ Bảy và Chủ nhật đã được hệ thống tự động loại trừ.');if(state.schedule.excludedDates.includes(date))return showToast('Ngày này đã có trong danh sách.');state.schedule.excludedDates.push(date);state.schedule.excludedDates.sort();renderExcludedDates();document.getElementById('excludedDateInput').value='';syncDateDisplay(document.getElementById('excludedDateInput'))}
     function removeExcludedDate(date){state.schedule.excludedDates=state.schedule.excludedDates.filter(item=>item!==date);renderExcludedDates()}
-    function renderExcludedDates(){const wrap=document.getElementById('excludedDateList');wrap.innerHTML=state.schedule.excludedDates.length?state.schedule.excludedDates.map(date=>`<span class="excluded-chip">${formatDateVi(date)}<button type="button" onclick="removeExcludedDate('${escapeAttr(date)}')" aria-label="Bỏ ngày ${formatDateVi(date)}">×</button></span>`).join(''):'<span style="font-size:13px;color:var(--muted)">Không có ngày loại trừ.</span>'}
+    function renderExcludedDates(){const wrap=document.getElementById('excludedDateList');const min=state.schedule.startDate || '';const max=state.schedule.endDate || '';const visible=state.schedule.excludedDates.filter(date=>(!min||date>=min)&&(!max||date<=max)&&!isWeekendIso(date));wrap.innerHTML=visible.length?visible.map(date=>`<span class="excluded-chip">${formatDateVi(date)}<button type="button" onclick="removeExcludedDate('${escapeAttr(date)}')" aria-label="Bỏ ngày ${formatDateVi(date)}">×</button></span>`).join(''):'<span style="font-size:13px;color:var(--muted)">Không có ngày loại trừ trong 01 tháng tới.</span>'}
     async function saveScheduleConfig(){
-      const startDate=document.getElementById('scheduleStartDate').value;const endDate=document.getElementById('scheduleEndDate').value;if(!startDate || !endDate || startDate>endDate)return showToast('Khoảng ngày tổ chức không hợp lệ.');const slots=FIXED_SLOT_UI.map(slot=>({...slot,capacity:Number(document.getElementById(`capacity_${slot.id}`).value)}));if(slots.some(slot=>!Number.isInteger(slot.capacity)||slot.capacity<0||slot.capacity>100))return showToast('Số người mỗi khung phải là số nguyên từ 0 đến 100.');const excludedDates=state.schedule.excludedDates.filter(date=>date>=startDate && date<=endDate);setLoading(true,'Đang lưu cấu hình lịch...');try{const data=await api('schedule_saveConfig',{token:state.adminToken,payload:{startDate,endDate,excludedDates,slots}});state.schedule=data.schedule;renderExcludedDates();renderFixedSlotConfig();configurePublicDates();showToast('Đã lưu lịch. Cấu hình mới chỉ áp dụng cho đăng ký mới và đổi lịch mới.')}catch(error){handleAdminError(error)}finally{setLoading(false)}
+      const slots=FIXED_SLOT_UI.map(slot=>({...slot,capacity:Number(document.getElementById(`capacity_${slot.id}`).value)}));if(slots.some(slot=>!Number.isInteger(slot.capacity)||slot.capacity<0||slot.capacity>100))return showToast('Số người mỗi khung phải là số nguyên từ 0 đến 100.');const min=state.schedule.startDate || (state.serverDate || localIsoDate(new Date()));const max=state.schedule.endDate || addCalendarMonthsIso(min,1);const excludedDates=state.schedule.excludedDates.filter(date=>date>=min && date<=max && !isWeekendIso(date));setLoading(true,'Đang lưu cấu hình lịch...');try{const data=await api('schedule_saveConfig',{token:state.adminToken,payload:{excludedDates,slots,maxBookingMonths:1,excludeWeekends:true}});state.schedule=data.schedule;renderExcludedDates();renderFixedSlotConfig();syncExcludedDateBounds();configurePublicDates();showToast('Đã lưu lịch. Người hiến được đăng ký từ ngày hiện tại đến tối đa 01 tháng, không gồm Thứ Bảy, Chủ nhật và ngày loại trừ.')}catch(error){handleAdminError(error)}finally{setLoading(false)}
     }
     async function showSystemSection(section){document.querySelectorAll('[id^="system"]').forEach(el=>{if(el.classList.contains('more-section'))el.classList.toggle('active',el.id===`system${capitalize(section)}`)});document.querySelectorAll('[data-system]').forEach(btn=>btn.classList.toggle('active',btn.dataset.system===section));if(section==='users')await loadUsers();if(section==='audit')await loadSystemData('AUDIT');if(section==='notifications')await loadSystemData('NOTIFICATION')}
 
