@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#137333">
+  <meta name="application-name" content="Giao nhận mẫu - Viện Xét nghiệm Y học">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Giao nhận mẫu">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" sizes="64x64" href="./favicon-64.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+  <title>Gửi mẫu xét nghiệm</title>
+  <style>
+    :root{
+      --gm-green:#137333;--gm-green-2:#188038;--gm-green-50:#e6f4ea;--gm-green-100:#ceead6;
+      --gm-bg:#f7f9f8;--gm-card:#fff;--gm-text:#171a18;--gm-sub:#454a46;--gm-border:#cfd4d0;
+      --gm-danger:#b3261e;--gm-warning:#b06000;--gm-radius:0;--gm-shadow:0 1px 2px rgba(60,64,67,.12),0 1px 3px 1px rgba(60,64,67,.08);
+      --header-h:76px;--tabs-h:48px;
+    }
+    *{box-sizing:border-box}html,body{height:100%;margin:0;padding:0;overflow:hidden;font-family:Arial,sans-serif;color:var(--gm-text);background:var(--gm-bg)}
+    button,input,select,textarea{font:inherit}.hidden{display:none!important}.muted{color:var(--gm-sub)}
+    .app-shell{height:var(--app-visible-height,100dvh);min-height:0;display:flex;flex-direction:column;overflow:hidden}.app-main{flex:1 1 auto;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+    .app-header{flex:0 0 var(--header-h);min-height:var(--header-h);background:var(--gm-green);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 22px;gap:20px;box-shadow:0 1px 4px rgba(0,0,0,.16);position:relative;z-index:30}
+    .brand-wrap{display:flex;align-items:center;gap:11px;min-width:0}.brand-logo{width:46px;height:46px;object-fit:contain;flex:0 0 auto}.brand{line-height:1.25;min-width:0}.brand-hospital{font-size:13px;font-weight:700;letter-spacing:.2px}.brand-institute{font-size:18px;font-weight:700;margin-top:3px}
+    .header-user{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:0}.header-user-dept{font-size:13px}.header-user-row{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+    .icon-btn{width:38px;height:38px;border-radius:0;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:inherit}.icon-btn:hover{background:rgba(255,255,255,.12)}.icon-btn svg{width:21px;height:21px;fill:currentColor}
+    .staff-tabs{flex:0 0 var(--tabs-h);height:var(--tabs-h);background:#fff;border-bottom:1px solid var(--gm-border);display:flex;align-items:end;padding:0 20px;gap:6px;position:relative;z-index:25}
+    .staff-tab{height:100%;padding:0 18px;border:0;background:transparent;color:var(--gm-sub);font-weight:700;cursor:pointer;border-bottom:3px solid transparent}.staff-tab.active{color:var(--gm-green);border-bottom-color:var(--gm-green)}.staff-tab:hover{background:#f3f7f4}
+    .page{padding:20px}.public-send-page{width:100%;max-width:880px;height:100%;margin:0 auto;padding:24px 18px;overflow:auto}.page-title{font-size:22px;font-weight:700;color:var(--gm-green);margin:0 0 18px}.public-send-page>.page-title{text-align:center}.page-subtitle{font-size:13px;color:var(--gm-sub);margin:-10px 0 18px}
+    .card{background:var(--gm-card);border:1px solid var(--gm-border);border-radius:var(--gm-radius);box-shadow:var(--gm-shadow)}.card-pad{padding:18px}.card-title{font-size:16px;font-weight:700;margin:0 0 14px;color:#2f3b33}
+    .field{display:flex;flex-direction:column;gap:4px;min-width:0}.field label{font-size:13px;color:#3c4043;font-weight:700}.required-star{color:var(--gm-danger);font-weight:800;margin-left:2px}.field-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.field-row-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .control{width:100%;min-width:0;height:42px;border:1px solid var(--gm-border);border-radius:0;background:#fff;padding:0 11px;color:var(--gm-text);outline:0}.control:focus{border-color:var(--gm-green-2);box-shadow:0 0 0 2px rgba(24,128,56,.12)}textarea.control{height:auto;min-height:78px;padding:10px 11px;resize:vertical}
+    .form-stack{display:flex;flex-direction:column;gap:10px}.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}.btn{min-height:40px;border-radius:0;border:1px solid transparent;padding:0 16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn:disabled{opacity:.5;cursor:not-allowed}.btn-primary{background:var(--gm-green-2);color:#fff}.btn-primary:hover:not(:disabled){background:#146c2e}.btn-outline{background:#fff;color:var(--gm-green);border-color:#9fc8aa}.btn-text{background:transparent;color:var(--gm-green)}
+    .btn svg{width:18px;height:18px;fill:currentColor}.full-btn{width:100%}.btn.is-busy,.icon-btn.is-busy,.icon-action.is-busy,.page-btn.is-busy{position:relative;pointer-events:none}.btn.is-busy>*:not(.btn-busy-keep),.icon-btn.is-busy>*,.icon-action.is-busy>*,.page-btn.is-busy>*{opacity:.28}.btn.is-busy::after,.icon-btn.is-busy::after,.icon-action.is-busy::after,.page-btn.is-busy::after{content:"";position:absolute;width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite;left:50%;top:50%;margin:-9px 0 0 -9px}
+    .sample-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.sample-item{border:1px solid var(--gm-border);border-radius:0;padding:10px;background:#fbfdfb;display:grid;grid-template-columns:minmax(0,1fr) 82px;align-items:center;gap:8px}.sample-name{font-size:13px;font-weight:700;min-width:0}.sample-code{font-size:11px;color:var(--gm-sub);margin-top:2px}.sample-qty{height:38px;text-align:center;font-weight:700}
+    .total-strip{display:flex;align-items:center;justify-content:space-between;background:var(--gm-green-50);border:1px solid var(--gm-green-100);border-radius:0;padding:12px 14px}.total-strip strong{font-size:22px;color:var(--gm-green)}
+    .autocomplete{position:relative}.autocomplete>.control{padding-right:38px}.quick-clear{position:absolute;right:5px;top:28px;width:30px;height:30px;border:0;background:transparent;color:#6b6f72;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:6}.quick-clear:hover{background:#eef2ef;color:var(--gm-green)}.quick-clear.hidden{display:none!important}.select-clear-wrap{position:relative}.select-clear-wrap>.control{padding-right:38px}.select-clear-btn{position:absolute;right:4px;top:6px;width:30px;height:30px;border:0;background:transparent;color:#6b6f72;font-size:20px;line-height:1;cursor:pointer;z-index:3}.select-clear-btn:hover{background:#eef2ef;color:var(--gm-green)}.suggestions{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--gm-border);border-radius:0;box-shadow:0 4px 12px rgba(60,64,67,.18);z-index:80;max-height:230px;overflow:auto}.suggestion{padding:9px 11px;cursor:pointer;border-bottom:1px solid #f1f3f4}.suggestion:last-child{border-bottom:0}.suggestion:hover,.suggestion.active{background:var(--gm-green-50)}.suggestion-main{font-size:13px;font-weight:700}.suggestion-sub{font-size:11px;color:var(--gm-sub);margin-top:2px}
+    .staff-login-wrap{width:100%;max-width:620px;height:100%;margin:0 auto;padding:42px 16px;overflow:auto}.staff-login-wrap #loginForm{width:100%;max-width:460px;margin:0 auto}.login-brand-logo{display:block;width:72px;height:72px;object-fit:contain;margin:0 auto 14px}.login-title{text-align:center;font-size:20px;font-weight:700;line-height:1.35;color:var(--gm-green);margin:0 0 18px}
+    .staff-layout{height:100%;min-height:0;display:grid;grid-template-columns:380px minmax(0,1fr);gap:16px;align-items:stretch}.filter-card{height:100%;min-height:0;padding:16px;overflow:auto;position:relative}.filter-card .field-row{gap:8px}.filter-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}.transport-form-card{height:100%;min-height:0;padding:16px;overflow:auto}.transport-sample-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.transport-sample-item{border:1px solid var(--gm-border);background:#fbfdfb;padding:8px;display:grid;grid-template-columns:minmax(0,1fr) 78px;align-items:center;gap:8px}.transport-sample-item .control{height:36px;text-align:center;font-weight:700}.transport-empty{padding:10px;border:1px dashed var(--gm-border);color:var(--gm-sub);font-size:12px}.receive-filter-bar{padding:10px 12px;display:grid;grid-template-columns:minmax(126px,.7fr) minmax(126px,.7fr) minmax(170px,1.15fr) minmax(150px,.9fr) minmax(170px,1fr) auto auto;gap:7px;align-items:end;border-bottom:1px solid var(--gm-border)}.receive-filter-bar input[type="date"]{min-width:0}.transport-station-hint{font-size:11px;color:var(--gm-sub);margin-top:2px}.transport-queue-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:26px;margin-top:4px;font-size:11px;color:var(--gm-sub)}.transport-queue-row.pending{color:#8a5a00}.transport-queue-row.error{color:var(--gm-danger)}.transport-sync-btn{min-height:28px;height:28px;padding:0 8px;font-size:11px}
+    .table-card{height:100%;min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column}.table-toolbar{padding:10px 14px;border-bottom:1px solid var(--gm-border);display:flex;align-items:center;justify-content:space-between;gap:12px}.table-scroll{overflow:auto;max-width:100%;flex:1;min-height:0}.data-table{width:100%;border-collapse:separate;border-spacing:0;min-width:980px;font-size:12px}.data-table th,.data-table td{padding:7px 9px;border-bottom:1px solid #eceff1;border-right:1px solid #f1f3f4;vertical-align:middle;white-space:nowrap}.data-table th{background:#f5f7f6;font-weight:700;color:#3c4043;position:sticky;top:0;z-index:5}.data-table tr:hover td{background:#fbfdfb}.data-table td.wrap{white-space:normal;min-width:150px}.center{text-align:center}.right{text-align:right}
+    .status-chip{display:inline-flex;align-items:center;min-height:25px;padding:0 8px;border-radius:0;font-size:11px;font-weight:700}.status-pending{background:var(--gm-green-50);color:var(--gm-green)}.status-done{background:#f1f3f4;color:#5f6368}.status-inactive{background:#fce8e6;color:var(--gm-danger)}.status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;box-shadow:0 0 0 1px rgba(0,0,0,.08)}.status-dot.pending{background:#f9ab00}.status-dot.done{background:#188038}.status-col{width:30px;min-width:30px}
+    .table-bottom{padding:9px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--gm-border)}.pagination{display:flex;align-items:center;gap:5px;flex-wrap:wrap}.page-btn{min-width:34px;height:34px;border:1px solid var(--gm-border);background:#fff;border-radius:0;cursor:pointer}.page-btn.active{background:var(--gm-green);color:#fff;border-color:var(--gm-green)}
+    .selection-bar{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:8px 14px;background:#f8fbf8;border-top:1px solid var(--gm-border)}
+    .reject-layout{height:100%;min-height:0;display:grid;grid-template-columns:390px minmax(0,1fr);gap:16px;align-items:stretch}.reject-patient-row{grid-template-columns:minmax(0,3fr) minmax(88px,1fr)}.reject-filter-bar input[type="date"]{min-width:0}.reject-form-card{height:100%;min-height:0;padding:16px;overflow:auto}.reject-right{height:100%;min-height:0;min-width:0;display:flex;flex-direction:column;overflow:hidden}.reject-filter-bar{padding:10px 12px;display:grid;grid-template-columns:minmax(126px,.72fr) minmax(126px,.72fr) minmax(170px,1.2fr) minmax(95px,.62fr) minmax(150px,1fr) auto auto auto;gap:7px;align-items:end;border-bottom:1px solid var(--gm-border)}.icon-action{width:40px;height:40px;border:1px solid var(--gm-border);border-radius:0;background:#fff;color:var(--gm-green);cursor:pointer;display:flex;align-items:center;justify-content:center}.icon-action:hover{background:var(--gm-green-50)}.icon-action svg{width:20px;height:20px;fill:currentColor}
+    .radio-row{display:flex;align-items:center;gap:18px;min-height:42px}.radio-row label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:400}
+    .settings-layout{height:100%;min-height:0;display:grid;grid-template-columns:240px minmax(0,1fr);gap:16px}
+    .settings-nav-card,.settings-content-card{height:100%;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+    .panel-title-bar{flex:0 0 auto;min-height:42px;padding:10px 14px;border-bottom:1px solid var(--gm-border);display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff}
+    .panel-title{margin:0;color:var(--gm-green);font-size:15px;font-weight:700;line-height:1.25}
+    .settings-nav{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:0;overflow:auto}
+    .settings-nav button{min-height:44px;border:0;border-bottom:1px solid var(--gm-border);border-left:4px solid transparent;background:#fff;border-radius:0;padding:0 14px;text-align:left;cursor:pointer;color:#303431;font-weight:700}
+    .settings-nav button.active{background:var(--gm-green-50);border-left-color:var(--gm-green);color:var(--gm-green)}
+    .settings-subnav{display:flex;flex-direction:column;background:#f8fbf8;border-bottom:1px solid var(--gm-border)}
+    .settings-subnav button{min-height:38px;padding-left:28px;font-size:12px;border-left:4px solid transparent}
+    .settings-subnav button.active{background:#eef7f0;color:var(--gm-green);border-left-color:#6db783}
+    .settings-content{flex:1 1 auto;height:auto;min-height:0;overflow:auto}
+    .settings-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.settings-section{padding:14px;min-width:0}.reject-config-head{display:flex;align-items:end;gap:12px;justify-content:space-between;margin-bottom:12px}.reject-config-head .field{max-width:430px;flex:1}
+    .filter-card>.panel-title,.reject-form-card>.panel-title,.transport-form-card>.panel-title{margin-bottom:12px}.filter-reset-corner{position:absolute;right:8px;top:7px;width:34px;height:34px;min-height:34px;padding:0}
+    .qr-layout{display:grid;grid-template-columns:minmax(320px,500px) minmax(0,1fr);gap:22px;align-items:start}.qr-box{border:1px solid var(--gm-border);background:#fff;padding:12px;display:flex;align-items:center;justify-content:center;min-height:520px;overflow:auto}.qr-poster{width:min(100%,440px);border:1px solid #cfd4d0;background:#fff;padding:20px 18px 24px;display:flex;flex-direction:column;align-items:center;font-family:Arial,Helvetica,sans-serif;color:var(--gm-green)}.qr-org{text-align:center;line-height:1.12}.qr-org-line{font-weight:700}.qr-org-line.hospital{font-size:18px}.qr-org-line.institute{font-size:22px;margin-top:4px}.qr-code-wrap{position:relative;width:min(88%,360px);aspect-ratio:1;margin:18px auto}.qr-code-svg{display:block;width:100%;height:100%;shape-rendering:crispEdges}.qr-logo-box{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:19%;aspect-ratio:1;background:#fff;display:flex;align-items:center;justify-content:center}.qr-logo-box img{display:block;width:82%;height:82%;object-fit:contain}.qr-guide{text-align:center;margin-top:4px;color:var(--gm-green)}.qr-guide-line{font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:1.16;font-weight:700}.reject-draft-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.draft-new-code{color:var(--gm-sub);font-style:italic}.draft-table input.control,.draft-table select.control{height:34px;font-size:12px}.draft-table td{padding:5px}.draft-remove-btn{width:30px;height:30px;border:1px solid var(--gm-border);background:#fff;color:var(--gm-danger);font-size:20px;line-height:1;cursor:pointer}.draft-remove-btn:hover{background:#fce8e6}.draft-unsaved{color:var(--gm-warning);font-weight:700;font-size:12px}.link-box{display:flex;gap:8px;align-items:stretch}.link-box .control{flex:1}.install-card{max-width:760px}.install-status{padding:12px;border:1px solid var(--gm-border);background:#f8fbf8;margin:12px 0}.utility-note{line-height:1.5;color:var(--gm-sub);font-size:12px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(32,33,36,.42);z-index:200;display:flex;align-items:center;justify-content:center;padding:18px}.modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:0;box-shadow:0 18px 50px rgba(0,0,0,.24)}.modal-head{padding:16px 18px;border-bottom:1px solid var(--gm-border);display:flex;align-items:center;justify-content:space-between}.modal-title{font-size:17px;font-weight:700}.modal-body{padding:18px}.modal-foot{padding:12px 18px;border-top:1px solid var(--gm-border);display:flex;justify-content:flex-end;gap:9px}
+    .toast-wrap{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;pointer-events:none;padding:18px}.toast{min-width:min(360px,90vw);max-width:min(520px,92vw);background:#303134;color:#fff;border-radius:0;padding:14px 18px;box-shadow:0 10px 28px rgba(0,0,0,.28);font-size:14px;font-weight:700;text-align:center;line-height:1.4;pointer-events:auto}.toast.error{background:#b3261e}.toast.success{background:#188038}.toast-action{margin-left:10px;border:1px solid rgba(255,255,255,.75);background:transparent;color:#fff;font-weight:700;cursor:pointer;padding:4px 8px}
+    .spinner-overlay{position:fixed;inset:0;z-index:290;background:rgba(255,255,255,.52);display:flex;align-items:center;justify-content:center}.spinner{width:38px;height:38px;border:4px solid #dce9df;border-top-color:var(--gm-green);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .app-footer{flex:0 0 auto;font-size:11px;color:#6b706c;text-align:center;padding:3px 12px 4px;line-height:1.2;background:var(--gm-bg)}
+    .vi-date-wrap{position:relative;min-width:0;height:42px}.vi-date-display{position:absolute;inset:0;width:100%;height:42px;background:#fff;padding-right:72px;cursor:pointer}.vi-date-native{position:absolute;right:0;top:0;width:42px;height:42px;opacity:0;cursor:pointer;z-index:4}.date-clear-btn{position:absolute;right:42px;top:0;width:30px;height:42px;border:0;background:transparent;color:#6b6f72;font-size:19px;z-index:5;cursor:pointer}.date-clear-btn:hover{background:#eef2ef;color:var(--gm-green)}.date-calendar-icon{position:absolute;right:0;top:0;width:42px;height:42px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:3;color:var(--gm-green)}.date-calendar-icon svg{width:19px;height:19px;fill:currentColor}
+    .empty-state{padding:32px 20px;text-align:center;color:var(--gm-sub)}.small{font-size:11px}.nowrap{white-space:nowrap}
+    #staffAppPage{height:100%;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+    #receivePage,#rejectPage,#settingsPage{flex:1 1 auto;min-height:0;overflow:hidden}
+    #receivePage:not(.hidden),#rejectPage:not(.hidden),#settingsPage:not(.hidden){display:flex;flex-direction:column}
+    #receivePage>.staff-layout,#rejectPage>.reject-layout{flex:1 1 auto;min-height:0}
+    #settingsContent{flex:1 1 auto;min-height:0;overflow:auto}
+    @media(max-width:1100px){.reject-layout{grid-template-columns:340px minmax(0,1fr)}.receive-filter-bar{grid-template-columns:repeat(2,minmax(0,1fr))}.receive-filter-bar .filter-unit,.receive-filter-bar .filter-receiver{grid-column:1/3}.receive-filter-bar .btn{width:100%}.reject-filter-bar{grid-template-columns:repeat(2,minmax(0,1fr))}.reject-filter-bar .filter-unit,.reject-filter-bar .filter-patient{grid-column:1/3}.reject-filter-bar .btn{width:100%}}
+    @media(max-width:820px){:root{--header-h:70px}.brand-logo{width:36px;height:36px}.app-header{padding:9px 13px}.brand-hospital{font-size:11px}.brand-institute{font-size:15px}.header-user-dept{font-size:11px}.header-user-row{font-size:12px}.staff-tabs{padding:0 4px;overflow-x:auto;overflow-y:hidden}.staff-tab{padding:0 12px;white-space:nowrap}.page{padding:12px}.public-send-page{padding:16px 12px calc(12px + env(safe-area-inset-bottom));scroll-padding-bottom:calc(96px + env(safe-area-inset-bottom));overscroll-behavior:contain}.public-send-page .card-pad{padding-bottom:0}.public-send-page .actions{position:sticky;bottom:0;z-index:15;background:#fff;margin:0 -18px;padding:8px 18px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -2px 8px rgba(60,64,67,.10)}.sample-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#staffAppPage{overflow:auto}.staff-layout,.reject-layout{height:auto;min-height:100%;grid-template-columns:minmax(0,1fr)}.filter-card,.table-card,.reject-right,.reject-form-card{height:auto;min-height:auto;max-height:none}.filter-card,.reject-form-card{overflow:visible}.receive-filter-bar{grid-template-columns:repeat(2,minmax(0,1fr))}.transport-sample-grid{grid-template-columns:1fr}.reject-filter-bar{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-layout{height:auto;grid-template-columns:1fr}.settings-nav-card,.settings-content-card{height:auto;min-height:auto}.settings-nav{height:auto;flex-direction:row;overflow-x:auto;overflow-y:hidden}.settings-nav button{min-width:max-content;border-left:0;border-bottom:3px solid transparent}.settings-nav button.active{border-bottom-color:var(--gm-green)}.settings-subnav{flex-direction:row;overflow-x:auto}.settings-subnav button{padding:0 12px}.settings-grid{grid-template-columns:1fr}.qr-layout{grid-template-columns:1fr}.settings-section{min-height:auto;max-height:none;overflow:visible}.qr-guide-line{font-size:21px}.qr-org-line.hospital{font-size:17px}.qr-org-line.institute{font-size:20px}.field-row-3{grid-template-columns:1fr}.table-toolbar{align-items:flex-start;flex-direction:column}}
+    @media(max-width:560px){.reject-patient-row{grid-template-columns:minmax(0,3fr) minmax(82px,1fr)}.reject-filter-bar input[type="date"]{min-width:0}.header-user-dept{max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sample-grid{grid-template-columns:1fr}.field-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.receive-filter-bar{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end}.receive-filter-bar .filter-unit,.receive-filter-bar .filter-receiver{grid-column:1/3}.receive-filter-bar .btn{width:100%}.reject-filter-bar{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:end}.reject-filter-bar .filter-unit,.reject-filter-bar .filter-patient{grid-column:1/3}.reject-filter-bar .btn{width:100%}.filter-actions{grid-template-columns:1fr 1fr}.modal-backdrop{padding:8px}.modal-body{padding:14px}.app-footer{font-size:10px}}
+  </style>
+</head>
+<body>
+<div id="app" class="app-shell">
+  <header class="app-header">
+    <div class="brand-wrap">
+      <img class="brand-logo" src="./logo-bachmai.png" alt="Logo Bệnh viện Bạch Mai">
+      <div class="brand">
+        <div id="brandHospital" class="brand-hospital">BỆNH VIỆN BẠCH MAI</div>
+        <div id="brandInstitute" class="brand-institute">VIỆN XÉT NGHIỆM Y HỌC</div>
+      </div>
+    </div>
+    <div id="headerUser" class="header-user hidden">
+      <div id="headerDept" class="header-user-dept">Khoa:</div>
+      <div class="header-user-row"><span id="headerUserName"></span><button id="logoutBtn" class="icon-btn" title="Đăng xuất" aria-label="Đăng xuất"></button></div>
+    </div>
+  </header>
+
+  <nav id="staffTabs" class="staff-tabs hidden">
+    <button class="staff-tab active" data-tab="receive">SỔ GIAO NHẬN MẪU</button>
+    <button class="staff-tab" data-tab="reject">SỔ TỪ CHỐI MẪU</button>
+    <button id="settingsTabBtn" class="staff-tab hidden" data-tab="settings">CÀI ĐẶT</button>
+  </nav>
+
+  <main class="app-main">
+    <section id="publicSendPage" class="public-send-page hidden">
+      <h1 class="page-title">PHIẾU GỬI MẪU XÉT NGHIỆM</h1>
+      <p class="page-subtitle">Vui lòng khai báo đúng đơn vị gửi và số lượng mẫu trước khi bàn giao.</p>
+      <div class="card card-pad">
+        <form id="sendForm" class="form-stack" novalidate>
+          <div class="field autocomplete">
+            <label for="sendUnitText">Viện/TT/Khoa gửi mẫu</label>
+            <input id="sendUnitText" class="control" type="text" autocomplete="off" placeholder="Nhập mã hoặc tên đơn vị...">
+            <input id="sendUnitId" type="hidden">
+            <div id="sendUnitSuggestions" class="suggestions hidden"></div>
+          </div>
+          <div class="field">
+            <label for="senderName">Người gửi</label>
+            <input id="senderName" class="control" type="text" autocomplete="name" placeholder="Nhập họ tên người gửi">
+          </div>
+          <div>
+            <div class="card-title" style="margin-bottom:10px">Số lượng mẫu theo chuyên ngành</div>
+            <div id="sampleGrid" class="sample-grid"></div>
+          </div>
+          <div class="total-strip"><span>Tổng số mẫu</span><strong id="sampleTotal">0</strong></div>
+          <div class="field"><label for="sendNote">Ghi chú</label><textarea id="sendNote" class="control" placeholder="Không bắt buộc"></textarea></div>
+          <div class="actions"><button id="submitSampleBtn" type="submit" class="btn btn-primary full-btn">GỬI MẪU</button></div>
+        </form>
+      </div>
+    </section>
+
+    <section id="staffLoginPage" class="staff-login-wrap hidden">
+      <div class="card card-pad">
+        <img class="login-brand-logo" src="./logo-bachmai.png" alt="Logo Bệnh viện Bạch Mai">
+        <h1 class="login-title">SỔ GIAO NHẬN - TỪ CHỐI<br>MẪU BỆNH PHẨM XÉT NGHIỆM - TRUYỀN MÁU</h1>
+        <form id="loginForm" class="form-stack" novalidate>
+          <div class="field"><label for="loginCode">Mã nhân viên</label><input id="loginCode" class="control" type="text" autocomplete="username"></div>
+          <div class="field"><label for="loginPassword">Mật khẩu</label><input id="loginPassword" class="control" type="password" autocomplete="current-password"></div>
+          <button id="loginSubmitBtn" type="submit" class="btn btn-primary full-btn">ĐĂNG NHẬP</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="staffAppPage" class="page hidden">
+      <div id="receivePage">
+        <div class="staff-layout">
+          <aside class="card transport-form-card">
+            <h2 class="panel-title">NHẬN MẪU HỆ THỐNG VẬN CHUYỂN</h2>
+            <form id="transportReceiveForm" class="form-stack" novalidate>
+              <div class="field"><label for="transportSystem">Hệ thống vận chuyển<span class="required-star">*</span></label><select id="transportSystem" class="control"></select></div>
+              <div class="field autocomplete"><label>Viện/TT/Khoa gửi mẫu<span class="required-star">*</span></label><input id="transportUnitText" class="control" type="text" autocomplete="off" placeholder="Nhập tên khoa hoặc số trạm..."><input id="transportUnitId" type="hidden"><input id="transportStationNo" type="hidden"><div id="transportUnitSuggestions" class="suggestions hidden"></div><div id="transportStationHint" class="transport-station-hint"></div></div>
+              <div class="field"><label>Số lượng ống theo chuyên ngành<span class="required-star">*</span></label><div id="transportSampleGrid" class="transport-sample-grid"></div></div>
+              <div class="field autocomplete"><label>Người nhận<span class="required-star">*</span></label><input id="transportReceiverText" class="control" type="text" autocomplete="off"><input id="transportReceiverId" type="hidden"><div id="transportReceiverSuggestions" class="suggestions hidden"></div></div>
+              <div class="field"><label for="transportReceivedAt">Thời gian nhận<span class="required-star">*</span></label><input id="transportReceivedAt" class="control" type="datetime-local"></div>
+              <div class="actions"><button id="transportReceiveBtn" type="submit" class="btn btn-primary full-btn">NHẬN MẪU</button></div>
+              <div id="transportQueueRow" class="transport-queue-row"><span id="transportQueueStatus">Đã đồng bộ</span><button id="transportSyncBtn" type="button" class="btn btn-outline transport-sync-btn hidden">ĐỒNG BỘ LẠI</button></div>
+            </form>
+          </aside>
+          <section class="card table-card">
+            <div class="table-toolbar"><div><h2 class="panel-title">SỔ GIAO NHẬN MẪU XÉT NGHIỆM</h2></div></div>
+            <div class="receive-filter-bar">
+              <div class="field"><label for="receiveFrom">Từ ngày</label><input id="receiveFrom" class="control" type="date"></div>
+              <div class="field"><label for="receiveTo">Đến ngày</label><input id="receiveTo" class="control" type="date"></div>
+              <div class="field autocomplete filter-unit"><label>Viện/TT/Khoa gửi mẫu</label><input id="receiveUnitText" class="control" type="text" autocomplete="off" placeholder="Tất cả"><input id="receiveUnitId" type="hidden"><div id="receiveUnitSuggestions" class="suggestions hidden"></div></div>
+              <div class="field"><label for="receiveMethodFilter">Hình thức nhận</label><select id="receiveMethodFilter" class="control"><option value="">Tất cả</option></select></div>
+              <div class="field autocomplete filter-receiver"><label>Người nhận mẫu</label><input id="receiveReceiverText" class="control" type="text" autocomplete="off" placeholder="Tất cả"><input id="receiveReceiverId" type="hidden"><div id="receiveReceiverSuggestions" class="suggestions hidden"></div></div>
+              <button id="receiveSearchBtn" class="btn btn-primary">XEM DANH SÁCH</button>
+              <button id="receiveResetBtn" class="icon-action" type="button" title="Đặt lại bộ lọc" aria-label="Đặt lại bộ lọc"><svg viewBox="0 0 24 24"><path d="M12 5a7 7 0 1 1-6.3 4H8L4.5 5.5 1 9h2.2A9 9 0 1 0 12 3v2Z"/></svg></button>
+            </div>
+            <div class="table-scroll"><table id="receiveTable" class="data-table"></table></div>
+            <div id="receiveSelectionBar" class="selection-bar"><span>Đã chọn: <strong id="receiveSelectedCount">0</strong> lượt</span><button id="receiveConfirmBtn" class="btn btn-primary" disabled>XÁC NHẬN NHẬN MẪU</button></div>
+            <div class="table-bottom"><div id="receiveRangeText" class="small muted"></div><div id="receivePagination" class="pagination"></div></div>
+          </section>
+        </div>
+      </div>
+
+      <div id="rejectPage" class="hidden">
+        <div class="reject-layout">
+          <aside class="card reject-form-card">
+            <h2 class="panel-title">THÔNG TIN TỪ CHỐI MẪU</h2>
+            <form id="rejectForm" class="form-stack" novalidate>
+              <div class="field"><label for="rejectSpecialtyName">Viện/TT/Khoa<span class="required-star">*</span></label><input id="rejectSpecialtyName" class="control" type="text" readonly></div>
+              <div class="field"><label for="rejectLocation">Vị trí phát hiện<span class="required-star">*</span></label><select id="rejectLocation" class="control"></select></div>
+              <div class="field-row reject-patient-row"><div class="field"><label for="rejectPatient">Họ tên BN<span class="required-star">*</span></label><input id="rejectPatient" class="control" type="text"></div><div class="field reject-age-field"><label for="rejectAge">Tuổi<span class="required-star">*</span></label><input id="rejectAge" class="control" type="text"></div></div>
+              <div class="field"><label for="rejectSid">SID<span class="required-star">*</span></label><input id="rejectSid" class="control" type="text"></div>
+              <div class="field autocomplete"><label>Khoa chỉ định<span class="required-star">*</span></label><input id="rejectOrderUnitText" class="control" type="text" autocomplete="off" placeholder="Nhập mã hoặc tên khoa..."><input id="rejectOrderUnitId" type="hidden"><div id="rejectOrderUnitSuggestions" class="suggestions hidden"></div></div>
+              <div class="field-row"><div class="field"><label for="rejectTestType">Loại xét nghiệm<span class="required-star">*</span></label><select id="rejectTestType" class="control"></select></div><div class="field"><label for="rejectTestName">Tên xét nghiệm</label><input id="rejectTestName" class="control" type="text"></div></div>
+              <div class="field"><label for="rejectReason">Lý do từ chối mẫu<span class="required-star">*</span></label><select id="rejectReason" class="control"></select></div>
+              <div class="field"><label for="rejectNote">Ghi chú</label><textarea id="rejectNote" class="control" placeholder="Không bắt buộc"></textarea></div>
+              <div class="field"><label>Hình thức từ chối<span class="required-star">*</span></label><div class="radio-row"><label><input type="radio" name="rejectMethod" value="TRA_TRUC_TIEP" checked> Trả trực tiếp</label><label><input type="radio" name="rejectMethod" value="GOI_DIEN_THOAI"> Gọi điện thoại</label></div></div>
+              <div class="field autocomplete"><label>Người từ chối<span class="required-star">*</span></label><input id="rejectEmployeeText" class="control" type="text" autocomplete="off"><input id="rejectEmployeeId" type="hidden"><div id="rejectEmployeeSuggestions" class="suggestions hidden"></div></div>
+              <div class="field"><label for="rejectReceiver">Người nhận từ chối<span class="required-star">*</span></label><input id="rejectReceiver" class="control" type="text"></div>
+              <div class="field"><label for="rejectAt">Thời gian từ chối<span class="required-star">*</span></label><input id="rejectAt" class="control" type="datetime-local"></div>
+              <div class="actions"><button id="rejectSubmitBtn" type="submit" class="btn btn-primary">LƯU TỪ CHỐI MẪU</button></div>
+            </form>
+          </aside>
+          <section class="card reject-right">
+            <div class="panel-title-bar"><h2 class="panel-title">SỔ TỪ CHỐI MẪU BỆNH PHẨM</h2></div>
+            <div class="reject-filter-bar">
+              <div class="field"><label for="rejectFrom">Từ ngày</label><input id="rejectFrom" class="control" type="date"></div>
+              <div class="field"><label for="rejectTo">Đến ngày</label><input id="rejectTo" class="control" type="date"></div>
+              <div class="field autocomplete filter-unit"><label>Viện/TT/Khoa gửi</label><input id="rejectFilterUnitText" class="control" type="text" autocomplete="off" placeholder="Tất cả"><input id="rejectFilterUnitId" type="hidden"><div id="rejectFilterUnitSuggestions" class="suggestions hidden"></div></div>
+              <div class="field"><label for="rejectFilterSid">SID</label><input id="rejectFilterSid" class="control" type="text" placeholder="Tất cả"></div>
+              <div class="field filter-patient"><label for="rejectFilterPatient">Họ tên BN</label><input id="rejectFilterPatient" class="control" type="text" placeholder="Tất cả"></div>
+              <button id="rejectSearchBtn" class="btn btn-primary">XEM DS</button>
+              <button id="rejectClearFilterBtn" class="icon-action" type="button" title="Đặt lại bộ lọc" aria-label="Đặt lại bộ lọc"><svg viewBox="0 0 24 24"><path d="M12 5a7 7 0 1 1-6.3 4H8L4.5 5.5 1 9h2.2A9 9 0 1 0 12 3v2Z"/></svg></button>
+              <button id="rejectExcelBtn" class="icon-action" title="Xuất Excel" aria-label="Xuất Excel"></button>
+            </div>
+            <div class="table-scroll"><table id="rejectTable" class="data-table"></table></div>
+            <div class="table-bottom"><div id="rejectRangeText" class="small muted"></div><div id="rejectPagination" class="pagination"></div></div>
+          </section>
+        </div>
+      </div>
+
+      <div id="settingsPage" class="hidden">
+        <div class="settings-layout">
+          <aside class="card settings-nav-card">
+            <div class="panel-title-bar"><h2 class="panel-title">CÀI ĐẶT</h2></div>
+            <div class="settings-nav">
+              <button class="manager-only" data-settings="employees">Nhân viên</button>
+              <button class="admin-only" data-settings="units">Đơn vị gửi</button>
+              <button class="admin-only" data-settings="specialties">Chuyên ngành</button>
+              <button class="admin-only" data-settings="transportConfig">Hệ thống vận chuyển</button>
+              <div id="transportConfigSubnav" class="settings-subnav hidden admin-only">
+                <button data-transport-menu="SYSTEM">Hệ thống</button>
+                <button data-transport-menu="STATION">Trạm vận chuyển</button>
+                <button data-transport-menu="SCOPE">Phạm vi nhận mẫu</button>
+              </div>
+              <button class="manager-only" data-settings="rejectConfig">Cấu hình từ chối mẫu</button>
+              <div id="rejectConfigSubnav" class="settings-subnav hidden">
+                <button data-reject-menu="LOCATION">Vị trí phát hiện</button>
+                <button data-reject-menu="TEST_TYPE">Loại xét nghiệm</button>
+                <button data-reject-menu="REASON">Lý do từ chối mẫu</button>
+              </div>
+              <button class="admin-only" data-settings="summary">Tổng hợp ngày</button>
+              <button data-settings="qr">Mã QR ứng dụng</button>
+              <button data-settings="install">Cài đặt ứng dụng</button>
+            </div>
+          </aside>
+          <section class="card settings-content-card">
+            <div class="panel-title-bar"><h2 class="panel-title">NỘI DUNG CÀI ĐẶT</h2></div>
+            <div id="settingsContent" class="settings-content"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">Design by ThS. Nguyễn Văn Chính - Viện Huyết học và Truyền máu Bạch Mai - Bệnh viện Bạch Mai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Version 22.11</footer>
+</div>
+<div id="modalRoot"></div><div id="toastWrap" class="toast-wrap"></div><div id="spinner" class="spinner-overlay hidden"><div class="spinner"></div></div>
+
+<script>
+/* ===== APP_CONFIG: START ===== */
+const APP_VERSION='22.11';
+const API_URL='https://script.google.com/macros/s/AKfycbzajuPqWVK5K_GZ7Ab8b5qi7S1YfqffO5QFheoqJBBiFvvuqG1jo199n4-PvBOZgxP6Ew/exec';
+const CACHE_KEY_PUBLIC='GM_PUBLIC_CATALOG_CACHE_V4';
+const PUBLIC_RECHECK_MS=5*60*1000;
+const CACHE_KEY_STAFF='GM_STAFF_CATALOG_CACHE_V6';
+const STAFF_CACHE_SCHEMA=6;
+const TRANSPORT_CACHE_SCHEMA=2;
+const SESSION_KEY='GM_STAFF_TOKEN_V2';
+const TRANSPORT_QUEUE_KEY_PREFIX='GM_TRANSPORT_QUEUE_V1_';
+const TRANSPORT_RETRY_DELAYS=[2000,5000];
+const PUBLIC_SEND_URL=new URL('./?mode=send',location.href).href;
+const STAFF_APP_URL=new URL('./?mode=staff',location.href).href;
+const SVG={
+  logout:'<svg viewBox="0 0 24 24"><path d="M10 17v2h-5V5h5v2H7v10h3Zm7-10-1.4 1.4 2.6 2.6H10v2h8.2l-2.6 2.6L17 17l5-5-5-5Z"/></svg>',
+  lab:'<svg viewBox="0 0 24 24"><path d="M9 3v2h1v5.6L5.2 18A2 2 0 0 0 6.9 21h10.2a2 2 0 0 0 1.7-3L14 10.6V5h1V3H9Zm3 3h0v5.2l1.8 2.8H10.2l1.8-2.8V6Zm-3 10h6l1.9 3H7.1L9 16Z"/></svg>',
+  clearFilter:'<svg viewBox="0 0 24 24"><path d="M4.3 3 3 4.3l7 7V17l4 4v-5.7l5.7 5.7 1.3-1.3L4.3 3ZM20 4H7.8l2 2H18l-3 3.8v2.4l2 2V10l3-4V4Z"/></svg>',
+  reset:'<svg viewBox="0 0 24 24"><path d="M12 5a7 7 0 1 1-6.3 4H8L4.5 5.5 1 9h2.2A9 9 0 1 0 12 3v2Z"/></svg>',
+  excel:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm1 7V3.5L18.5 9H15ZM8.1 12h2l1.4 2.2L13 12h2l-2.4 3.5L15.1 19h-2l-1.6-2.3L9.9 19h-2l2.5-3.5L8.1 12Z"/></svg>',
+  close:'<svg viewBox="0 0 24 24"><path d="m18.3 5.7-1-1L12 10l-5.3-5.3-1 1L11 11l-5.3 5.3 1 1L12 12l5.3 5.3 1-1L13 11l5.3-5.3Z"/></svg>'
+};
+/* ===== APP_CONFIG: END ===== */
+
+/* ===== STATE: START ===== */
+const State={
+  mode:new URLSearchParams(location.search).get('mode')==='send'?'send':'staff',
+  token:sessionStorage.getItem(SESSION_KEY)||'', user:null, configVersion:0,transportConfigVersion:0,
+  publicCatalogVersion:0,publicLastCheckedAt:0,transportLastCheckedAt:0,
+  transportCacheReady:false,transportCacheSchema:0,transportCacheUserSpecialty:'',transportRefreshing:false,
+  catalogs:{units:[],specialties:[],transportSystems:[],transportStations:[],transportScope:[]}, employees:[], rejectCatalogs:null,
+  publicRequestId:'', rejectRequestId:'', transportRequestId:'', transportQueue:[], transportQueueRunning:false, transportQueueTimer:null,
+  receive:{initialized:false,loaded:false,page:1,total:0,totalPages:1,rows:[],selected:new Set(),filter:{}},
+  reject:{initialized:false,loaded:false,page:1,total:0,totalPages:1,rows:[],filter:{}},
+  settings:{loaded:false,section:'employees',data:null,rejectSpecialty:'',rejectSub:'LOCATION',rejectDraft:null,rejectDraftKey:'',rejectDirty:false,transportSub:'SYSTEM',transportSystem:''}
+};
+/* ===== STATE: END ===== */
+
+/* ===== API_SERVICE: START ===== */
+const ApiService={
+  async call(action,data={}){
+    if(!API_URL||API_URL.includes('PASTE_YOUR_')) throw new Error('Chưa cấu hình API_URL trong index.html.');
+    const payload={action,data:{...data}};
+    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),cache:'no-store'});
+    if(!res.ok) throw new Error('Không kết nối được máy chủ ('+res.status+').');
+    const json=await res.json();
+    if(!json.ok) throw new Error(json.message||'Có lỗi xảy ra.');
+    return json;
+  },
+  auth(action,data={}){return this.call(action,{...data,token:State.token});}
+};
+/* ===== API_SERVICE: END ===== */
+
+/* ===== UI_UTILS: START ===== */
+const Ui={
+  el(id){return document.getElementById(id)},
+  show(id,yes=true){const e=this.el(id);if(e)e.classList.toggle('hidden',!yes)},
+  spinner(yes){this.show('spinner',yes)},
+  toast(message,type='success'){
+    const wrap=this.el('toastWrap');wrap.innerHTML='';const n=document.createElement('div');n.className='toast '+type;const icon=document.createElement('span');icon.textContent=type==='error'?'⚠ ':'✓ ';const t=document.createElement('span');t.textContent=message;n.append(icon,t);wrap.appendChild(n);setTimeout(()=>{if(n.isConnected)n.remove()},type==='error'?4000:2800);
+  },
+  reloadToast(message){const wrap=this.el('toastWrap');wrap.innerHTML='';const n=document.createElement('div');n.className='toast success';const t=document.createElement('span');t.textContent=message;const b=document.createElement('button');b.type='button';b.className='toast-action';b.textContent='TẢI LẠI';b.addEventListener('click',()=>location.reload());n.append(t,b);wrap.appendChild(n)},
+  esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));},
+  norm(v){return String(v??'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d');},
+  fmtDateTime(v){if(!v)return'';const s=String(v).trim();const m=s.match(/^(\d{4})-(\d{2})-(\d{2})T?(\d{2})?:?(\d{2})?/);if(m&&!/[zZ]|[+-]\d{2}:?\d{2}$/.test(s))return `${m[3]}/${m[2]}/${m[1]}${m[4]?' '+m[4]+':'+(m[5]||'00'):''}`;const d=v instanceof Date?v:new Date(s);if(Number.isNaN(d.getTime()))return s;const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(d);const x={};parts.forEach(p=>x[p.type]=p.value);return `${x.day}/${x.month}/${x.year} ${x.hour}:${x.minute}`;},
+  fmtDate(v){if(!v)return'';const m=String(v).match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}/${m[2]}/${m[1]}`:v;},
+  shortName(name){const parts=String(name||'').trim().split(/\s+/).filter(Boolean);if(parts.length<=1)return name||'';const last=parts.pop();return parts.map(x=>x.charAt(0).toUpperCase()+'.').join('')+last;},
+  todayLocalDate(){const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const m={};parts.forEach(x=>m[x.type]=x.value);return `${m.year}-${m.month}-${m.day}`;},
+  nowLocalInput(){const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());const m={};parts.forEach(x=>m[x.type]=x.value);return `${m.year}-${m.month}-${m.day}T${m.hour}:${m.minute}`;},
+  setButtonBusy(btn,busy){if(typeof btn==='string')btn=this.el(btn);if(!btn)return false;if(busy){if(btn.dataset.busy==='1')return false;btn.dataset.busy='1';btn.dataset.busyWasDisabled=btn.disabled?'1':'0';btn.disabled=true;btn.classList.add('is-busy');btn.setAttribute('aria-busy','true');return true}btn.dataset.busy='';btn.classList.remove('is-busy');btn.removeAttribute('aria-busy');if(btn.dataset.busyWasDisabled!=='1')btn.disabled=false;delete btn.dataset.busyWasDisabled;return true},
+  async runButtonBusy(btn,task){if(!this.setButtonBusy(btn,true))return;try{return await task()}finally{this.setButtonBusy(btn,false)}},
+  focusNext(current){const container=current.closest('form,.modal,.filter-card,.reject-filter-bar,.settings-section')||document;const controls=[...container.querySelectorAll('input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]),select,button[type="submit"],button.modal-confirm')].filter(el=>!el.disabled&&!el.readOnly&&el.offsetParent!==null&&!el.classList.contains('vi-date-native'));const i=controls.indexOf(current);const next=i>=0?controls[i+1]:null;if(next){if(next.matches('button[type="submit"],button.modal-confirm')){next.click();return true}next.focus();if(next.select&&next.tagName==='INPUT')try{next.select()}catch(e){};return true}const submit=container.querySelector('button[type="submit"]:not(:disabled),button.modal-confirm:not(:disabled)');if(submit){submit.click();return true}return false},
+  modal({title,body,confirmText='LƯU',cancelText='HỦY',onConfirm,hideConfirm=false}){
+    const root=this.el('modalRoot');root.innerHTML=`<div class="modal-backdrop"><div class="modal"><div class="modal-head"><div class="modal-title">${this.esc(title)}</div><button class="icon-btn modal-x" aria-label="Đóng">${SVG.close}</button></div><div class="modal-body">${body}</div><div class="modal-foot"><button class="btn btn-outline modal-cancel">${cancelText}</button>${hideConfirm?'':`<button class="btn btn-primary modal-confirm">${confirmText}</button>`}</div></div></div>`;
+    const close=()=>{root.innerHTML=''};root.querySelector('.modal-x').addEventListener('click',close);root.querySelector('.modal-cancel').addEventListener('click',close);root.querySelector('.modal-backdrop').addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))close()});
+    if(!hideConfirm)root.querySelector('.modal-confirm').addEventListener('click',async(e)=>{await Ui.runButtonBusy(e.currentTarget,async()=>{try{await onConfirm?.(root);close()}catch(err){Ui.toast(err.message,'error')}})});
+    return root;
+  }
+};
+/* ===== UI_UTILS: END ===== */
+
+/* ===== DATE_UI: START ===== */
+function syncDateUi(native){const display=Ui.el(native.id+'Display');if(display)display.value=Ui.fmtDate(native.value);const wrap=native.closest('.vi-date-wrap');const clear=wrap?.querySelector('.date-clear-btn');if(clear)clear.classList.toggle('hidden',!native.value)}
+function openDatePicker(native){try{if(typeof native.showPicker==='function')native.showPicker();else{native.focus();native.click()}}catch(e){native.focus();native.click()}}
+function initDateUi(){document.querySelectorAll('.date-vi-input').forEach(n=>{if(n.dataset.dateReady==='1'){syncDateUi(n);return}n.dataset.dateReady='1';const wrap=n.closest('.vi-date-wrap'),display=Ui.el(n.id+'Display');if(wrap&&!wrap.querySelector('.date-calendar-icon')){const cal=document.createElement('span');cal.className='date-calendar-icon';cal.innerHTML='<svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h1a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1V2Zm11 8H6v10h12V10ZM6 8h12V6H6v2Z"/></svg>';wrap.appendChild(cal);const clear=document.createElement('button');clear.type='button';clear.className='date-clear-btn hidden';clear.setAttribute('aria-label','Xóa ngày');clear.textContent='×';clear.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();n.value='';syncDateUi(n);n.dispatchEvent(new Event('change',{bubbles:true}))});wrap.appendChild(clear)}n.addEventListener('change',()=>syncDateUi(n));if(display){display.addEventListener('click',()=>openDatePicker(n));display.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDatePicker(n)}})}syncDateUi(n)})}
+/* ===== DATE_UI: END ===== */
+
+/* ===== AUTOCOMPLETE: START ===== */
+const AutocompleteRegistry={};
+function ensureQuickClear(input,onClear){const wrap=input?.closest('.autocomplete');if(!wrap||wrap.querySelector('.quick-clear'))return wrap?.querySelector('.quick-clear')||null;const b=document.createElement('button');b.type='button';b.className='quick-clear hidden';b.setAttribute('aria-label','Xóa nhanh');b.textContent='×';b.addEventListener('mousedown',e=>e.preventDefault());b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();onClear?.();input.focus()});wrap.appendChild(b);return b}
+function bindAutocomplete(options){
+  const key=options.textId;
+  if(AutocompleteRegistry[key]){AutocompleteRegistry[key].update(options);return AutocompleteRegistry[key].api}
+  const input=Ui.el(options.textId),hidden=Ui.el(options.hiddenId),box=Ui.el(options.suggestionsId);if(!input||!hidden||!box)return null;
+  const state={options:{...options},items:[]};
+  const label=x=>state.options.labelFn(x);
+  const sub=x=>state.options.subFn?.(x)||'';
+  const searchText=x=>state.options.searchFn?state.options.searchFn(x):(label(x)+' '+sub(x));
+  let clearBtn=null;
+  const syncClear=()=>{if(clearBtn)clearBtn.classList.toggle('hidden',!input.value)};
+  const selectItem=x=>{if(!x)return false;hidden.value=x.code??x.maNhanVien??'';input.value=label(x);box.classList.add('hidden');syncClear();state.options.onSelect?.(x);return true};
+  const render=()=>{
+    const q=Ui.norm(input.value);
+    state.items=(state.options.getItems?.()||[]).filter(x=>!q||Ui.norm(searchText(x)).includes(q)).slice(0,25);
+    if(!state.items.length){box.classList.add('hidden');box.innerHTML='';return}
+    box.innerHTML=state.items.map((x,i)=>`<div class="suggestion" data-i="${i}"><div class="suggestion-main">${Ui.esc(label(x))}</div>${state.options.subFn?`<div class="suggestion-sub">${Ui.esc(sub(x))}</div>`:''}</div>`).join('');
+    box.classList.remove('hidden');
+  };
+  input.addEventListener('input',()=>{hidden.value='';syncClear();render()});
+  input.addEventListener('focus',render);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!box.classList.contains('hidden')&&state.items.length){e.preventDefault();e.stopPropagation();selectItem(state.items[0]);Ui.focusNext(input)}});
+  input.addEventListener('blur',()=>setTimeout(()=>box.classList.add('hidden'),160));
+  box.addEventListener('mousedown',e=>{
+    const el=e.target.closest('.suggestion');if(!el)return;e.preventDefault();const x=state.items[Number(el.dataset.i)];if(!x)return;
+    selectItem(x);
+  });
+  let api=null;clearBtn=ensureQuickClear(input,()=>api?.clear());syncClear();
+  api={
+    set(item){if(!item){this.clear();return}selectItem(item)},
+    clear(){hidden.value='';input.value='';box.classList.add('hidden');syncClear()},
+    refresh(){render()}
+  };
+  AutocompleteRegistry[key]={api,update(next){state.options={...state.options,...next}}};
+  return api;
+}
+let AC={};
+function unitLabel(x){return x?.name||''}
+function unitSearchText(x){return x?.searchKey||`${x?.code||''} ${x?.name||''} ${x?.type||''}`}
+function employeeLabel(x){return `${x.maNhanVien} - ${x.tenNhanVien}`}
+function makeClientRequestId(){return (crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2))}
+/* ===== AUTOCOMPLETE: END ===== */
+
+/* ===== APP_CORE: START ===== */
+const AppCore={
+  async init(){
+    this.bindViewport();Ui.el('logoutBtn').innerHTML=SVG.logout;Ui.el('rejectExcelBtn').innerHTML=SVG.excel;initDateUi();this.bindGlobal();
+    if(State.mode==='send')await PublicSendApp.init();else await StaffApp.init();
+  },
+  bindViewport(){const apply=()=>{const h=Math.round(window.visualViewport?.height||window.innerHeight||document.documentElement.clientHeight);if(h>0)document.documentElement.style.setProperty('--app-visible-height',h+'px')};apply();window.addEventListener('resize',apply,{passive:true});window.visualViewport?.addEventListener('resize',apply,{passive:true});window.visualViewport?.addEventListener('scroll',apply,{passive:true})},
+  bindGlobal(){
+    document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete'))document.querySelectorAll('.suggestions').forEach(x=>x.classList.add('hidden'))});
+    window.addEventListener('beforeunload',e=>{if(State.settings?.rejectDirty){e.preventDefault();e.returnValue=''}});
+    document.addEventListener('keydown',e=>{if(e.key!=='Enter'||e.shiftKey||e.ctrlKey||e.altKey||e.metaKey)return;const t=e.target;if(!(t instanceof HTMLElement)||t.tagName==='TEXTAREA'||t.tagName==='BUTTON'||t.matches('input[type=radio],input[type=checkbox],input[type=date],input[type=datetime-local]'))return;if(t.closest('.autocomplete')&&!t.closest('.suggestions')&&!t.value)return;e.preventDefault();Ui.focusNext(t)});
+    window.addEventListener('focus',()=>{if(State.mode==='staff'&&State.token&&State.user&&Date.now()-State.transportLastCheckedAt>15000)StaffApp.prefetchTransportConfig()});
+  },
+  cacheKey(){return CACHE_KEY_STAFF},
+  loadCache(){
+    try{
+      const c=JSON.parse(localStorage.getItem(CACHE_KEY_STAFF)||'null');
+      if(!c||Number(c.schemaVersion||0)!==STAFF_CACHE_SCHEMA||!Array.isArray(c.units)||!Array.isArray(c.specialties))return false;
+      const tm=c.transportMeta||{};
+      State.catalogs={units:c.units,specialties:c.specialties,transportSystems:Array.isArray(c.transportSystems)?c.transportSystems:[],transportStations:Array.isArray(c.transportStations)?c.transportStations:[],transportScope:Array.isArray(c.transportScope)?c.transportScope:[]};
+      State.configVersion=Number(c.configVersion||0);State.transportConfigVersion=Number(c.transportConfigVersion||0);
+      State.transportCacheReady=tm.ready===true;State.transportCacheSchema=Number(tm.schemaVersion||0);State.transportCacheUserSpecialty=String(tm.userSpecialty||'');
+      return true;
+    }catch(e){return false}
+  },
+  saveCache(){
+    localStorage.setItem(CACHE_KEY_STAFF,JSON.stringify({schemaVersion:STAFF_CACHE_SCHEMA,configVersion:State.configVersion,transportConfigVersion:State.transportConfigVersion,transportMeta:{ready:State.transportCacheReady===true,schemaVersion:State.transportCacheSchema||0,userSpecialty:State.transportCacheUserSpecialty||''},units:State.catalogs.units,specialties:State.catalogs.specialties,transportSystems:State.catalogs.transportSystems||[],transportStations:State.catalogs.transportStations||[],transportScope:State.catalogs.transportScope||[]}));
+  },
+  markTransportCacheReady(userSpecialty){State.transportCacheReady=true;State.transportCacheSchema=TRANSPORT_CACHE_SCHEMA;State.transportCacheUserSpecialty=String(userSpecialty||'');},
+  hasTransportCache(userSpecialty=''){
+    const shape=Array.isArray(State.catalogs.transportSystems)&&Array.isArray(State.catalogs.transportStations)&&Array.isArray(State.catalogs.transportScope);
+    const userOk=!userSpecialty||State.transportCacheUserSpecialty===String(userSpecialty||'');
+    return State.transportCacheReady===true&&State.transportCacheSchema===TRANSPORT_CACHE_SCHEMA&&State.transportConfigVersion>0&&shape&&userOk;
+  },
+  preparePublicCatalogs(catalogs){const c=catalogs||{};return{units:(c.units||[]).map(x=>({...x,searchKey:Ui.norm(`${x.code||''} ${x.name||''} ${x.type||''}`)})),specialties:(c.specialties||[])}},
+  loadPublicCache(){try{const c=JSON.parse(localStorage.getItem(CACHE_KEY_PUBLIC)||'null');if(c&&Array.isArray(c.units)&&Array.isArray(c.specialties)){State.catalogs=this.preparePublicCatalogs(c);State.publicCatalogVersion=Number(c.publicCatalogVersion||0);State.publicLastCheckedAt=Number(c.lastCheckedAt||0);return true}}catch(e){}return false},
+  savePublicCache(){localStorage.setItem(CACHE_KEY_PUBLIC,JSON.stringify({publicCatalogVersion:State.publicCatalogVersion,lastCheckedAt:State.publicLastCheckedAt,units:State.catalogs.units,specialties:State.catalogs.specialties}))},
+  applyBrand(data){if(data?.hospitalName)Ui.el('brandHospital').textContent=data.hospitalName;if(data?.instituteName)Ui.el('brandInstitute').textContent=data.instituteName;document.title=data?.appName||'Gửi mẫu xét nghiệm'},
+  applyCatalogResponse(data){let changed=false;if(data?.catalogsChanged&&data.catalogs){State.catalogs.units=data.catalogs.units||[];State.catalogs.specialties=data.catalogs.specialties||[];changed=true}if(data?.configVersion)State.configVersion=Number(data.configVersion||0);if(data?.transportCatalogsChanged&&data.transportCatalogs){State.catalogs.transportSystems=data.transportCatalogs.systems||[];State.catalogs.transportStations=data.transportCatalogs.stations||[];State.catalogs.transportScope=data.transportCatalogs.scope||[];this.markTransportCacheReady(State.user?.maChuyenNganh||'');changed=true}if(data?.transportConfigVersion)State.transportConfigVersion=Number(data.transportConfigVersion||0);if(changed)this.saveCache()},
+  applyTransportCatalogResponse(data){if(!data)return false;let changed=false;if(data.transportCatalogsChanged&&data.transportCatalogs){State.catalogs.transportSystems=data.transportCatalogs.systems||[];State.catalogs.transportStations=data.transportCatalogs.stations||[];State.catalogs.transportScope=data.transportCatalogs.scope||[];this.markTransportCacheReady(State.user?.maChuyenNganh||'');changed=true}if(data.transportConfigVersion)State.transportConfigVersion=Number(data.transportConfigVersion||0);if(changed)this.saveCache();return changed},
+  applyPublicCatalogResponse(data){if(data?.catalogsChanged&&data.catalogs)State.catalogs=this.preparePublicCatalogs(data.catalogs);if(data?.publicCatalogVersion)State.publicCatalogVersion=Number(data.publicCatalogVersion||0);State.publicLastCheckedAt=Date.now();this.savePublicCache()},
+  handleAuthError(e){if(/Phiên đăng nhập|Tài khoản đã bị khóa|không còn quyền/.test(e.message||'')){StaffApp.logout(false);Ui.toast(e.message,'error');return true}return false}
+};
+/* ===== APP_CORE: END ===== */
+
+/* ===== PUBLIC_SEND_APP: START ===== */
+const PublicSendApp={
+  async init(){
+    Ui.show('publicSendPage',true);Ui.show('staffLoginPage',false);Ui.show('staffAppPage',false);Ui.show('staffTabs',false);Ui.show('headerUser',false);this.ensureRequestId();
+    Ui.el('sendForm').addEventListener('submit',e=>{e.preventDefault();this.submit()});
+    const hasCache=AppCore.loadPublicCache();
+    if(hasCache){this.renderSpecialties();this.bindPickers();this.setReady(true)}else{this.setReady(false);Ui.el('sampleGrid').innerHTML='<div class="empty-state">Đang tải danh mục...</div>'}
+    if(!hasCache){await this.refreshCatalogs(true,true)}
+    else if(Date.now()-State.publicLastCheckedAt>=PUBLIC_RECHECK_MS)this.revalidateInBackground();
+  },
+  setReady(ready){const b=Ui.el('submitSampleBtn');if(b)b.disabled=!ready},
+  ensureRequestId(){if(!State.publicRequestId)State.publicRequestId=makeClientRequestId();return State.publicRequestId},
+  renewRequestId(){State.publicRequestId=makeClientRequestId()},
+  bindPickers(){AC.sendUnit=bindAutocomplete({textId:'sendUnitText',hiddenId:'sendUnitId',suggestionsId:'sendUnitSuggestions',getItems:()=>State.catalogs.units.filter(x=>x.status!=='Ngừng hoạt động'),labelFn:unitLabel,searchFn:unitSearchText})},
+  renderSpecialties(){const box=Ui.el('sampleGrid');box.innerHTML=(State.catalogs.specialties||[]).map(s=>`<div class="sample-item"><div><div class="sample-name">${Ui.esc(s.shortName||s.name)}</div><div class="sample-code">${Ui.esc(s.name)}</div></div><input class="control sample-qty" type="number" min="0" step="1" value="0" data-code="${Ui.esc(s.code)}"></div>`).join('')||'<div class="empty-state">Chưa cấu hình chuyên ngành.</div>';box.querySelectorAll('.sample-qty').forEach(i=>i.addEventListener('input',()=>this.updateTotal()));this.updateTotal()},
+  async refreshCatalogs(showError=false,force=false){
+    try{
+      const r=await ApiService.call('publicBootstrap',{publicCatalogVersion:force?0:State.publicCatalogVersion,hasCatalogCache:!force&&State.catalogs.units.length>0});
+      AppCore.applyBrand(r.data);AppCore.applyPublicCatalogResponse(r.data);this.renderSpecialties();this.bindPickers();this.setReady(true);return true;
+    }catch(e){if(showError)Ui.toast(e.message,'error');return false}
+  },
+  async revalidateInBackground(){
+    try{const r=await ApiService.call('publicCatalogVersion',{});const v=Number(r.data?.publicCatalogVersion||0);State.publicLastCheckedAt=Date.now();if(v&&v!==State.publicCatalogVersion)await this.refreshCatalogs(false,true);else AppCore.savePublicCache()}catch(e){}
+  },
+  updateTotal(){let total=0;document.querySelectorAll('#sampleGrid .sample-qty').forEach(i=>{const n=Math.max(0,parseInt(i.value||'0',10)||0);total+=n});Ui.el('sampleTotal').textContent=total;return total},
+  resetAfterSuccess(){Ui.el('senderName').value='';Ui.el('sendNote').value='';document.querySelectorAll('#sampleGrid .sample-qty').forEach(i=>i.value='0');this.updateTotal();AC.sendUnit?.clear();this.renewRequestId();Ui.el('senderName').focus()},
+  async submit(){
+    const unitId=Ui.el('sendUnitId').value,senderName=Ui.el('senderName').value.trim(),samples={};document.querySelectorAll('#sampleGrid .sample-qty').forEach(i=>{const n=Math.max(0,parseInt(i.value||'0',10)||0);if(n>0)samples[i.dataset.code]=n});
+    const btn=Ui.el('submitSampleBtn');await Ui.runButtonBusy(btn,async()=>{try{const r=await ApiService.call('sampleSubmit',{unitId,senderName,samples,note:Ui.el('sendNote').value.trim(),requestId:this.ensureRequestId()});Ui.toast(r.message,'success');this.resetAfterSuccess()}catch(e){const stale=/không hợp lệ|ngừng hoạt động|chuyên ngành/i.test(e.message||'');if(stale){Ui.toast('Danh mục đã được cập nhật. Hệ thống đang tải lại dữ liệu mới.','error');await this.refreshCatalogs(false,true)}else Ui.toast(e.message,'error')}})
+  }
+};
+/* ===== PUBLIC_SEND_APP: END ===== */
+
+/* ===== STAFF_APP_AUTH: START ===== */
+const StaffApp={
+  async init(){
+    Ui.show('publicSendPage',false);Ui.el('loginForm').addEventListener('submit',e=>{e.preventDefault();this.login(Ui.el('loginSubmitBtn'))});Ui.el('logoutBtn').addEventListener('click',e=>Ui.runButtonBusy(e.currentTarget,()=>this.logout(true)));document.querySelectorAll('.staff-tab').forEach(b=>b.addEventListener('click',()=>this.openTab(b.dataset.tab)));document.querySelectorAll('.settings-nav [data-settings]').forEach(b=>b.addEventListener('click',()=>SettingsModule.openSection(b.dataset.settings)));document.querySelectorAll('[data-reject-menu]').forEach(b=>b.addEventListener('click',()=>SettingsModule.openRejectSub(b.dataset.rejectMenu)));document.querySelectorAll('[data-transport-menu]').forEach(b=>b.addEventListener('click',()=>SettingsModule.openTransportSub(b.dataset.transportMenu)));
+    if(State.token){try{const hasCache=AppCore.loadCache();const r=await ApiService.auth('staffBootstrap',{configVersion:State.configVersion,hasCatalogCache:hasCache,transportConfigVersion:State.transportConfigVersion,hasTransportCache:AppCore.hasTransportCache()});this.enter(r.data)}catch(e){State.token='';sessionStorage.removeItem(SESSION_KEY);this.showLogin();Ui.toast(e.message,'error')}}else this.showLogin();
+  },
+  showLogin(){Ui.show('staffLoginPage',true);Ui.show('staffAppPage',false);Ui.show('staffTabs',false);Ui.show('headerUser',false)},
+  async login(btn){return Ui.runButtonBusy(btn||Ui.el('loginSubmitBtn'),async()=>{try{const r=await ApiService.call('authLogin',{maNhanVien:Ui.el('loginCode').value.trim(),matKhau:Ui.el('loginPassword').value});State.token=r.data.token;sessionStorage.setItem(SESSION_KEY,State.token);const hasCache=AppCore.loadCache();const b=await ApiService.auth('staffBootstrap',{configVersion:State.configVersion,hasCatalogCache:hasCache,transportConfigVersion:State.transportConfigVersion,hasTransportCache:AppCore.hasTransportCache()});this.enter(b.data);Ui.el('loginPassword').value=''}catch(e){Ui.toast(e.message,'error')}})},
+  enter(data){State.user=data.user;AppCore.applyBrand(data);AppCore.applyCatalogResponse(data);Ui.show('staffLoginPage',false);Ui.show('staffAppPage',true);Ui.show('staffTabs',true);Ui.show('headerUser',true);Ui.el('headerDept').textContent='Khoa: '+(State.user.tenChuyenNganh||State.user.maChuyenNganh);Ui.el('headerUserName').textContent=Ui.shortName(State.user.tenNhanVien);Ui.show('settingsTabBtn',true);const isAdmin=State.user.vaiTro==='Admin',isManager=isAdmin||State.user.vaiTro==='Quản lý';document.querySelectorAll('.admin-only').forEach(x=>x.classList.toggle('hidden',!isAdmin));document.querySelectorAll('.manager-only').forEach(x=>x.classList.toggle('hidden',!isManager));if(!isManager)State.settings.section='qr';this.loadEmployees().then(()=>ReceiveLogModule.initPickers());this.prefetchRejectForm();const forceTransport=!AppCore.hasTransportCache(State.user.maChuyenNganh);this.prefetchTransportConfig(forceTransport);this.openTab('receive')},
+  async prefetchTransportConfig(force=false){
+    if(this.transportPrefetchPromise)return this.transportPrefetchPromise;
+    const userSpec=State.user?.maChuyenNganh||'';
+    const needsForce=!!force||!AppCore.hasTransportCache(userSpec);
+    State.transportRefreshing=true;ReceiveLogModule.renderTransportSamples?.();
+    this.transportPrefetchPromise=ApiService.auth('staffTransportCatalogs',{transportConfigVersion:State.transportConfigVersion,force:needsForce}).then(r=>{
+      State.transportLastCheckedAt=Date.now();const changed=AppCore.applyTransportCatalogResponse(r.data);
+      if(changed||needsForce){ReceiveLogModule.initPickers();ReceiveLogModule.setupTransportForm();ReceiveLogModule.initMethodFilter()}
+      return true;
+    }).catch(e=>{State.transportLastCheckedAt=Date.now();if(!AppCore.handleAuthError(e))console.warn('Không prefetch được cấu hình vận chuyển:',e.message);return false}).finally(()=>{State.transportRefreshing=false;this.transportPrefetchPromise=null;ReceiveLogModule.renderTransportSamples?.()});
+    return this.transportPrefetchPromise;
+  },
+  async loadEmployees(){try{const r=await ApiService.auth('staffEmployees');State.employees=r.data.items||[]}catch(e){if(!AppCore.handleAuthError(e))Ui.toast(e.message,'error')}},
+  prefetchRejectForm(){if(State.rejectCatalogs)return Promise.resolve(true);if(this.rejectPrefetchPromise)return this.rejectPrefetchPromise;this.rejectPrefetchPromise=ApiService.auth('rejectBootstrap').then(r=>{State.rejectCatalogs=r.data.catalogs;State.employees=r.data.employees||State.employees;return true}).catch(e=>{if(!AppCore.handleAuthError(e))console.warn('Không prefetch được cấu hình từ chối:',e.message);return false}).finally(()=>{this.rejectPrefetchPromise=null});return this.rejectPrefetchPromise},
+  async logout(callServer){if(callServer&&State.token){try{await ApiService.auth('authLogout')}catch(e){}}State.token='';State.user=null;State.employees=[];sessionStorage.removeItem(SESSION_KEY);State.receive={initialized:false,loaded:false,page:1,total:0,totalPages:1,rows:[],selected:new Set(),filter:{}};State.reject={initialized:false,loaded:false,page:1,total:0,totalPages:1,rows:[],filter:{}};State.settings={loaded:false,section:'employees',data:null,rejectSpecialty:'',rejectSub:'LOCATION'};State.rejectCatalogs=null;State.rejectRequestId='';State.transportRefreshing=false;State.transportQueue=[];State.transportQueueRunning=false;if(State.transportQueueTimer){clearTimeout(State.transportQueueTimer);State.transportQueueTimer=null}this.showLogin()},
+  openTab(tab){if(tab!=='settings'&&!Ui.el('settingsPage').classList.contains('hidden')&&State.settings.rejectDirty){SettingsModule.guardRejectChanges(()=>this.openTab(tab));return}document.querySelectorAll('.staff-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));Ui.show('receivePage',tab==='receive');Ui.show('rejectPage',tab==='reject');Ui.show('settingsPage',tab==='settings');if(tab==='receive')ReceiveLogModule.open();if(tab==='reject')RejectSampleModule.open();if(tab==='settings')SettingsModule.open()}
+};
+/* ===== STAFF_APP_AUTH: END ===== */
+
+/* ===== RECEIVE_LOG_MODULE: START ===== */
+const ReceiveLogModule={
+  bound:false,
+  ensureTransportRequestId(){if(!State.transportRequestId)State.transportRequestId=makeClientRequestId();return State.transportRequestId},
+  renewTransportRequestId(){State.transportRequestId=makeClientRequestId()},
+  transportSystems(){return (State.catalogs.transportSystems||[]).filter(x=>x.status==='Hoạt động')},
+  transportStations(){const sys=Ui.el('transportSystem')?.value||'';const unitMap={};(State.catalogs.units||[]).forEach(u=>unitMap[u.code]=u);return (State.catalogs.transportStations||[]).filter(x=>x.status==='Hoạt động'&&x.systemCode===sys).map(x=>({code:x.unitId,name:unitMap[x.unitId]?.name||x.unitId,stationNo:x.stationNo,systemCode:x.systemCode,searchKey:`${x.stationNo||''} ${String(Number(x.stationNo)||'')} ${x.unitId||''} ${unitMap[x.unitId]?.name||''}`}))},
+  allowedTransportSpecialties(){const sys=Ui.el('transportSystem')?.value||'',userSpec=State.user?.maChuyenNganh||'',codes=(State.catalogs.transportScope||[]).filter(x=>x.status==='Hoạt động'&&x.systemCode===sys&&x.userSpecialtyCode===userSpec).sort((a,b)=>(a.order||0)-(b.order||0)).map(x=>x.sampleSpecialtyCode);const seen=new Set();return codes.filter(c=>{if(seen.has(c))return false;seen.add(c);return true}).map(c=>State.catalogs.specialties.find(s=>s.code===c)).filter(Boolean)},
+  initPickers(){
+    AC.receiveUnit=bindAutocomplete({textId:'receiveUnitText',hiddenId:'receiveUnitId',suggestionsId:'receiveUnitSuggestions',getItems:()=>State.catalogs.units.filter(x=>x.status==='Hoạt động'),labelFn:unitLabel,searchFn:unitSearchText});
+    AC.receiveReceiver=bindAutocomplete({textId:'receiveReceiverText',hiddenId:'receiveReceiverId',suggestionsId:'receiveReceiverSuggestions',getItems:()=>State.employees,labelFn:employeeLabel,subFn:x=>x.maChuyenNganh||''});
+    AC.transportUnit=bindAutocomplete({textId:'transportUnitText',hiddenId:'transportUnitId',suggestionsId:'transportUnitSuggestions',getItems:()=>this.transportStations(),labelFn:x=>x.name,subFn:x=>`Trạm ${x.stationNo}`,searchFn:x=>x.searchKey,onSelect:x=>{Ui.el('transportStationNo').value=x.stationNo||'';Ui.el('transportStationHint').textContent=x.stationNo?`Trạm ${x.stationNo}`:''}});
+    AC.transportReceiver=bindAutocomplete({textId:'transportReceiverText',hiddenId:'transportReceiverId',suggestionsId:'transportReceiverSuggestions',getItems:()=>State.employees,labelFn:employeeLabel,subFn:x=>x.maChuyenNganh||''});
+  },
+  bind(){if(this.bound)return;this.bound=true;
+    Ui.el('receiveSearchBtn').addEventListener('click',e=>Ui.runButtonBusy(e.currentTarget,async()=>{State.receive.page=1;await this.load()}));
+    Ui.el('receiveResetBtn').addEventListener('click',()=>this.reset());
+    Ui.el('receiveConfirmBtn').addEventListener('click',()=>this.confirm());
+    Ui.el('transportReceiveForm').addEventListener('submit',e=>{e.preventDefault();this.enqueueTransport(Ui.el('transportReceiveBtn'))});Ui.el('transportSyncBtn').addEventListener('click',()=>this.wakeTransportQueue(true,true));window.addEventListener('online',()=>this.wakeTransportQueue(true,false));window.addEventListener('focus',()=>this.wakeTransportQueue(true,false));
+    Ui.el('transportSystem').addEventListener('change',()=>{AC.transportUnit?.clear();Ui.el('transportStationNo').value='';Ui.el('transportStationHint').textContent='';this.renderTransportSamples()});
+    Ui.el('receiveTable').addEventListener('change',e=>{if(e.target.matches('.receive-row-check')){const id=e.target.dataset.id;e.target.checked?State.receive.selected.add(id):State.receive.selected.delete(id);this.updateSelection()}if(e.target.id==='receiveCheckAll'){document.querySelectorAll('.receive-row-check:not(:disabled)').forEach(c=>{c.checked=e.target.checked;c.checked?State.receive.selected.add(c.dataset.id):State.receive.selected.delete(c.dataset.id)});this.updateSelection()}})
+  },
+  open(){this.bind();this.initPickers();this.setupTransportForm();this.initTransportQueue();if(!State.receive.initialized){const today=Ui.todayLocalDate();Ui.el('receiveFrom').value=today;Ui.el('receiveTo').value=today;State.receive.initialized=true}if(!State.receive.loaded)this.renderUnloaded()},
+  setupTransportForm(){
+    const systems=this.transportSystems(),sel=Ui.el('transportSystem'),current=sel.value;sel.innerHTML='<option value="">Chọn hệ thống</option>'+systems.map(x=>`<option value="${Ui.esc(x.code)}">${Ui.esc(x.name)}</option>`).join('');if(systems.some(x=>x.code===current))sel.value=current;else if(systems.length===1)sel.value=systems[0].code;
+    if(!Ui.el('transportReceivedAt').value)Ui.el('transportReceivedAt').value=Ui.nowLocalInput();
+    if(!Ui.el('transportReceiverId').value&&State.user){Ui.el('transportReceiverId').value=State.user.maNhanVien;Ui.el('transportReceiverText').value=employeeLabel({maNhanVien:State.user.maNhanVien,tenNhanVien:State.user.tenNhanVien})}
+    this.renderTransportSamples();this.ensureTransportRequestId();
+  },
+  renderTransportSamples(){const box=Ui.el('transportSampleGrid');if(!box)return;const userSpec=State.user?.maChuyenNganh||'';if(State.transportRefreshing&&!AppCore.hasTransportCache(userSpec)){box.innerHTML='<div class="transport-empty">Đang tải cấu hình hệ thống vận chuyển...</div>';return}const specs=this.allowedTransportSpecialties();if(!specs.length){box.innerHTML='<div class="transport-empty">Chưa cấu hình phạm vi chuyên ngành nhận mẫu cho hệ thống này.</div>';return}box.innerHTML=specs.map(s=>`<div class="transport-sample-item"><div class="sample-name">${Ui.esc(s.shortName||s.code)}</div><input class="control transport-sample-qty" type="number" min="0" step="1" value="0" data-code="${Ui.esc(s.code)}"></div>`).join('')},
+  resetTransportForm(){AC.transportUnit?.clear();Ui.el('transportStationNo').value='';Ui.el('transportStationHint').textContent='';document.querySelectorAll('.transport-sample-qty').forEach(x=>x.value='0');Ui.el('transportReceivedAt').value=Ui.nowLocalInput();if(State.user){Ui.el('transportReceiverId').value=State.user.maNhanVien;Ui.el('transportReceiverText').value=employeeLabel({maNhanVien:State.user.maNhanVien,tenNhanVien:State.user.tenNhanVien})}this.renewTransportRequestId()},
+  transportFormData(){const samples={};document.querySelectorAll('.transport-sample-qty').forEach(el=>samples[el.dataset.code]=Number(el.value||0));return{requestId:this.ensureTransportRequestId(),transportSystemId:Ui.el('transportSystem').value,unitId:Ui.el('transportUnitId').value,transportStationNo:Ui.el('transportStationNo').value,samples,receiverEmployeeId:Ui.el('transportReceiverId').value,receivedAt:Ui.el('transportReceivedAt').value}},
+  validateTransportData(d){if(!d.transportSystemId){Ui.toast('Vui lòng chọn Hệ thống vận chuyển.','error');Ui.el('transportSystem').focus();return false}if(!d.unitId){Ui.toast('Vui lòng chọn Viện/TT/Khoa gửi mẫu.','error');Ui.el('transportUnitText').focus();return false}if(!Object.values(d.samples).some(v=>Number(v)>0)){Ui.toast('Vui lòng nhập số lượng ống.','error');return false}if(!d.receiverEmployeeId){Ui.toast('Vui lòng chọn Người nhận.','error');Ui.el('transportReceiverText').focus();return false}if(!d.receivedAt){Ui.toast('Vui lòng nhập Thời gian nhận.','error');Ui.el('transportReceivedAt').focus();return false}return true},
+  transportQueueKey(){return TRANSPORT_QUEUE_KEY_PREFIX+(State.user?.maNhanVien||'ANON')},
+  loadTransportQueue(){try{const raw=JSON.parse(localStorage.getItem(this.transportQueueKey())||'[]');State.transportQueue=Array.isArray(raw)?raw.filter(x=>x&&x.payload&&x.payload.requestId):[]}catch(e){State.transportQueue=[]}return State.transportQueue},
+  persistTransportQueue(){try{localStorage.setItem(this.transportQueueKey(),JSON.stringify(State.transportQueue||[]));return true}catch(e){Ui.toast('Không lưu được hàng đợi trên máy. Vui lòng kiểm tra dung lượng trình duyệt.','error');return false}},
+  initTransportQueue(){this.loadTransportQueue();this.renderTransportQueueStatus();this.processTransportQueue()},
+  renderTransportQueueStatus(){const row=Ui.el('transportQueueRow'),label=Ui.el('transportQueueStatus'),btn=Ui.el('transportSyncBtn');if(!row||!label||!btn)return;const q=State.transportQueue||[],failed=q.filter(x=>x.status==='failed').length,waiting=q.filter(x=>x.status==='waiting').length,pending=q.length-failed;row.classList.toggle('error',failed>0);row.classList.toggle('pending',!failed&&pending>0);if(!q.length){label.textContent='Đã đồng bộ';btn.classList.add('hidden');return}if(failed){label.textContent=`Có ${failed} lượt chưa lưu`;btn.classList.remove('hidden');return}label.textContent=`Chờ lưu: ${q.length}`;btn.classList.toggle('hidden',waiting===0)},
+  resetTransportForNext(){const system=Ui.el('transportSystem').value,receiverId=Ui.el('transportReceiverId').value,receiverText=Ui.el('transportReceiverText').value;AC.transportUnit?.clear();Ui.el('transportStationNo').value='';Ui.el('transportStationHint').textContent='';document.querySelectorAll('.transport-sample-qty').forEach(x=>x.value='0');Ui.el('transportReceivedAt').value=Ui.nowLocalInput();if(system)Ui.el('transportSystem').value=system;if(receiverId){Ui.el('transportReceiverId').value=receiverId;Ui.el('transportReceiverText').value=receiverText}else if(State.user){Ui.el('transportReceiverId').value=State.user.maNhanVien;Ui.el('transportReceiverText').value=employeeLabel({maNhanVien:State.user.maNhanVien,tenNhanVien:State.user.tenNhanVien})}this.renewTransportRequestId();setTimeout(()=>Ui.el('transportUnitText')?.focus(),0)},
+  async enqueueTransport(btn){const d=this.transportFormData();if(!this.validateTransportData(d))return;if(btn?.dataset.busy==='1')return;Ui.setButtonBusy(btn,true);try{const item={payload:d,status:'pending',attempts:0,nextAt:0,lastError:'',queuedAt:Date.now()};State.transportQueue.push(item);if(!this.persistTransportQueue()){State.transportQueue.pop();return}this.resetTransportForNext();this.renderTransportQueueStatus();this.wakeTransportQueue(true,false)}finally{setTimeout(()=>Ui.setButtonBusy(btn,false),80)}},
+  isRetryableTransportError(e){const m=String(e?.message||e||'');return /failed to fetch|network|load failed|kết nối|timeout|timed out/i.test(m)},
+  wakeTransportQueue(resetAttempts=false,includeFailed=false){if(!State.user)return;(State.transportQueue||[]).forEach(x=>{if(x.status==='waiting'||(includeFailed&&x.status==='failed')){x.status='pending';x.nextAt=0;if(resetAttempts)x.attempts=0;x.lastError=''}});this.persistTransportQueue();this.renderTransportQueueStatus();this.processTransportQueue()},
+  scheduleTransportQueue(ms){if(State.transportQueueTimer)clearTimeout(State.transportQueueTimer);State.transportQueueTimer=setTimeout(()=>{State.transportQueueTimer=null;this.processTransportQueue()},Math.max(250,ms||500))},
+  async processTransportQueue(){if(State.transportQueueRunning||!State.token||!State.user)return;const q=State.transportQueue||[];if(!q.length){this.renderTransportQueueStatus();return}const index=q.findIndex(x=>x.status!=='failed');if(index<0){this.renderTransportQueueStatus();return}const item=q[index];if(item.status==='waiting'){this.renderTransportQueueStatus();return}const now=Date.now();if(item.nextAt&&item.nextAt>now){this.scheduleTransportQueue(item.nextAt-now);return}State.transportQueueRunning=true;item.status='sending';this.persistTransportQueue();this.renderTransportQueueStatus();try{const r=await ApiService.auth('receiveTransportCreate',item.payload);if(r.data?.busy){throw Object.assign(new Error('SERVER_BUSY'),{transportBusy:true,retryAfterMs:Number(r.data.retryAfterMs||2000)})}q.splice(index,1);this.persistTransportQueue();this.renderTransportQueueStatus()}catch(e){const authError=/Phiên đăng nhập|Tài khoản đã bị khóa|không còn quyền/.test(String(e?.message||''));if(authError){item.status='waiting';item.nextAt=0;item.lastError='Phiên đăng nhập cần được khôi phục.';this.persistTransportQueue();this.renderTransportQueueStatus();Ui.toast(e.message,'error');StaffApp.logout(false);return}const retryable=!!e.transportBusy||this.isRetryableTransportError(e);if(retryable){item.attempts=Number(item.attempts||0)+1;if(item.attempts<=TRANSPORT_RETRY_DELAYS.length){item.status='pending';item.nextAt=Date.now()+TRANSPORT_RETRY_DELAYS[item.attempts-1];item.lastError=String(e.message||'');this.persistTransportQueue();this.renderTransportQueueStatus();this.scheduleTransportQueue(TRANSPORT_RETRY_DELAYS[item.attempts-1])}else{item.status='waiting';item.nextAt=0;item.lastError=String(e.message||'');this.persistTransportQueue();this.renderTransportQueueStatus()}}else{item.status='failed';item.nextAt=0;item.lastError=String(e.message||'Không lưu được lượt nhận mẫu.');this.persistTransportQueue();this.renderTransportQueueStatus();Ui.toast('Có 1 lượt nhận mẫu chưa lưu: '+item.lastError,'error')}}finally{State.transportQueueRunning=false;const next=(State.transportQueue||[]).find(x=>x.status==='pending');if(next&&!State.transportQueueTimer)this.scheduleTransportQueue(50)}},
+  initMethodFilter(){const el=Ui.el('receiveMethodFilter'),current=el.value;el.innerHTML='<option value="">Tất cả</option><option value="TRUC_TIEP">Trực tiếp</option>'+this.transportSystems().map(x=>`<option value="VAN_CHUYEN:${Ui.esc(x.code)}">${Ui.esc(x.name)}</option>`).join('');if([...el.options].some(o=>o.value===current))el.value=current},
+  filters(){const v=Ui.el('receiveMethodFilter').value;let receiveMethod='',transportSystemId='';if(v==='TRUC_TIEP')receiveMethod='TRUC_TIEP';else if(v.startsWith('VAN_CHUYEN:')){receiveMethod='VAN_CHUYEN';transportSystemId=v.slice('VAN_CHUYEN:'.length)}return{fromDate:Ui.el('receiveFrom').value,toDate:Ui.el('receiveTo').value,unitId:Ui.el('receiveUnitId').value,receiverId:Ui.el('receiveReceiverId').value,receiveMethod,transportSystemId}},
+  reset(){const today=Ui.todayLocalDate();Ui.el('receiveFrom').value=today;Ui.el('receiveTo').value=today;AC.receiveUnit?.clear();AC.receiveReceiver?.clear();Ui.el('receiveMethodFilter').value='';State.receive.page=1;return true},
+  async load(){try{const f=this.filters();State.receive.filter=f;const r=await ApiService.auth('receiveList',{...f,page:State.receive.page,pageSize:50});Object.assign(State.receive,{loaded:true,rows:r.data.items||[],total:r.data.total||0,page:r.data.page||1,totalPages:r.data.totalPages||1});State.receive.selected.clear();this.render()}catch(e){if(!AppCore.handleAuthError(e))Ui.toast(e.message,'error')}},
+  tableHead(){const specs=State.catalogs.specialties||[];return `<thead><tr><th class="center"><input id="receiveCheckAll" type="checkbox"></th><th class="center status-col" aria-label="Trạng thái"></th><th>Thời gian gửi</th><th>Nơi gửi</th><th>Hình thức</th>${specs.map(s=>`<th class="center">${Ui.esc(s.shortName||s.code)}</th>`).join('')}<th class="center">Tổng</th><th>Ghi chú</th><th>Người gửi</th><th>Người nhận</th><th>Thời gian nhận</th></tr></thead>`},
+  renderUnloaded(){this.initMethodFilter();const specs=State.catalogs.specialties||[];Ui.el('receiveTable').innerHTML=this.tableHead()+`<tbody><tr><td colspan="${10+specs.length}" class="empty-state">Chưa tải danh sách. Nhấn XEM DANH SÁCH để xem dữ liệu.</td></tr></tbody>`;Ui.el('receiveRangeText').textContent='';Ui.el('receivePagination').innerHTML='';Ui.show('receiveSelectionBar',false);State.receive.selected.clear();this.updateSelection()},
+  methodLabel(r){if(r.receiveMethod==='VAN_CHUYEN'){return (State.catalogs.transportSystems||[]).find(x=>x.code===r.transportSystemId)?.name||r.transportSystemId||'Vận chuyển'}return'Trực tiếp'},
+  render(){this.initMethodFilter();const specs=State.catalogs.specialties||[];const body=State.receive.rows.length?State.receive.rows.map(r=>{const pending=r.status==='CHUA_XAC_NHAN',isTransport=r.receiveMethod==='VAN_CHUYEN';return `<tr><td class="center"><input class="receive-row-check" data-id="${Ui.esc(r.id)}" type="checkbox" ${(pending&&!isTransport)?'':'disabled'}></td><td class="center"><span class="status-dot ${pending?'pending':'done'}" title="${pending?'Chưa xác nhận':'Đã xác nhận'}" aria-label="${pending?'Chưa xác nhận':'Đã xác nhận'}"></span></td><td>${isTransport?'—':Ui.esc(Ui.fmtDateTime(r.submittedAt))}</td><td class="wrap">${Ui.esc(this.unitName(r.unitId))}</td><td>${Ui.esc(this.methodLabel(r))}</td>${specs.map(s=>`<td class="center">${Number(r.samples?.[s.code]||0)||''}</td>`).join('')}<td class="center"><strong>${r.total||0}</strong></td><td class="wrap">${Ui.esc(r.note||'')}</td><td>${Ui.esc(r.senderName||'')}</td><td>${Ui.esc(r.receiverName||'')}</td><td>${Ui.esc(Ui.fmtDateTime(r.receivedAt))}</td></tr>`}).join(''):`<tr><td colspan="${10+specs.length}" class="empty-state">Không có dữ liệu.</td></tr>`;Ui.el('receiveTable').innerHTML=this.tableHead()+`<tbody>${body}</tbody>`;Ui.show('receiveSelectionBar',true);this.renderPagination();this.updateSelection()},
+  unitName(code){return State.catalogs.units.find(x=>x.code===code)?.name||code},
+  updateSelection(){Ui.el('receiveSelectedCount').textContent=State.receive.selected.size;Ui.el('receiveConfirmBtn').disabled=State.receive.selected.size===0},
+  renderPagination(){renderPagination('receivePagination',State.receive.page,State.receive.totalPages,p=>{State.receive.page=p;return this.load()});const start=State.receive.total?((State.receive.page-1)*50+1):0,end=Math.min(State.receive.page*50,State.receive.total);Ui.el('receiveRangeText').textContent=`Hiển thị ${start}–${end} / ${State.receive.total} bản ghi`},
+  confirm(){if(!State.receive.selected.size)return;const rows=State.receive.rows.filter(r=>State.receive.selected.has(r.id));const total=rows.reduce((sum,r)=>sum+(Number(r.total)||0),0);Ui.modal({title:'Xác nhận nhận mẫu',body:`<p>Bạn đang xác nhận <strong>${rows.length}</strong> lượt giao mẫu – tổng <strong>${total}</strong> mẫu.</p><p>Người nhận: <strong>${Ui.esc(State.user.tenNhanVien)} – ${Ui.esc(State.user.maNhanVien)}</strong></p>`,confirmText:'XÁC NHẬN',onConfirm:async()=>{const r=await ApiService.auth('receiveConfirm',{ids:[...State.receive.selected]});await this.load();Ui.toast(r.message,'success')}})}
+};
+/* ===== RECEIVE_LOG_MODULE: END ===== */
+
+/* ===== REJECT_SAMPLE_MODULE: START ===== */
+const RejectSampleModule={
+  bound:false,
+  ensureRequestId(){if(!State.rejectRequestId)State.rejectRequestId=makeClientRequestId();return State.rejectRequestId},renewRequestId(){State.rejectRequestId=makeClientRequestId()},
+  async open(){this.bind();this.ensureRequestId();if(!State.reject.initialized){const today=Ui.todayLocalDate();Ui.el('rejectFrom').value=today;Ui.el('rejectTo').value=today;State.reject.initialized=true}if(!State.rejectCatalogs){const ok=await StaffApp.prefetchRejectForm();if(!ok)return}this.setupForm();this.setupPickers();if(!State.reject.loaded)this.renderUnloaded()},
+  bind(){if(this.bound)return;this.bound=true;Ui.el('rejectForm').addEventListener('submit',e=>{e.preventDefault();this.save(Ui.el('rejectSubmitBtn'))});Ui.el('rejectSearchBtn').addEventListener('click',e=>Ui.runButtonBusy(e.currentTarget,async()=>{State.reject.page=1;await this.load()}));Ui.el('rejectClearFilterBtn').addEventListener('click',()=>this.resetFilter());Ui.el('rejectExcelBtn').addEventListener('click',e=>Ui.runButtonBusy(e.currentTarget,()=>this.exportExcel()))},
+  setupForm(){if(!State.rejectCatalogs)return;fillSelect('rejectLocation',State.rejectCatalogs.locations.filter(x=>x.statusCode==='AP_DUNG'),'Chọn vị trí phát hiện');fillSelect('rejectTestType',State.rejectCatalogs.testTypes.filter(x=>x.statusCode==='AP_DUNG'),'Chọn loại xét nghiệm');fillSelect('rejectReason',State.rejectCatalogs.reasons.filter(x=>x.statusCode==='AP_DUNG'),'Chọn lý do');['rejectLocation','rejectTestType','rejectReason'].forEach(id=>ensureSelectQuickClear(id));if(State.user)Ui.el('rejectSpecialtyName').value=State.user.tenChuyenNganh||State.user.maChuyenNganh||'';if(!Ui.el('rejectAt').value)Ui.el('rejectAt').value=Ui.nowLocalInput();if(!Ui.el('rejectEmployeeId').value&&State.user){Ui.el('rejectEmployeeId').value=State.user.maNhanVien;Ui.el('rejectEmployeeText').value=employeeLabel({maNhanVien:State.user.maNhanVien,tenNhanVien:State.user.tenNhanVien})}},
+  setupPickers(){AC.rejectOrderUnit=bindAutocomplete({textId:'rejectOrderUnitText',hiddenId:'rejectOrderUnitId',suggestionsId:'rejectOrderUnitSuggestions',getItems:()=>State.catalogs.units.filter(x=>x.status==='Hoạt động'),labelFn:unitLabel,searchFn:unitSearchText});AC.rejectFilterUnit=bindAutocomplete({textId:'rejectFilterUnitText',hiddenId:'rejectFilterUnitId',suggestionsId:'rejectFilterUnitSuggestions',getItems:()=>State.catalogs.units.filter(x=>x.status==='Hoạt động'),labelFn:unitLabel,searchFn:unitSearchText});AC.rejectEmployee=bindAutocomplete({textId:'rejectEmployeeText',hiddenId:'rejectEmployeeId',suggestionsId:'rejectEmployeeSuggestions',getItems:()=>State.employees,labelFn:employeeLabel,subFn:x=>x.maChuyenNganh||''})},
+  resetForm(newRequest=true){Ui.el('rejectForm').reset();AC.rejectOrderUnit?.clear();Ui.el('rejectAt').value=Ui.nowLocalInput();if(State.user){Ui.el('rejectSpecialtyName').value=State.user.tenChuyenNganh||State.user.maChuyenNganh||'';Ui.el('rejectEmployeeId').value=State.user.maNhanVien;Ui.el('rejectEmployeeText').value=employeeLabel({maNhanVien:State.user.maNhanVien,tenNhanVien:State.user.tenNhanVien})}if(newRequest)this.renewRequestId()},
+  formData(){return{requestId:this.ensureRequestId(),detectedLocationId:Ui.el('rejectLocation').value,sid:Ui.el('rejectSid').value.trim(),patientName:Ui.el('rejectPatient').value.trim(),ageOrBirthYear:Ui.el('rejectAge').value.trim(),orderUnitId:Ui.el('rejectOrderUnitId').value,testTypeId:Ui.el('rejectTestType').value,testName:Ui.el('rejectTestName').value.trim(),reasonId:Ui.el('rejectReason').value,note:Ui.el('rejectNote').value.trim(),rejectMethod:document.querySelector('input[name="rejectMethod"]:checked')?.value||'',rejectEmployeeId:Ui.el('rejectEmployeeId').value,rejectReceiver:Ui.el('rejectReceiver').value.trim(),rejectedAt:Ui.el('rejectAt').value}},
+  validateForm(d){const checks=[['rejectSpecialtyName',State.user?.maChuyenNganh,'Viện/TT/Khoa'],['rejectLocation',d.detectedLocationId,'Vị trí phát hiện'],['rejectPatient',d.patientName,'Họ tên BN'],['rejectAge',d.ageOrBirthYear,'Tuổi'],['rejectSid',d.sid,'SID'],['rejectOrderUnitText',d.orderUnitId,'Khoa chỉ định'],['rejectTestType',d.testTypeId,'Loại xét nghiệm'],['rejectReason',d.reasonId,'Lý do từ chối mẫu'],['rejectEmployeeText',d.rejectEmployeeId,'Người từ chối'],['rejectReceiver',d.rejectReceiver,'Người nhận từ chối'],['rejectAt',d.rejectedAt,'Thời gian từ chối']];if(!d.rejectMethod){Ui.toast('Vui lòng chọn Hình thức từ chối.','error');return false}for(const [id,value,label] of checks){if(!String(value||'').trim()){Ui.toast('Vui lòng nhập/chọn '+label+'.','error');Ui.el(id)?.focus();return false}}return true},
+  async save(btn){const d=this.formData();if(!this.validateForm(d))return;return Ui.runButtonBusy(btn,async()=>{try{const r=await ApiService.auth('rejectCreate',d);this.resetForm(true);Ui.toast(r.message,'success')}catch(e){if(!AppCore.handleAuthError(e))Ui.toast(e.message,'error')}})},
+  filters(){return{fromDate:Ui.el('rejectFrom').value,toDate:Ui.el('rejectTo').value,unitId:Ui.el('rejectFilterUnitId').value,sid:Ui.el('rejectFilterSid').value.trim(),patientName:Ui.el('rejectFilterPatient').value.trim()}},
+  resetFilter(){const today=Ui.todayLocalDate();Ui.el('rejectFrom').value=today;Ui.el('rejectTo').value=today;Ui.el('rejectFilterSid').value='';Ui.el('rejectFilterPatient').value='';AC.rejectFilterUnit?.clear();State.reject.page=1;return true},
+  async load(){try{const f=this.filters();State.reject.filter=f;const r=await ApiService.auth('rejectList',{...f,page:State.reject.page,pageSize:50});Object.assign(State.reject,{loaded:true,rows:r.data.items||[],total:r.data.total||0,page:r.data.page||1,totalPages:r.data.totalPages||1});this.render()}catch(e){if(!AppCore.handleAuthError(e))Ui.toast(e.message,'error')}},
+  tableHead(){return '<thead><tr><th>Thời gian</th><th>SID</th><th>Họ tên BN</th><th>Tuổi</th><th>Viện/TT/Khoa gửi</th><th>Loại XN</th><th>Tên XN</th><th>Lý do từ chối</th><th>Ghi chú</th><th>Hình thức</th><th>Người từ chối</th><th>Người nhận</th></tr></thead>'},
+  renderUnloaded(){Ui.el('rejectTable').innerHTML=this.tableHead()+'<tbody><tr><td colspan="12" class="empty-state">Chưa tải danh sách. Nhấn XEM DS để xem dữ liệu.</td></tr></tbody>';Ui.el('rejectRangeText').textContent='';Ui.el('rejectPagination').innerHTML=''},
+  render(){const body=State.reject.rows.length?State.reject.rows.map(r=>`<tr><td>${Ui.esc(Ui.fmtDateTime(r.rejectedAt))}</td><td>${Ui.esc(r.sid)}</td><td>${Ui.esc(r.patientName)}</td><td>${Ui.esc(r.ageOrBirthYear)}</td><td class="wrap">${Ui.esc(r.orderUnitName)}</td><td>${Ui.esc(r.testTypeName)}</td><td class="wrap">${Ui.esc(r.testName)}</td><td class="wrap">${Ui.esc(r.reasonName)}</td><td class="wrap">${Ui.esc(r.note||'')}</td><td>${r.rejectMethod==='TRA_TRUC_TIEP'?'Trả trực tiếp':'Gọi điện thoại'}</td><td>${Ui.esc(r.rejectEmployeeName)}</td><td>${Ui.esc(r.rejectReceiver)}</td></tr>`).join(''):'<tr><td colspan="12" class="empty-state">Không có dữ liệu.</td></tr>';Ui.el('rejectTable').innerHTML=this.tableHead()+`<tbody>${body}</tbody>`;renderPagination('rejectPagination',State.reject.page,State.reject.totalPages,p=>{State.reject.page=p;return this.load()});const start=State.reject.total?((State.reject.page-1)*50+1):0,end=Math.min(State.reject.page*50,State.reject.total);Ui.el('rejectRangeText').textContent=`Hiển thị ${start}–${end} / ${State.reject.total} bản ghi`},
+  async exportExcel(){try{const r=await ApiService.auth('rejectExportExcel',this.filters());downloadBase64(r.data.base64,r.data.mimeType,r.data.fileName);Ui.toast(`Đã xuất ${r.data.total} bản ghi.`,'success')}catch(e){if(!AppCore.handleAuthError(e))Ui.toast(e.message,'error')}}
+};
+/* ===== REJECT_SAMPLE_MODULE: END ===== */
+
+/* ===== QR_POSTER: START ===== */
+const QrPoster={
+  libPromise:null,matrixCache:null,logoDataPromise:null,
+  ensureLib(){if(typeof QRCode!=='undefined')return Promise.resolve(true);if(this.libPromise)return this.libPromise;this.libPromise=new Promise(resolve=>{const script=document.createElement('script');let done=false;const finish=ok=>{if(done)return;done=true;resolve(ok)};script.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';script.async=true;script.onload=()=>finish(typeof QRCode!=='undefined');script.onerror=()=>finish(false);document.head.appendChild(script);setTimeout(()=>finish(false),3000)});return this.libPromise},
+  normText(v){return String(v||'').normalize('NFC')},
+  xml(v){return this.normText(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]))},
+  async getMatrix(){
+    if(this.matrixCache)return this.matrixCache;
+    const ok=await this.ensureLib();if(!ok||typeof QRCode==='undefined')throw new Error('Không tải được thư viện tạo mã QR. Vui lòng kiểm tra kết nối mạng.');
+    const host=document.createElement('div');host.style.cssText='position:fixed;left:-9999px;top:-9999px;width:256px;height:256px;overflow:hidden';document.body.appendChild(host);
+    try{
+      const qr=new QRCode(host,{text:PUBLIC_SEND_URL,width:256,height:256,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
+      await new Promise(r=>setTimeout(r,60));const model=qr?._oQRCode;if(!model?.modules?.length)throw new Error('Không tạo được dữ liệu mã QR.');
+      const modules=model.modules.map(row=>row.slice()),count=modules.length;this.matrixCache={modules,count,quiet:4};return this.matrixCache;
+    }finally{host.remove()}
+  },
+  async qrSvgMarkup(extraClass='qr-code-svg'){
+    const {modules,count,quiet}=await this.getMatrix(),total=count+quiet*2;let d='';
+    for(let y=0;y<count;y++)for(let x=0;x<count;x++)if(modules[y][x])d+=`M${x+quiet} ${y+quiet}h1v1h-1z`;
+    return `<svg class="${extraClass}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${total} ${total}" role="img" aria-label="Mã QR gửi mẫu xét nghiệm" shape-rendering="crispEdges"><rect width="${total}" height="${total}" fill="#fff"/><path d="${d}" fill="#000"/></svg>`;
+  },
+  async logoDataUrl(){
+    if(this.logoDataPromise)return this.logoDataPromise;
+    this.logoDataPromise=(async()=>{const res=await fetch('./logo-bachmai.png',{cache:'force-cache'});if(!res.ok)throw new Error('Không tải được logo Bệnh viện.');const blob=await res.blob();return await new Promise((resolve,reject)=>{const rd=new FileReader();rd.onload=()=>resolve(rd.result);rd.onerror=()=>reject(new Error('Không đọc được logo Bệnh viện.'));rd.readAsDataURL(blob)})})();
+    return this.logoDataPromise;
+  },
+  async posterHtml(logoSrc='./logo-bachmai.png'){
+    const qr=await this.qrSvgMarkup();
+    return `<div class="qr-poster"><div class="qr-org"><div class="qr-org-line hospital">BỆNH VIỆN BẠCH MAI</div><div class="qr-org-line institute">VIỆN XÉT NGHIỆM Y HỌC</div></div><div class="qr-code-wrap">${qr}<div class="qr-logo-box"><img src="${logoSrc}" alt="Logo Bệnh viện Bạch Mai"></div></div><div class="qr-guide"><div class="qr-guide-line">VUI LÒNG QUÉT MÃ QR</div><div class="qr-guide-line">ĐỂ GỬI MẪU XÉT NGHIỆM</div></div></div>`;
+  },
+  async renderPreview(id){const box=Ui.el(id);if(!box)return;box.innerHTML='<div class="muted">Đang tạo mã QR...</div>';try{box.innerHTML=await this.posterHtml('./logo-bachmai.png')}catch(e){box.innerHTML=`<div class="empty-state">${Ui.esc(e.message)}</div>`}},
+  async posterSvg(){
+    const {modules,count,quiet}=await this.getMatrix(),total=count+quiet*2;let path='';for(let y=0;y<count;y++)for(let x=0;x<count;x++)if(modules[y][x])path+=`M${x+quiet} ${y+quiet}h1v1h-1z`;
+    const logo=await this.logoDataUrl(),W=1200,H=1300,qrX=220,qrY=150,qrSize=760,scale=qrSize/total,logoBox=Math.round(qrSize*.19),logoSize=Math.round(qrSize*.155),cx=qrX+qrSize/2,cy=qrY+qrSize/2;
+    const t1=this.xml('BỆNH VIỆN BẠCH MAI'),t2=this.xml('VIỆN XÉT NGHIỆM Y HỌC'),g1=this.xml('VUI LÒNG QUÉT MÃ QR'),g2=this.xml('ĐỂ GỬI MẪU XÉT NGHIỆM');
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><rect width="${W}" height="${H}" fill="#fff"/><rect x="20" y="20" width="1160" height="1260" fill="none" stroke="#cfd4d0" stroke-width="2"/><g fill="#137333" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700"><text x="600" y="72" font-size="30">${t1}</text><text x="600" y="118" font-size="34">${t2}</text><text x="600" y="1018" font-size="50">${g1}</text><text x="600" y="1086" font-size="50">${g2}</text></g><g transform="translate(${qrX} ${qrY}) scale(${scale})" shape-rendering="crispEdges"><rect width="${total}" height="${total}" fill="#fff"/><path d="${path}" fill="#000"/></g><rect x="${cx-logoBox/2}" y="${cy-logoBox/2}" width="${logoBox}" height="${logoBox}" fill="#fff"/><image href="${logo}" x="${cx-logoSize/2}" y="${cy-logoSize/2}" width="${logoSize}" height="${logoSize}" preserveAspectRatio="xMidYMid meet"/></svg>`;
+  },
+  async pngBlob(scale=2){
+    const svg=await this.posterSvg(),blob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob);
+    try{return await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{try{const canvas=document.createElement('canvas');canvas.width=1200*scale;canvas.height=1300*scale;const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);canvas.toBlob(b=>b?resolve(b):reject(new Error('Không tạo được ảnh QR.')),'image/png',1)}catch(e){reject(e)}};img.onerror=()=>reject(new Error('Không tạo được ảnh QR.'));img.src=url})}finally{setTimeout(()=>URL.revokeObjectURL(url),1000)}
+  },
+  async printableHtml(){const logo=await this.logoDataUrl(),poster=await this.posterHtml(logo);return `<!doctype html><html><head><meta charset="utf-8"><title>QR Gửi mẫu xét nghiệm</title><style>html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif}body{display:flex;justify-content:center}.qr-poster{width:180mm;border:1px solid #cfd4d0;background:#fff;padding:8mm 7mm 10mm;display:flex;flex-direction:column;align-items:center;color:#137333;box-sizing:border-box}.qr-org{text-align:center;line-height:1.12}.qr-org-line{font-weight:700}.hospital{font-size:18pt}.institute{font-size:22pt;margin-top:2mm}.qr-code-wrap{position:relative;width:132mm;height:132mm;margin:6mm auto}.qr-code-svg{display:block;width:100%;height:100%;shape-rendering:crispEdges}.qr-logo-box{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:19%;aspect-ratio:1;background:#fff;display:flex;align-items:center;justify-content:center}.qr-logo-box img{width:82%;height:82%;object-fit:contain}.qr-guide{text-align:center;margin-top:2mm}.qr-guide-line{font-size:24pt;line-height:1.16;font-weight:700}@page{size:A4 portrait;margin:10mm}@media print{body{display:block}.qr-poster{margin:0 auto;break-inside:avoid}}</style></head><body>${poster}<script>window.onload=()=>setTimeout(()=>window.print(),180)<\/script></body></html>`},
+};
+/* ===== QR_POSTER: END ===== */
+
+/* ===== SETTINGS_MODULE: START ===== */
+const SettingsModule={
+  isManager(){return State.user?.vaiTro==='Admin'||State.user?.vaiTro==='Quản lý'},
+  isAdmin(){return State.user?.vaiTro==='Admin'},
+  async open(){
+    if(!this.isManager()){
+      State.settings.loaded=true;State.settings.data=State.settings.data||{};
+      if(!['qr','install'].includes(State.settings.section))State.settings.section='qr';
+      this.render();return;
+    }
+    if(!State.settings.loaded||!State.settings.data?.catalogs){
+      Ui.el('settingsContent').innerHTML='<div class="empty-state">Đang tải nội dung cài đặt...</div>';
+      try{const r=await ApiService.auth('settingsBootstrap');State.settings.data=r.data;State.settings.loaded=true;this.ensureRejectDefaults();this.render()}
+      catch(e){if(!AppCore.handleAuthError(e))Ui.toast(e.message,'error')}
+    }else{this.ensureRejectDefaults();this.render()}
+  },
+  ensureRejectDefaults(){
+    if(!this.isManager())return;
+    if(!State.settings.rejectSub)State.settings.rejectSub='LOCATION';
+    if(!State.settings.rejectSpecialty){
+      if(State.user?.vaiTro==='Quản lý')State.settings.rejectSpecialty=State.user.maChuyenNganh||'';
+      else State.settings.rejectSpecialty=(State.settings.data?.catalogs?.specialties||[]).find(x=>x.status==='Hoạt động')?.code||'';
+    }
+  },
+  allowedSection(section){
+    if(['qr','install'].includes(section))return true;
+    if(!this.isManager())return false;
+    if(['employees','rejectConfig'].includes(section))return true;
+    return this.isAdmin()&&['units','specialties','transportConfig','summary'].includes(section);
+  },
+  openSection(section){
+    if(!this.allowedSection(section))return;
+    if(State.settings.section==='rejectConfig'&&section!=='rejectConfig'&&State.settings.rejectDirty){this.guardRejectChanges(()=>this.openSection(section));return}
+    State.settings.section=section;
+    document.querySelectorAll('.settings-nav [data-settings]').forEach(b=>b.classList.toggle('active',b.dataset.settings===section));
+    Ui.show('rejectConfigSubnav',section==='rejectConfig'&&this.isManager());Ui.show('transportConfigSubnav',section==='transportConfig'&&this.isAdmin());
+    this.syncRejectSubnav();this.syncTransportSubnav();
+    this.render();
+  },
+  openRejectSub(type){
+    if(!this.isManager())return;
+    const next=type||'LOCATION';if(next!==State.settings.rejectSub&&State.settings.rejectDirty){this.guardRejectChanges(()=>this.openRejectSub(next));return}
+    State.settings.section='rejectConfig';State.settings.rejectSub=next;
+    document.querySelectorAll('.settings-nav [data-settings]').forEach(b=>b.classList.toggle('active',b.dataset.settings==='rejectConfig'));
+    Ui.show('rejectConfigSubnav',true);this.syncRejectSubnav();this.render();
+  },
+  syncRejectSubnav(){document.querySelectorAll('[data-reject-menu]').forEach(b=>b.classList.toggle('active',b.dataset.rejectMenu===(State.settings.rejectSub||'LOCATION')))},
+  openTransportSub(type){if(!this.isAdmin())return;State.settings.section='transportConfig';State.settings.transportSub=type||'SYSTEM';document.querySelectorAll('.settings-nav [data-settings]').forEach(b=>b.classList.toggle('active',b.dataset.settings==='transportConfig'));Ui.show('transportConfigSubnav',true);this.syncTransportSubnav();this.render()},
+  syncTransportSubnav(){document.querySelectorAll('[data-transport-menu]').forEach(b=>b.classList.toggle('active',b.dataset.transportMenu===(State.settings.transportSub||'SYSTEM')))},
+  render(){
+    const box=Ui.el('settingsContent');if(!box)return;
+    let s=State.settings.section;
+    if(!this.allowedSection(s)){s=this.isManager()?'employees':'qr';State.settings.section=s}
+    document.querySelectorAll('.settings-nav [data-settings]').forEach(b=>b.classList.toggle('active',b.dataset.settings===s));
+    Ui.show('rejectConfigSubnav',s==='rejectConfig'&&this.isManager());Ui.show('transportConfigSubnav',s==='transportConfig'&&this.isAdmin());this.syncRejectSubnav();this.syncTransportSubnav();
+    if(s==='qr')box.innerHTML=this.renderQr();
+    else if(s==='install')box.innerHTML=this.renderInstall();
+    else if(!State.settings.data?.catalogs){box.innerHTML='<div class="empty-state">Chưa tải dữ liệu cài đặt.</div>';return}
+    else if(s==='employees')box.innerHTML=this.renderEmployees();
+    else if(s==='units')box.innerHTML=this.renderCatalogTable('UNIT','Đơn vị gửi',State.settings.data.catalogs.units,['Mã','Tên','Loại','Trạng thái','Thứ tự']);
+    else if(s==='specialties')box.innerHTML=this.renderCatalogTable('SPECIALTY','Chuyên ngành',State.settings.data.catalogs.specialties,['Mã','Tên','Viết tắt','Trạng thái','Thứ tự']);
+    else if(s==='rejectConfig')box.innerHTML=this.renderRejectConfig();
+    else if(s==='transportConfig')box.innerHTML=this.renderTransportConfig();
+    else box.innerHTML=this.renderSummary();
+    this.bindRendered();
+  },
+  renderTransportConfig(){
+    const c=State.settings.data.catalogs||{},type=State.settings.transportSub||'SYSTEM',systems=c.transportSystems||[],units=c.units||[],specs=c.specialties||[];
+    if(!State.settings.transportSystem)State.settings.transportSystem=systems.find(x=>x.status==='Hoạt động')?.code||systems[0]?.code||'';
+    const sys=State.settings.transportSystem,systemSelect=`<select id="transportConfigSystem" class="control">${systems.map(x=>`<option value="${Ui.esc(x.code)}" ${x.code===sys?'selected':''}>${Ui.esc(x.name)}</option>`).join('')}</select>`;
+    if(type==='SYSTEM')return `<div class="settings-section"><div class="settings-toolbar"><h2 class="card-title" style="margin:0;color:var(--gm-green)">Hệ thống vận chuyển</h2><button class="btn btn-primary" data-action="addTransport" data-type="SYSTEM">THÊM</button></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Mã</th><th>Tên</th><th>Trạng thái</th><th>Thứ tự</th><th></th></tr></thead><tbody>${systems.map(x=>`<tr><td>${Ui.esc(x.code)}</td><td>${Ui.esc(x.name)}</td><td>${Ui.esc(x.status)}</td><td>${x.order||0}</td><td><button class="btn btn-text" data-action="editTransport" data-type="SYSTEM" data-key="${Ui.esc(x.code)}">Sửa</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty-state">Chưa có hệ thống vận chuyển.</td></tr>'}</tbody></table></div></div>`;
+    const head=`<div class="field" style="max-width:420px;margin-bottom:12px"><label>Hệ thống vận chuyển</label>${systemSelect}</div>`;
+    if(type==='STATION'){const rows=(c.transportStations||[]).filter(x=>x.systemCode===sys);return `<div class="settings-section">${head}<div class="settings-toolbar"><h2 class="card-title" style="margin:0;color:var(--gm-green)">Trạm vận chuyển</h2><button class="btn btn-primary" data-action="addTransport" data-type="STATION">THÊM</button></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Số trạm</th><th>Đơn vị</th><th>Trạng thái</th><th></th></tr></thead><tbody>${rows.map(x=>`<tr><td>${Ui.esc(x.stationNo)}</td><td>${Ui.esc(units.find(u=>u.code===x.unitId)?.name||x.unitId)}</td><td>${Ui.esc(x.status)}</td><td><button class="btn btn-text" data-action="editTransport" data-type="STATION" data-key="${Ui.esc(x.stationNo)}">Sửa</button></td></tr>`).join('')||'<tr><td colspan="4" class="empty-state">Chưa có trạm vận chuyển.</td></tr>'}</tbody></table></div></div>`}
+    const rows=(c.transportScope||[]).filter(x=>x.systemCode===sys);return `<div class="settings-section">${head}<div class="settings-toolbar"><h2 class="card-title" style="margin:0;color:var(--gm-green)">Phạm vi nhận mẫu</h2><button class="btn btn-primary" data-action="addTransport" data-type="SCOPE">THÊM</button></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Chuyên ngành user</th><th>Chuyên ngành mẫu</th><th>Trạng thái</th><th>Thứ tự</th><th></th></tr></thead><tbody>${rows.map(x=>`<tr><td>${Ui.esc(specs.find(v=>v.code===x.userSpecialtyCode)?.name||x.userSpecialtyCode)}</td><td>${Ui.esc(specs.find(v=>v.code===x.sampleSpecialtyCode)?.name||x.sampleSpecialtyCode)}</td><td>${Ui.esc(x.status)}</td><td>${x.order||0}</td><td><button class="btn btn-text" data-action="editTransport" data-type="SCOPE" data-key="${Ui.esc(x.userSpecialtyCode+'|'+x.sampleSpecialtyCode)}">Sửa</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty-state">Chưa có phạm vi nhận mẫu.</td></tr>'}</tbody></table></div></div>`;
+  },
+  transportModal(type,item){
+    const c=State.settings.data.catalogs||{},systems=c.transportSystems||[],units=(c.units||[]).filter(x=>x.status==='Hoạt động'||x.code===item?.unitId),specs=(c.specialties||[]).filter(x=>x.status==='Hoạt động'||[item?.userSpecialtyCode,item?.sampleSpecialtyCode].includes(x.code)),sys=type==='SYSTEM'?(item?.code||''):(item?.systemCode||State.settings.transportSystem||systems[0]?.code||''),isEdit=!!item;
+    let body='';
+    if(type==='SYSTEM')body=`<div class="form-stack"><div class="field"><label>Mã hệ thống</label><input id="tCode" class="control" value="${Ui.esc(item?.code||'')}" ${isEdit?'readonly':''}></div><div class="field"><label>Tên hệ thống</label><input id="tName" class="control" value="${Ui.esc(item?.name||'')}"></div><div class="field-row"><div class="field"><label>Trạng thái</label><select id="tStatus" class="control"><option>Hoạt động</option><option>Ngừng hoạt động</option></select></div><div class="field"><label>Thứ tự</label><input id="tOrder" class="control" type="number" min="0" value="${item?.order||0}"></div></div></div>`;
+    else if(type==='STATION')body=`<div class="form-stack"><div class="field"><label>Hệ thống</label><select id="tSystem" class="control" ${isEdit?'disabled':''}>${systems.map(x=>`<option value="${Ui.esc(x.code)}" ${x.code===sys?'selected':''}>${Ui.esc(x.name)}</option>`).join('')}</select></div><div class="field"><label>Số trạm</label><input id="tStation" class="control" type="text" value="${Ui.esc(item?.stationNo||'')}" ${isEdit?'readonly':''} placeholder="VD: 01"></div><div class="field"><label>Đơn vị</label><select id="tUnit" class="control">${units.map(x=>`<option value="${Ui.esc(x.code)}" ${x.code===item?.unitId?'selected':''}>${Ui.esc(x.name)}</option>`).join('')}</select></div><div class="field"><label>Trạng thái</label><select id="tStatus" class="control"><option>Hoạt động</option><option>Ngừng hoạt động</option></select></div></div>`;
+    else body=`<div class="form-stack"><div class="field"><label>Hệ thống</label><select id="tSystem" class="control" ${isEdit?'disabled':''}>${systems.map(x=>`<option value="${Ui.esc(x.code)}" ${x.code===sys?'selected':''}>${Ui.esc(x.name)}</option>`).join('')}</select></div><div class="field"><label>Chuyên ngành user</label><select id="tUserSpec" class="control" ${isEdit?'disabled':''}>${specs.map(x=>`<option value="${Ui.esc(x.code)}" ${x.code===item?.userSpecialtyCode?'selected':''}>${Ui.esc(x.name)}</option>`).join('')}</select></div><div class="field"><label>Chuyên ngành mẫu</label><select id="tSampleSpec" class="control" ${isEdit?'disabled':''}>${specs.map(x=>`<option value="${Ui.esc(x.code)}" ${x.code===item?.sampleSpecialtyCode?'selected':''}>${Ui.esc(x.name)}</option>`).join('')}</select></div><div class="field-row"><div class="field"><label>Trạng thái</label><select id="tStatus" class="control"><option>Hoạt động</option><option>Ngừng hoạt động</option></select></div><div class="field"><label>Thứ tự</label><input id="tOrder" class="control" type="number" min="0" value="${item?.order||0}"></div></div></div>`;
+    const root=Ui.modal({title:(isEdit?'Sửa ':'Thêm ')+(type==='SYSTEM'?'hệ thống':type==='STATION'?'trạm vận chuyển':'phạm vi nhận mẫu'),body,onConfirm:async(root)=>{const data={type};if(type==='SYSTEM'){data.code=root.querySelector('#tCode').value.trim();data.name=root.querySelector('#tName').value.trim();data.status=root.querySelector('#tStatus').value;data.order=Number(root.querySelector('#tOrder').value||0)}else if(type==='STATION'){data.systemId=isEdit?sys:root.querySelector('#tSystem').value;data.stationNo=root.querySelector('#tStation').value.trim();data.unitId=root.querySelector('#tUnit').value;data.status=root.querySelector('#tStatus').value}else{data.systemId=isEdit?sys:root.querySelector('#tSystem').value;data.userSpecialtyCode=item?.userSpecialtyCode||root.querySelector('#tUserSpec').value;data.sampleSpecialtyCode=item?.sampleSpecialtyCode||root.querySelector('#tSampleSpec').value;data.status=root.querySelector('#tStatus').value;data.order=Number(root.querySelector('#tOrder').value||0)}const r=await ApiService.auth('settingsSaveTransportConfig',data);AppCore.applyTransportCatalogResponse(r.data);await this.reload(false);ReceiveLogModule.initPickers();ReceiveLogModule.setupTransportForm();ReceiveLogModule.initMethodFilter();Ui.toast(r.message,'success')}});root.querySelector('#tStatus').value=item?.status||'Hoạt động';
+  },
+  renderQr(){return `<div class="settings-section"><div class="settings-toolbar"><div><h2 class="card-title" style="margin:0;color:var(--gm-green)">MÃ QR GỬI MẪU XÉT NGHIỆM</h2><div class="small muted">Mẫu QR hoàn chỉnh để xem, tải về hoặc in tại khu tiếp nhận.</div></div></div><div class="qr-layout"><div id="qrPosterPreview" class="qr-box"></div><div><div class="field"><label>Link gửi mẫu</label><div class="link-box"><input id="publicSendLink" class="control" value="${Ui.esc(PUBLIC_SEND_URL)}" readonly><button class="btn btn-outline" data-action="copyPublicLink">SAO CHÉP</button></div></div><div class="actions"><button class="btn btn-primary" data-action="downloadQr">TẢI MÃ QR</button><button class="btn btn-outline" data-action="printQr">IN MÃ QR</button></div><p class="utility-note">Mã QR chỉ chứa link gửi mẫu. Logo và thông tin đơn vị là phần trình bày bên ngoài mã.</p></div></div></div>`},
+  renderInstall(){
+    const installed=PwaInstall.isStandalone();
+    const status=installed?'Ứng dụng đã được cài đặt và đang chạy ở chế độ ứng dụng.':PwaInstall.deferredPrompt?'Thiết bị sẵn sàng cài đặt ứng dụng.':'Nếu nút cài nhanh chưa khả dụng, có thể cài từ menu của Chrome/Edge.';
+    return `<div class="settings-section install-card"><div class="settings-toolbar"><div><h2 class="card-title" style="margin:0;color:var(--gm-green)">CÀI ĐẶT ỨNG DỤNG</h2><div class="small muted">Cài giao diện STAFF trên máy tính để mở như một ứng dụng độc lập.</div></div></div><div class="install-status">${Ui.esc(status)}</div><div class="field"><label>Đường dẫn khởi động</label><input class="control" value="${Ui.esc(STAFF_APP_URL)}" readonly></div><div class="actions"><button class="btn btn-primary" data-action="installApp" ${installed?'disabled':''}>${installed?'ĐÃ CÀI ĐẶT':'CÀI ĐẶT ỨNG DỤNG'}</button></div><p class="utility-note">Ứng dụng chỉ cache khung giao diện và tài nguyên tĩnh. Token đăng nhập, Sổ giao nhận, Sổ từ chối và dữ liệu nghiệp vụ không được lưu vào cache của Service Worker.</p></div>`;
+  },
+  renderEmployees(){
+    const rows=State.settings.data.users||[];
+    return `<div class="settings-section"><div class="settings-toolbar"><div><h2 class="card-title" style="margin:0;color:var(--gm-green)">Nhân viên sử dụng app</h2><div class="small muted">Huyết học chỉ lưu quyền; Tên/Mật khẩu đọc từ nguồn nhân sự dùng chung.</div></div><button class="btn btn-primary" data-action="addEmployee">THÊM NHÂN VIÊN</button></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Mã NV</th><th>Tên nhân viên</th><th>Mã chuyên ngành</th><th>Vai trò</th><th>Trạng thái</th><th>Nguồn đăng nhập</th><th></th></tr></thead><tbody>${rows.map(r=>`<tr><td>${Ui.esc(r.maNhanVien)}</td><td>${Ui.esc(r.tenNhanVien)}</td><td>${Ui.esc(r.maChuyenNganh)}</td><td>${Ui.esc(r.vaiTro)}</td><td><span class="status-chip ${r.trangThai==='Hoạt động'?'status-pending':'status-inactive'}">${Ui.esc(r.trangThai)}</span></td><td>${Ui.esc(r.nguonDangNhap)}</td><td>${State.user.vaiTro==='Admin'||r.vaiTro==='Nhân viên'?`<button class="btn btn-text" data-action="editEmployee" data-code="${Ui.esc(r.maNhanVien)}">Sửa</button>`:''}</td></tr>`).join('')||'<tr><td colspan="7" class="empty-state">Chưa có nhân viên.</td></tr>'}</tbody></table></div></div>`;
+  },
+  renderCatalogTable(type,title,rows,headers){
+    const extra=type==='UNIT'?'type':type==='SPECIALTY'?'shortName':'';
+    return `<div class="settings-section"><div class="settings-toolbar"><h2 class="card-title" style="margin:0;color:var(--gm-green)">${Ui.esc(title)}</h2><button class="btn btn-primary" data-action="addCatalog" data-type="${type}">THÊM</button></div><div class="table-scroll"><table class="data-table"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}<th></th></tr></thead><tbody>${(rows||[]).map(r=>`<tr><td>${Ui.esc(r.code)}</td><td>${Ui.esc(r.name)}</td><td>${Ui.esc(extra?r[extra]||'':r.status)}</td>${type==='UNIT'||type==='SPECIALTY'?`<td>${Ui.esc(r.status)}</td>`:''}<td>${r.order||0}</td><td><button class="btn btn-text" data-action="editCatalog" data-type="${type}" data-code="${Ui.esc(r.code)}">Sửa</button></td></tr>`).join('')||`<tr><td colspan="${headers.length+1}" class="empty-state">Chưa có dữ liệu.</td></tr>`}</tbody></table></div></div>`;
+  },
+  rejectMeta(type){return {LOCATION:{title:'Vị trí phát hiện',key:'locations'},TEST_TYPE:{title:'Loại xét nghiệm',key:'testTypes'},REASON:{title:'Lý do từ chối mẫu',key:'reasons'}}[type||'LOCATION']},
+  ensureRejectDraft(){
+    const spec=State.settings.rejectSpecialty,type=State.settings.rejectSub||'LOCATION',key=spec+'|'+type;if(State.settings.rejectDraft&&State.settings.rejectDraftKey===key)return;
+    const meta=this.rejectMeta(type),rows=(State.settings.data.catalogs[meta.key]||[]).filter(x=>x.maChuyenNganh===spec);
+    State.settings.rejectDraft=rows.map(r=>{const original={name:r.name||'',status:r.statusCode||'AP_DUNG',order:Number(r.order||0)||0,isOther:!!r.isOther};return {code:r.code,name:original.name,status:original.status,order:original.order,isOther:original.isOther,isNew:false,tempId:r.code,original:original}});State.settings.rejectDraftKey=key;State.settings.rejectDirty=false;
+  },
+  resetRejectDraft(){State.settings.rejectDraft=null;State.settings.rejectDraftKey='';State.settings.rejectDirty=false},
+  renderRejectConfig(){
+    this.ensureRejectDefaults();
+    const isAdmin=this.isAdmin(),specs=(State.settings.data.catalogs.specialties||[]).filter(x=>x.status==='Hoạt động'||x.code===State.settings.rejectSpecialty);
+    if(!isAdmin)State.settings.rejectSpecialty=State.user.maChuyenNganh||'';
+    const spec=State.settings.rejectSpecialty,specObj=specs.find(x=>x.code===spec)||{code:spec,name:State.user?.tenChuyenNganh||spec};
+    const selector=isAdmin?`<select id="rejectConfigSpecialty" class="control">${specs.map(x=>`<option value="${Ui.esc(x.code)}" ${x.code===spec?'selected':''}>${Ui.esc(x.name)}</option>`).join('')}</select>`:`<input class="control" value="${Ui.esc(specObj.name||spec)}" readonly>`;
+    this.ensureRejectDraft();const meta=this.rejectMeta(State.settings.rejectSub||'LOCATION');
+    return `<div class="settings-section"><div class="reject-config-head"><div class="field"><label>Đơn vị chuyên ngành</label>${selector}</div><div class="small muted">Cấu hình áp dụng riêng cho từng đơn vị chuyên ngành.</div></div>${this.renderRejectConfigTable(State.settings.rejectSub||'LOCATION',meta.title,State.settings.rejectDraft||[])}</div>`;
+  },
+  renderRejectConfigTable(type,title,rows){
+    const dirty=State.settings.rejectDirty?'<span class="draft-unsaved">Có thay đổi chưa lưu</span>':'';
+    const cols=type==='REASON'?6:5;
+    return `<div class="settings-toolbar"><div><h2 class="card-title" style="margin:0;color:var(--gm-green)">${Ui.esc(title)}</h2>${dirty}</div><div class="reject-draft-actions"><button class="btn btn-outline" data-action="cancelRejectDraft" ${State.settings.rejectDirty?'':'disabled'}>HỦY THAY ĐỔI</button><button class="btn btn-primary" data-action="addRejectDraft">THÊM</button><button class="btn btn-primary" data-action="saveRejectDraft" ${State.settings.rejectDirty?'':'disabled'}>LƯU THAY ĐỔI</button></div></div><div class="table-scroll"><table class="data-table draft-table" style="min-width:720px"><thead><tr><th>Mã</th><th>Tên</th>${type==='REASON'?'<th>Lý do khác</th>':''}<th>Trạng thái</th><th>Thứ tự</th><th></th></tr></thead><tbody>${(rows||[]).map((r,i)=>`<tr data-draft-row="${i}"><td>${r.isNew?'<span class="draft-new-code">Tự động</span>':Ui.esc(r.code)}</td><td><input class="control draft-name" value="${Ui.esc(r.name||'')}"></td>${type==='REASON'?`<td class="center"><input class="draft-other" type="checkbox" ${r.isOther?'checked':''}></td>`:''}<td><select class="control draft-status"><option value="AP_DUNG" ${r.status==='AP_DUNG'?'selected':''}>Đang áp dụng</option><option value="KHONG_AP_DUNG" ${r.status==='KHONG_AP_DUNG'?'selected':''}>Không áp dụng</option></select></td><td>${r.isNew?'<span class="draft-new-code">Tự động</span>':`<input class="control draft-order" type="number" min="1" value="${r.order||1}">`}</td><td class="center">${r.isNew?`<button type="button" class="draft-remove-btn" data-action="removeRejectDraft" data-index="${i}" title="Xóa dòng chưa lưu" aria-label="Xóa dòng chưa lưu">×</button>`:''}</td></tr>`).join('')||`<tr><td colspan="${cols}" class="empty-state">Chưa có cấu hình. Nhấn THÊM để tạo mới.</td></tr>`}</tbody></table></div>`;
+  },
+  captureRejectDraft(){const rows=[...Ui.el('settingsContent').querySelectorAll('[data-draft-row]')];if(rows.length)rows.forEach(tr=>{const i=Number(tr.dataset.draftRow),r=State.settings.rejectDraft[i];if(!r)return;r.name=tr.querySelector('.draft-name')?.value||'';r.status=tr.querySelector('.draft-status')?.value||'AP_DUNG';if(!r.isNew)r.order=Number(tr.querySelector('.draft-order')?.value||0)||0;if(tr.querySelector('.draft-other'))r.isOther=tr.querySelector('.draft-other').checked});this.updateRejectDirty()},
+  isRejectRowChanged(r){if(!r)return false;if(r.isNew)return true;const o=r.original||{};return String(r.name||'')!==String(o.name||'')||String(r.status||'')!==String(o.status||'')||Number(r.order||0)!==Number(o.order||0)||!!r.isOther!==!!o.isOther},
+  updateRejectDirty(){State.settings.rejectDirty=(State.settings.rejectDraft||[]).some(r=>this.isRejectRowChanged(r));return State.settings.rejectDirty},
+  markRejectDirty(){this.captureRejectDraft();this.render()},
+  addRejectDraft(){this.captureRejectDraft();State.settings.rejectDraft=State.settings.rejectDraft||[];State.settings.rejectDraft.push({code:'',name:'',status:'AP_DUNG',order:0,isOther:false,isNew:true,tempId:'new-'+Date.now()+'-'+Math.random()});this.updateRejectDirty();this.render();setTimeout(()=>{const list=Ui.el('settingsContent').querySelectorAll('.draft-name');list[list.length-1]?.focus()},0)},
+  removeRejectDraft(index){this.captureRejectDraft();const row=State.settings.rejectDraft?.[index];if(!row?.isNew)return;State.settings.rejectDraft.splice(index,1);this.updateRejectDirty();this.render()},
+  async saveRejectDraft(btn,continueSilently=false){
+    this.captureRejectDraft();const changed=(State.settings.rejectDraft||[]).filter(r=>this.isRejectRowChanged(r));const items=changed.map(r=>({code:r.isNew?'':r.code,name:r.name,status:r.status,order:r.isNew?0:r.order,isOther:!!r.isOther}));if(!items.length){State.settings.rejectDirty=false;if(!continueSilently)Ui.toast('Không có thay đổi cần lưu.','success');return true}
+    const work=async()=>{try{const type=State.settings.rejectSub,spec=State.settings.rejectSpecialty;const r=await ApiService.auth('settingsSaveRejectCatalogBatch',{type,maChuyenNganh:spec,items});const saved=r.data?.items||[];changed.forEach((row,i)=>{const x=saved[i]||{};if(x.code)row.code=x.code;if(x.order)row.order=x.order;row.isNew=false;row.tempId=row.code;row.original={name:row.name||'',status:row.status||'AP_DUNG',order:Number(row.order||0)||0,isOther:!!row.isOther}});const meta=this.rejectMeta(type),all=State.settings.data?.catalogs?.[meta.key]||[],others=all.filter(x=>x.maChuyenNganh!==spec),current=(State.settings.rejectDraft||[]).filter(x=>!x.isNew&&x.code).map(x=>({code:x.code,name:x.name,maChuyenNganh:spec,statusCode:x.status,status:x.status==='AP_DUNG'?'Đang áp dụng':'Không áp dụng',order:Number(x.order||0)||0,isOther:!!x.isOther}));if(State.settings.data?.catalogs)State.settings.data.catalogs[meta.key]=others.concat(current);State.configVersion=Number(r.data?.configVersion||State.configVersion);State.rejectCatalogs=null;State.settings.rejectDirty=false;this.render();StaffApp.prefetchRejectForm();Ui.toast(r.message,'success');return true}catch(e){Ui.toast(e.message||'Lưu thay đổi thất bại.','error');return false}};
+    if(btn)return Ui.runButtonBusy(btn,work);return work();
+  },
+  cancelRejectDraft(){this.resetRejectDraft();this.render()},
+  guardRejectChanges(onProceed){
+    if(!State.settings.rejectDirty){onProceed();return}
+    const root=Ui.modal({title:'Thay đổi chưa lưu',confirmText:'LƯU & TIẾP TỤC',cancelText:'Ở LẠI',body:'<div class="form-stack"><p style="margin:0">Bạn đang có thay đổi cấu hình chưa lưu.</p><button id="discardRejectChanges" type="button" class="btn btn-outline">BỎ THAY ĐỔI & TIẾP TỤC</button></div>',onConfirm:async()=>{const ok=await this.saveRejectDraft(null,true);if(ok)onProceed()}});
+    root.querySelector('#discardRejectChanges')?.addEventListener('click',()=>{this.resetRejectDraft();root.innerHTML='';onProceed()});
+  },
+  renderSummary(){return `<div class="settings-section"><h2 class="card-title" style="color:var(--gm-green)">Tổng hợp lại dữ liệu ngày</h2><div class="field-row" style="max-width:520px"><div class="field"><label>Từ ngày</label><input id="summaryFrom" class="control" type="date"></div><div class="field"><label>Đến ngày</label><input id="summaryTo" class="control" type="date"></div></div><div class="actions"><button class="btn btn-primary" data-action="rebuildSummary">TỔNG HỢP LẠI</button></div><p class="small muted">Trigger hằng ngày chỉ tổng hợp, không tự xóa dữ liệu chi tiết.</p></div>`},
+  bindRendered(){
+    const box=Ui.el('settingsContent');
+    box.querySelectorAll('[data-action]').forEach(btn=>btn.addEventListener('click',()=>{
+      const a=btn.dataset.action;
+      if(a==='addEmployee')this.employeeModal();
+      if(a==='editEmployee')this.employeeModal(State.settings.data.users.find(x=>x.maNhanVien===btn.dataset.code));
+      if(a==='addCatalog')this.catalogModal(btn.dataset.type);
+      if(a==='editCatalog')this.catalogModal(btn.dataset.type,this.findCatalog(btn.dataset.type,btn.dataset.code,btn.dataset.spec));
+      if(a==='addRejectDraft')this.addRejectDraft();
+      if(a==='removeRejectDraft')this.removeRejectDraft(Number(btn.dataset.index));
+      if(a==='saveRejectDraft')this.saveRejectDraft(btn);
+      if(a==='cancelRejectDraft')this.cancelRejectDraft();
+      if(a==='rebuildSummary')this.rebuildSummary(btn);
+      if(a==='copyPublicLink')this.copyPublicLink(btn);
+      if(a==='downloadQr')this.downloadQr(btn);
+      if(a==='printQr')this.printQr(btn);
+      if(a==='installApp')PwaInstall.install(btn);
+    }));
+    const markDirty=()=>{this.captureRejectDraft();const dirty=State.settings.rejectDirty;const save=box.querySelector('[data-action="saveRejectDraft"]'),cancel=box.querySelector('[data-action="cancelRejectDraft"]');if(save)save.disabled=!dirty;if(cancel)cancel.disabled=!dirty};
+    box.querySelectorAll('.draft-name,.draft-status,.draft-order,.draft-other').forEach(el=>el.addEventListener('input',markDirty));
+    box.querySelectorAll('.draft-status,.draft-other').forEach(el=>el.addEventListener('change',markDirty));
+    const spec=Ui.el('rejectConfigSpecialty');if(spec)spec.addEventListener('change',()=>{const next=spec.value,prev=State.settings.rejectSpecialty;if(State.settings.rejectDirty){spec.value=prev;this.guardRejectChanges(()=>{State.settings.rejectSpecialty=next;this.resetRejectDraft();this.render()});return}State.settings.rejectSpecialty=next;this.resetRejectDraft();this.render()});
+    document.querySelectorAll('[data-action="addTransport"]').forEach(b=>b.addEventListener('click',()=>this.transportModal(b.dataset.type,null)));
+    document.querySelectorAll('[data-action="editTransport"]').forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.type,key=b.dataset.key,c=State.settings.data.catalogs||{};let item=null;if(t==='SYSTEM')item=(c.transportSystems||[]).find(x=>x.code===key);else if(t==='STATION')item=(c.transportStations||[]).find(x=>x.systemCode===State.settings.transportSystem&&x.stationNo===key);else{const parts=key.split('|');item=(c.transportScope||[]).find(x=>x.systemCode===State.settings.transportSystem&&x.userSpecialtyCode===parts[0]&&x.sampleSpecialtyCode===parts[1])}this.transportModal(t,item)}));
+    const transportSystemSel=Ui.el('transportConfigSystem');if(transportSystemSel)transportSystemSel.addEventListener('change',()=>{State.settings.transportSystem=transportSystemSel.value;this.render()});
+    if(Ui.el('qrPosterPreview'))QrPoster.renderPreview('qrPosterPreview');
+  },
+  findCatalog(type,code,spec){
+    const map={UNIT:'units',SPECIALTY:'specialties',LOCATION:'locations',TEST_TYPE:'testTypes',REASON:'reasons'},list=State.settings.data.catalogs[map[type]]||[];
+    return list.find(x=>x.code===code&&(!spec||x.maChuyenNganh===spec));
+  },
+  employeeModal(item){
+    const isEdit=!!item,isAdmin=State.user.vaiTro==='Admin';const specs=(State.settings.data.catalogs.specialties||[]).filter(x=>x.status==='Hoạt động'||x.code===item?.maChuyenNganh);
+    const body=`<div class="form-stack"><div class="field"><label>Mã nhân viên</label><input id="mEmpCode" class="control" value="${Ui.esc(item?.maNhanVien||'')}" ${isEdit?'readonly':''}></div><div class="field"><label>Nguồn đăng nhập</label><select id="mEmpSource" class="control" ${isAdmin?'':'disabled'}><option value="LOCAL" ${item?.nguonDangNhap==='LOCAL'?'selected':''}>LOCAL</option><option value="SHARED_HHTM" ${item?.nguonDangNhap==='SHARED_HHTM'?'selected':''}>SHARED_HHTM</option></select></div><div id="mSharedSearchWrap" class="field autocomplete hidden"><label>Tìm nhân sự Huyết học</label><input id="mSharedSearch" class="control" type="text" autocomplete="off" placeholder="Nhập mã hoặc tên..."><div id="mSharedSuggestions" class="suggestions hidden"></div></div><div class="field"><label>Tên nhân viên (LOCAL)</label><input id="mEmpName" class="control" value="${Ui.esc(item?.nguonDangNhap==='LOCAL'?item?.tenNhanVien||'':'')}"></div><div class="field"><label>Chuyên ngành</label><select id="mEmpSpec" class="control" ${isAdmin?'':'disabled'}>${specs.map(s=>`<option value="${Ui.esc(s.code)}" ${(item?.maChuyenNganh||State.user.maChuyenNganh)===s.code?'selected':''}>${Ui.esc(s.code+' - '+s.name)}</option>`).join('')}</select></div><div class="field"><label>Vai trò</label><select id="mEmpRole" class="control"><option>Nhân viên</option>${isAdmin?'<option>Quản lý</option><option>Admin</option>':''}</select></div><div class="field"><label>Trạng thái</label><select id="mEmpStatus" class="control"><option>Hoạt động</option><option>Ngừng hoạt động</option></select></div><div id="mEmpPasswordWrap" class="field"><label>Mật khẩu ${isEdit?'(để trống nếu không đổi)':''}</label><input id="mEmpPassword" class="control" type="password"></div></div>`;
+    const root=Ui.modal({title:isEdit?'Sửa nhân viên':'Thêm nhân viên',body,onConfirm:async(root)=>{const data={maNhanVien:root.querySelector('#mEmpCode').value.trim(),nguonDangNhap:root.querySelector('#mEmpSource').value,tenNhanVien:root.querySelector('#mEmpName').value.trim(),maChuyenNganh:root.querySelector('#mEmpSpec').value,vaiTro:root.querySelector('#mEmpRole').value,trangThai:root.querySelector('#mEmpStatus').value,password:root.querySelector('#mEmpPassword').value};const r=await ApiService.auth('settingsSaveEmployee',data);await this.reload(false,true);Ui.toast(r.message,'success')}});
+    root.querySelector('#mEmpRole').value=item?.vaiTro||'Nhân viên';root.querySelector('#mEmpStatus').value=item?.trangThai||'Hoạt động';if(!isAdmin){root.querySelector('#mEmpSource').value=State.user.nguonDangNhap;root.querySelector('#mEmpSpec').value=State.user.maChuyenNganh}
+    const toggle=()=>{const shared=root.querySelector('#mEmpSource').value==='SHARED_HHTM';root.querySelector('#mSharedSearchWrap').classList.toggle('hidden',!shared);root.querySelector('#mEmpName').disabled=shared;root.querySelector('#mEmpPasswordWrap').classList.toggle('hidden',shared)};root.querySelector('#mEmpSource').addEventListener('change',toggle);toggle();this.bindSharedSearch(root);
+  },
+  bindSharedSearch(root){
+    const input=root.querySelector('#mSharedSearch'),box=root.querySelector('#mSharedSuggestions');const clearBtn=ensureQuickClear(input,()=>{input.value='';box.innerHTML='';box.classList.add('hidden');clearBtn?.classList.add('hidden')});let timer;
+    input.addEventListener('input',()=>{clearBtn?.classList.toggle('hidden',!input.value);clearTimeout(timer);timer=setTimeout(async()=>{try{const r=await ApiService.auth('settingsSharedPersonnelSearch',{query:input.value});const items=r.data.items||[];box.innerHTML=items.map((x,i)=>`<div class="suggestion" data-i="${i}"><div class="suggestion-main">${Ui.esc(x.code+' - '+x.name)}</div></div>`).join('');box.classList.toggle('hidden',!items.length);box.querySelectorAll('.suggestion').forEach((el,i)=>el.addEventListener('mousedown',e=>{e.preventDefault();const x=items[i];root.querySelector('#mEmpCode').value=x.code;input.value=x.code+' - '+x.name;clearBtn?.classList.remove('hidden');box.classList.add('hidden')}))}catch(e){Ui.toast(e.message,'error')}},250)});
+  },
+  catalogModal(type,item){
+    const scoped=['LOCATION','TEST_TYPE','REASON'].includes(type),spec=scoped?(this.isAdmin()?State.settings.rejectSpecialty:State.user.maChuyenNganh):'';
+    if(scoped&&!spec){Ui.toast('Vui lòng chọn đơn vị chuyên ngành.','error');return}
+    const extra=type==='UNIT'?`<div class="field"><label>Loại đơn vị</label><input id="mCatCategory" class="control" value="${Ui.esc(item?.type||'')}"></div>`:type==='SPECIALTY'?`<div class="field"><label>Viết tắt</label><input id="mCatShortName" class="control" value="${Ui.esc(item?.shortName||'')}"></div>`:type==='REASON'?`<label style="display:flex;gap:7px;align-items:center"><input id="mCatOther" type="checkbox" ${item?.isOther?'checked':''}> Đây là mục “Lý do khác”</label>`:'';
+    const statusOptions=scoped?'<option value="AP_DUNG">Đang áp dụng</option><option value="KHONG_AP_DUNG">Không áp dụng</option>':'<option value="Hoạt động">Hoạt động</option><option value="Ngừng hoạt động">Ngừng hoạt động</option>';
+    const codeHtml=scoped&&!item?`<input id="mCatCode" class="control" value="" placeholder="Tự động sinh khi lưu" readonly>`:`<input id="mCatCode" class="control" value="${Ui.esc(item?.code||'')}" ${item?'readonly':''}>`;
+    const orderHtml=scoped&&!item?`<input id="mCatOrder" class="control" type="text" value="Tự động" readonly>`:`<input id="mCatOrder" class="control" type="number" min="1" value="${item?.order||0}">`;
+    const body=`<div class="form-stack">${scoped?`<div class="field"><label>Đơn vị chuyên ngành</label><input class="control" value="${Ui.esc((State.settings.data.catalogs.specialties||[]).find(x=>x.code===spec)?.name||spec)}" readonly></div>`:''}<div class="field"><label>Mã</label>${codeHtml}</div><div class="field"><label>Tên</label><input id="mCatName" class="control" value="${Ui.esc(item?.name||'')}"></div>${extra}<div class="field-row"><div class="field"><label>Trạng thái</label><select id="mCatStatus" class="control">${statusOptions}</select></div><div class="field"><label>Thứ tự</label>${orderHtml}</div></div></div>`;
+    const root=Ui.modal({title:(item?'Sửa ':'Thêm ')+(type==='LOCATION'?'Vị trí phát hiện':type==='TEST_TYPE'?'Loại xét nghiệm':type==='REASON'?'Lý do từ chối':type),body,onConfirm:async(root)=>{const orderEl=root.querySelector('#mCatOrder');const data={type,code:root.querySelector('#mCatCode').value.trim(),name:root.querySelector('#mCatName').value.trim(),status:root.querySelector('#mCatStatus').value,order:scoped&&!item?0:Number(orderEl.value||0)};if(scoped)data.maChuyenNganh=spec;if(type==='UNIT')data.category=root.querySelector('#mCatCategory').value.trim();if(type==='SPECIALTY')data.shortName=root.querySelector('#mCatShortName').value.trim();if(type==='REASON')data.isOther=root.querySelector('#mCatOther').checked;const r=await ApiService.auth('settingsSaveCatalog',data);await this.reload(true);Ui.toast(r.message,'success')}});
+    root.querySelector('#mCatStatus').value=scoped?(item?.statusCode||'AP_DUNG'):(item?.status||'Hoạt động');
+  },
+  async copyPublicLink(btn){return Ui.runButtonBusy(btn,async()=>{try{await navigator.clipboard.writeText(PUBLIC_SEND_URL);Ui.toast('Đã sao chép link gửi mẫu.','success')}catch(e){const x=Ui.el('publicSendLink');x.focus();x.select();document.execCommand('copy');Ui.toast('Đã sao chép link gửi mẫu.','success')}})},
+  async downloadQr(btn){return Ui.runButtonBusy(btn,async()=>{try{const blob=await QrPoster.pngBlob(2.5),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='QR_Gui_mau_xet_nghiem_Bach_Mai.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);Ui.toast('Đã tải mã QR.','success')}catch(e){Ui.toast(e.message,'error')}})},
+  async printQr(btn){return Ui.runButtonBusy(btn,async()=>{try{const html=await QrPoster.printableHtml(),w=window.open('','_blank','width=850,height=1000');if(!w){Ui.toast('Trình duyệt đang chặn cửa sổ in.','error');return}w.document.open();w.document.write(html);w.document.close()}catch(e){Ui.toast(e.message,'error')}})},
+  async rebuildSummary(btn){const from=Ui.el('summaryFrom').value,to=Ui.el('summaryTo').value;if(!from||!to){Ui.toast('Vui lòng chọn Từ ngày và Đến ngày.','error');return}return Ui.runButtonBusy(btn,async()=>{try{const r=await ApiService.auth('summaryRebuild',{fromDate:from,toDate:to});Ui.toast(r.message,'success')}catch(e){Ui.toast(e.message,'error')}})},
+  async reload(configChanged=false,employeesChanged=false){
+    const r=await ApiService.auth('settingsBootstrap');State.settings.data=r.data;State.settings.loaded=true;this.ensureRejectDefaults();if(configChanged)this.resetRejectDraft();
+    if(employeesChanged){await StaffApp.loadEmployees();RejectSampleModule.setupPickers();ReceiveLogModule.initPickers()}
+    if(configChanged){localStorage.removeItem(CACHE_KEY_STAFF);const b=await ApiService.auth('staffBootstrap',{configVersion:0,hasCatalogCache:false,transportConfigVersion:State.transportConfigVersion,hasTransportCache:AppCore.hasTransportCache()});AppCore.applyCatalogResponse(b.data);State.rejectCatalogs=null;State.receive.loaded=false;State.reject.loaded=false;ReceiveLogModule.initPickers();ReceiveLogModule.setupTransportForm();RejectSampleModule.setupPickers()}
+    this.render();
+  }
+};
+/* ===== SETTINGS_MODULE: END ===== */
+
+
+/* ===== PWA_INSTALL: START ===== */
+const PwaInstall={
+  deferredPrompt:null,
+  init(){
+    window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();this.deferredPrompt=e;if(State.settings.section==='install'&&!Ui.el('settingsPage').classList.contains('hidden'))SettingsModule.render()});
+    window.addEventListener('appinstalled',()=>{this.deferredPrompt=null;Ui.toast('Đã cài đặt ứng dụng.','success');if(State.settings.section==='install')SettingsModule.render()});
+    if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
+      navigator.serviceWorker.register('./service-worker.js').then(reg=>{
+        reg.addEventListener('updatefound',()=>{const worker=reg.installing;if(!worker)return;worker.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)Ui.reloadToast('Có phiên bản mới.')})});
+      }).catch(()=>{});
+    }
+  },
+  isStandalone(){return window.matchMedia?.('(display-mode: standalone)').matches||window.navigator.standalone===true},
+  async install(btn){
+    if(this.isStandalone()){Ui.toast('Ứng dụng đã được cài đặt.','success');return}
+    if(this.deferredPrompt){
+      return Ui.runButtonBusy(btn,async()=>{const prompt=this.deferredPrompt;await prompt.prompt();const choice=await prompt.userChoice;if(choice?.outcome==='accepted')Ui.toast('Đang cài đặt ứng dụng.','success');this.deferredPrompt=null;if(State.settings.section==='install')SettingsModule.render()});
+    }
+    Ui.modal({title:'Cài đặt ứng dụng',hideConfirm:true,cancelText:'ĐÓNG',body:'<div class="form-stack"><p style="margin:0">Trình duyệt chưa cung cấp nút cài nhanh tại thời điểm này.</p><p style="margin:0">Trên Chrome/Edge, mở menu trình duyệt và chọn <strong>Cài đặt ứng dụng</strong> hoặc <strong>Apps → Install this site as an app</strong>.</p></div>'});
+  }
+};
+/* ===== PWA_INSTALL: END ===== */
+
+/* ===== COMMON_FRONTEND_HELPERS: START ===== */
+function ensureSelectQuickClear(id){const el=Ui.el(id);if(!el||el.dataset.clearReady==='1')return;el.dataset.clearReady='1';const wrap=document.createElement('div');wrap.className='select-clear-wrap';el.parentNode.insertBefore(wrap,el);wrap.appendChild(el);const b=document.createElement('button');b.type='button';b.className='select-clear-btn';b.setAttribute('aria-label','Xóa lựa chọn');b.textContent='×';b.addEventListener('click',()=>{el.value='';el.dispatchEvent(new Event('change',{bubbles:true}));el.focus()});wrap.appendChild(b)}
+function fillSelect(id,items,placeholder){const el=Ui.el(id);const current=el.value;el.innerHTML=`<option value="">${Ui.esc(placeholder||'Chọn')}</option>`+(items||[]).map(x=>`<option value="${Ui.esc(x.code)}">${Ui.esc((x.shortName?x.shortName+' - ':'')+x.name)}</option>`).join('');if([...el.options].some(o=>o.value===current))el.value=current}
+function renderPagination(id,page,totalPages,onPage){const box=Ui.el(id);const pages=[];const start=Math.max(1,page-2),end=Math.min(totalPages,page+2);pages.push(`<button class="page-btn" data-p="${Math.max(1,page-1)}" ${page<=1?'disabled':''}>‹</button>`);for(let p=start;p<=end;p++)pages.push(`<button class="page-btn ${p===page?'active':''}" data-p="${p}">${p}</button>`);pages.push(`<button class="page-btn" data-p="${Math.min(totalPages,page+1)}" ${page>=totalPages?'disabled':''}>›</button>`);box.innerHTML=pages.join('');box.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{const p=Number(b.dataset.p);if(p&&p!==page)Ui.runButtonBusy(b,()=>onPage(p))}))}
+function downloadBase64(base64,mime,fileName){const bytes=atob(base64);const arr=new Uint8Array(bytes.length);for(let i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);const url=URL.createObjectURL(new Blob([arr],{type:mime}));const a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+/* ===== COMMON_FRONTEND_HELPERS: END ===== */
+
+document.addEventListener('DOMContentLoaded',()=>{PwaInstall.init();AppCore.init()});
+</script>
+</body>
+</html>
