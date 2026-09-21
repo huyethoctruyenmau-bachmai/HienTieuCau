@@ -1,7 +1,7 @@
-APP HIẾN TIỂU CẦU BẠCH MAI
-Version đầy đủ: 5.3
+HIẾN MÁU / HIẾN TIỂU CẦU BẠCH MAI
+FULL PACKAGE v18.13
 
-GITHUB PAGES:
+Frontend GitHub Pages:
 - index.html
 - manifest.json
 - service-worker.js
@@ -10,9 +10,14 @@ GITHUB PAGES:
 - apple-touch-icon-v5.3.png
 - favicon-v5.3.png
 
-GOOGLE APPS SCRIPT:
+Backend Google Apps Script:
 - Code.gs
 
-Sau khi thay Code.gs, chạy setupApp() một lần và triển khai lại Web App bằng New version.
-URL /exec đã được điền sẵn trong index.html và service-worker.js.
-Push Notification chỉ hoạt động sau khi cấu hình Firebase trong hệ thống.
+Cập nhật:
+1. Thay toàn bộ file frontend tương ứng trên GitHub Pages.
+2. Thay toàn bộ Code.gs trong Apps Script.
+3. Chạy setupApp() một lần cho cấu trúc sheet mới của v18.13.
+4. Deploy Apps Script phiên bản mới.
+5. Giữ các Script Properties/Firebase hiện có và kiểm tra PERSONNEL_SPREADSHEET_ID.
+
+Version đầy đủ: 18.13

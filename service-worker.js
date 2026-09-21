@@ -1,8 +1,7 @@
-/* Hiến tiểu cầu Bạch Mai - Service Worker 11.7
- * Nhận Web Push trực tiếp ở top-level để không bỏ lỡ sự kiện khi thiết bị
- * đánh thức service worker từ trạng thái nền/khóa màn hình.
+/* Đăng ký / Quản lý hiến máu Bạch Mai - Service Worker 18.13
+ * Giữ Web Push hoạt động khi app đóng hoặc màn hình điện thoại khóa.
  */
-const CACHE_NAME = 'hien-tieu-cau-bm-v11-7';
+const CACHE_NAME = 'hien-mau-bachmai-v18-13';
 const APP_SHELL = [
   './',
   './index.html',
@@ -13,11 +12,7 @@ const APP_SHELL = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(APP_SHELL))
-      .catch(() => null)
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).catch(() => null));
   self.skipWaiting();
 });
 
@@ -33,7 +28,6 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
-
   event.respondWith(
     fetch(event.request)
       .then(response => {
@@ -47,74 +41,62 @@ self.addEventListener('fetch', event => {
 
 function readPushPayload(event) {
   if (!event.data) return {};
-  try {
-    return event.data.json() || {};
-  } catch (error) {
-    try {
-      return { data: { body: event.data.text() } };
-    } catch (ignored) {
-      return {};
-    }
+  try { return event.data.json() || {}; }
+  catch (error) {
+    try { return { data: { body: event.data.text() } }; }
+    catch (ignored) { return {}; }
   }
 }
 
-function normalisePushPayload(payload) {
+function normalizePushPayload(payload) {
   const notification = payload && payload.notification || {};
   const data = payload && payload.data || {};
   const fcmOptions = payload && (payload.fcmOptions || payload.fcm_options) || {};
-
   return {
-    title: notification.title || data.title || 'Hiến tiểu cầu Bạch Mai',
-    body: notification.body || data.body || 'Có thông tin đăng ký mới.',
+    title: notification.title || data.title || 'Hiến máu Bạch Mai',
+    body: notification.body || data.body || 'Có thông tin mới.',
     icon: notification.icon || data.icon || new URL('./icon-192-v5.3.png', self.registration.scope).href,
     badge: notification.badge || data.badge || new URL('./icon-192-v5.3.png', self.registration.scope).href,
-    tag: notification.tag || data.appointmentId || 'new-registration',
-    url: data.url || fcmOptions.link || './?admin=1&section=appointments',
+    tag: notification.tag || data.registrationId || 'bm-donation-notification',
+    url: data.url || fcmOptions.link || './',
     rawData: data
   };
 }
 
 self.addEventListener('push', event => {
-  const payload = readPushPayload(event);
-  const message = normalisePushPayload(payload);
-
+  const message = normalizePushPayload(readPushPayload(event));
   event.waitUntil((async () => {
     const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
     const visibleWindows = windows.filter(client => client.visibilityState === 'visible');
-
     if (visibleWindows.length) {
       visibleWindows.forEach(client => client.postMessage({
-        type: 'BM_PUSH_MESSAGE',
-        payload: {
-          notification: { title: message.title, body: message.body },
-          data: Object.assign({}, message.rawData, { url: message.url })
-        }
+        type: 'FCM_MESSAGE',
+        payload: Object.assign({}, message.rawData, {
+          title: message.title,
+          body: message.body,
+          url: message.url
+        })
       }));
       return;
     }
-
     await self.registration.showNotification(message.title, {
       body: message.body,
       icon: message.icon,
       badge: message.badge,
       tag: message.tag,
       renotify: true,
-      data: { url: message.url }
+      data: { url: message.url, registrationId: message.rawData.registrationId || '' }
     });
   })());
 });
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const target = new URL(
-    event.notification.data && event.notification.data.url || './?admin=1&section=appointments',
-    self.registration.scope
-  ).href;
-
+  const target = new URL(event.notification.data && event.notification.data.url || './', self.registration.scope).href;
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
       for (const client of list) {
-        if ('focus' in client) {
+        if ('navigate' in client && 'focus' in client) {
           client.navigate(target);
           return client.focus();
         }
